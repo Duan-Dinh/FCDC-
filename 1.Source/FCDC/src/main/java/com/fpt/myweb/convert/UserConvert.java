@@ -38,6 +38,10 @@ public class UserConvert {
         userRequet.setBirthOfdate(dateFormat.format(user.getBirthOfdate()));
         userRequet.setRole_id(user.getRole().getId());
         userRequet.setVillage_id(user.getVillage().getId());
+        if(user.getDateStart()!=null){
+        DateFormat dateFormat1 = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        userRequet.setStartOfDate(dateFormat1.format(user.getDateStart()));
+        }
         return userRequet;
     }
 

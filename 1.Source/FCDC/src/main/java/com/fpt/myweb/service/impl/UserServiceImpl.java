@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -136,6 +137,8 @@ public class UserServiceImpl implements UserService {
         user.setPhone(userRequet.getPhone());
         user.setImageUrl(userRequet.getImageUrl());
         user.setModifiedDate(new Date());
+        Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
+        user.setDateStart(date1);
         UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));
         return userRequet1;
     }
@@ -409,6 +412,42 @@ public class UserServiceImpl implements UserService {
             inputStream.close();
 
         }
+    }
+
+    @Override
+    public List<UserRequet> notSentReport(String time, Integer page) {
+        if (page == null) {
+            page = 1;
+        } else {
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> searchList = userRepository.notSentReport(time,pageable);
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : searchList) {
+            userRequets.add(userConvert.convertToUserRequest(user));
+        }
+        return userRequets;
+    }
+
+    @Override
+    public List<UserRequet> toTestCovid(String time) throws ParseException {
+        Long role_id =3L;
+        Role role = roleRepository.findById(role_id).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + role_id));
+        List<User> searchList = userRepository.findByRole(role);
+        Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(time);
+        List<UserRequet> userRequets = new ArrayList<>();
+
+        for (User user: searchList){
+            Long totalDate = date.getTime() - user.getDateStart().getTime();
+
+            if(TimeUnit.MILLISECONDS.toDays(date.getTime() - user.getDateStart().getTime())==7){
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
+
+        }
+        return userRequets;
     }
 
 

@@ -212,37 +212,37 @@ public class ReportController {
         }
         return ResponseEntity.ok(commonRes);
     }
-    @GetMapping(value = "/getByDateReport1")
-    public ResponseEntity<CommonRes> getbydate1(@RequestParam("time") String time) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<Daily_Report> daily_reports = dailyReportService.getByDate(time);
-            List<ReportDetailRes> reportDetailRes = new ArrayList<>();
-            if (!daily_reports.isEmpty()) {
-                for (Daily_Report report: daily_reports){
-                    ReportDetailRes item = new ReportDetailRes();
-                    item.setUserId(report.getUser().getId());
-                    item.setFullname(report.getUser().getFullname());
-                    item.setGender(report.getUser().getGender());
-                    DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                    item.setDateOfBirth(dateFormat.format(report.getUser().getBirthOfdate()));
-                    item.setPhone(report.getUser().getPhone());
-                    item.setVilaId(report.getUser().getVillage().getName());
-                    reportDetailRes.add(item);
-                }
-            }
-            if(reportDetailRes.size()==0){
-                commonRes.setData("co cl");
-            }else{
-            commonRes.setData(reportDetailRes);}
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
+//    @GetMapping(value = "/getByDateReport1")
+//    public ResponseEntity<CommonRes> getbydate1(@RequestParam("time") String time) {
+//        CommonRes commonRes = new CommonRes();
+//        try {
+//            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+//            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+//            List<Daily_Report> daily_reports = dailyReportService.getByDate(time);
+//            List<ReportDetailRes> reportDetailRes = new ArrayList<>();
+//            if (!daily_reports.isEmpty()) {
+//                for (Daily_Report report: daily_reports){
+//                    ReportDetailRes item = new ReportDetailRes();
+//                    item.setUserId(report.getUser().getId());
+//                    item.setFullname(report.getUser().getFullname());
+//                    item.setGender(report.getUser().getGender());
+//                    DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+//                    item.setDateOfBirth(dateFormat.format(report.getUser().getBirthOfdate()));
+//                    item.setPhone(report.getUser().getPhone());
+//                    item.setVilaId(report.getUser().getVillage().getName());
+//                    reportDetailRes.add(item);
+//                }
+//            }
+//            if(reportDetailRes.size()==0){
+//                commonRes.setData("co cl");
+//            }else{
+//            commonRes.setData(reportDetailRes);}
+//        } catch (Exception e){
+//            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+//            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+//        }
+//        return ResponseEntity.ok(commonRes);
+//    }
 
 
     @PutMapping(value = "/editFeeback", consumes = {MediaType.ALL_VALUE})

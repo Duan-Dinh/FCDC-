@@ -12,13 +12,18 @@ import java.util.List;
 public interface UserService {
     //get all user
     public List<UserRequet> getAllUser();
+
     //get by id
     public UserRequet getUser(long id);
+
     //create new User
     public User addUser(UserRequet userRequet) throws ParseException;
+
     //Delete User
     public UserRequet deleteUser(long id);
+
     public UserRequet edit(UserRequet userRequet) throws ParseException;
+
     // search
     public List<UserRequet> searchByRole(Long role_id, Integer page);
 
@@ -35,5 +40,9 @@ public interface UserService {
     public void importUserPatient(MultipartFile file) throws IOException, ParseException;
 
     public void importUserStaff(MultipartFile file) throws IOException, ParseException;
-// oke
+
+    // oke
+    public List<UserRequet> notSentReport(String time, Integer page);
+
+    public List<UserRequet> toTestCovid(String time) throws ParseException;
 }
