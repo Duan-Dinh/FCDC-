@@ -44,6 +44,8 @@ public class LoginController {
                 LoginResponse loginResponse = new LoginResponse();
                 loginResponse.setUsername(user.getUsername());
                 loginResponse.setRole(user.getRole().getName());
+                loginResponse.setFullname(user.getFullname()); //
+                loginResponse.setId(user.getId());
                 commonRes.setData(loginResponse);
                 HttpSession session = httpSessionFactory.getObject();
                 session.setAttribute(Contants.USER_SESSION, user);

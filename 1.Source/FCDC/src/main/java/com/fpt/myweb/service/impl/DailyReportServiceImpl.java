@@ -74,6 +74,11 @@ public class DailyReportServiceImpl implements DailyReportService {
         daily_report.setComment(report.getComment());
         daily_report.setBodyTemperature(report.getBodyTemperature());
         daily_report.setOxygenConcentration(report.getOxygenConcentration());
+        if(report.getBodyTemperature()>=38 || report.getOxygenConcentration()>=90){
+            daily_report.setStatus("Lưu ý");
+        }else{
+            daily_report.setStatus("Bình Thường nha");
+        }
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         String strDate = formatter.format(date);

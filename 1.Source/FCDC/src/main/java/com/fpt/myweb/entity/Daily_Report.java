@@ -19,6 +19,8 @@ public class Daily_Report extends BaseEntity{
 
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "bodyTemperature")
     private Double bodyTemperature;

@@ -101,8 +101,10 @@ public class UserServiceImpl implements UserService {
         user.setImageUrl(userRequet.getImageUrl());
         user.setCreatedDate(new Date());
         user.setIs_active("0");
-        Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
-        user.setDateStart(date1);
+        if (userRequet.getStartOfDate() != null) {
+            Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
+            user.setDateStart(date1);
+        }
         User user1 = userRepository.save(user);
         return user1;
     }
@@ -273,7 +275,7 @@ public class UserServiceImpl implements UserService {
                         } catch (Exception e) {
 
                         }
-                    }else if (cell.getColumnIndex() == 8) {
+                    } else if (cell.getColumnIndex() == 8) {
                         try {
                             Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
                             user.setDateStart(date);
@@ -371,7 +373,7 @@ public class UserServiceImpl implements UserService {
                         } catch (Exception e) {
 
                         }
-                    }else if (cell.getColumnIndex() == 8) {
+                    } else if (cell.getColumnIndex() == 8) {
                         try {
                             Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
                             user.setDateStart(date);
@@ -422,7 +424,7 @@ public class UserServiceImpl implements UserService {
             page--;
         }
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> searchList = userRepository.notSentReport(time,pageable);
+        List<User> searchList = userRepository.notSentReport(time, pageable);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
             userRequets.add(userConvert.convertToUserRequest(user));
@@ -432,17 +434,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserRequet> toTestCovid(String time) throws ParseException {
-        Long role_id =3L;
+        Long role_id = 3L;
         Role role = roleRepository.findById(role_id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + role_id));
         List<User> searchList = userRepository.findByRole(role);
         Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(time);
         List<UserRequet> userRequets = new ArrayList<>();
 
-        for (User user: searchList){
+        for (User user : searchList) {
             Long totalDate = date.getTime() - user.getDateStart().getTime();
 
-            if(TimeUnit.MILLISECONDS.toDays(date.getTime() - user.getDateStart().getTime())==7){
+            if (TimeUnit.MILLISECONDS.toDays(date.getTime() - user.getDateStart().getTime()) == 7) {
                 userRequets.add(userConvert.convertToUserRequest(user));
             }
 
