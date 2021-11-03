@@ -18,8 +18,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String phone) {
+        User user = userRepository.findUsersByPhone(phone);
         return UserDetailsImpl.build(user);
     }
 

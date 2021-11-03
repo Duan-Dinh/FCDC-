@@ -33,4 +33,5 @@ public class Report {
     private List<Long> listExercise;
 
     private String dateReport;
+    private String status;
 }

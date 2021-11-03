@@ -13,6 +13,8 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,Long> {
     public User findUsersByPhone(String phone);
 
+
+
     List<User> findAllUserByRoleId(long roleId, Pageable pageable);
 
     List<User> findByRole(Role role);

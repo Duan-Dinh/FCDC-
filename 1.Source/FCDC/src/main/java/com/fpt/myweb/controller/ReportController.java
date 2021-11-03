@@ -65,6 +65,7 @@ public class ReportController {
                     item.setListMedicine(report.getMedicines().stream().map(e->e.getId()).collect(Collectors.toList()));
                     item.setListSysptom(report.getSysptoms().stream().map(e->e.getId()).collect(Collectors.toList()));
                     item.setDateReport(report.getDateTime());
+                    item.setStatus(report.getStatus());
                     reports.add(item);
                 }
             }
@@ -136,6 +137,7 @@ public class ReportController {
                 item.setListMedicine(report.getMedicines().stream().map(e->e.getId()).collect(Collectors.toList()));
                 item.setListSysptom(report.getSysptoms().stream().map(e->e.getId()).collect(Collectors.toList()));
                 item.setDateReport(report.getDateTime());
+                item.setStatus(report.getStatus());
             }
             commonRes.setData(item);
         } catch (Exception e){
@@ -166,6 +168,7 @@ public class ReportController {
                     item.setListMedicine(report.getMedicines().stream().map(e->e.getId()).collect(Collectors.toList()));
                     item.setListSysptom(report.getSysptoms().stream().map(e->e.getId()).collect(Collectors.toList()));
                     item.setDateReport(report.getDateTime());
+                    item.setStatus(report.getStatus());
                     reports.add(item);
                 }
             }
@@ -199,6 +202,7 @@ public class ReportController {
                     item.setListMedicine(report.getMedicines().stream().map(e->e.getId()).collect(Collectors.toList()));
                     item.setListSysptom(report.getSysptoms().stream().map(e->e.getId()).collect(Collectors.toList()));
                     item.setDateReport(report.getDateTime());
+                    item.setStatus(report.getStatus());
                     reports.add(item);
                 }
             }
