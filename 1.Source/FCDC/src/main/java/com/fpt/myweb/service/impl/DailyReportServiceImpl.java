@@ -79,6 +79,7 @@ public class DailyReportServiceImpl implements DailyReportService {
         }else{
             daily_report.setStatus("Bình Thường nha");
         }
+        daily_report.setBreathingRate(report.getBreathingRate());
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         String strDate = formatter.format(date);

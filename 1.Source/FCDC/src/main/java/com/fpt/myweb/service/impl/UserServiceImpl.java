@@ -105,6 +105,9 @@ public class UserServiceImpl implements UserService {
             Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
             user.setDateStart(date1);
         }
+        if(userRequet.getRole_id()==4L){
+            user.setResult("+");
+        }
         User user1 = userRepository.save(user);
         return user1;
     }
@@ -285,8 +288,9 @@ public class UserServiceImpl implements UserService {
                     }
 
                 }
-                Role role = roleRepository.findByName("Patient");
+                Role role = roleRepository.findByName("patient");
                 user.setRole(role);
+                user.setResult("+");
                 // check User by phone
                 User userCheck = userRepository.findByPhone(user.getPhone());
                 String pass = GetUtils.generateRandomPassword(8);
@@ -383,7 +387,7 @@ public class UserServiceImpl implements UserService {
                     }
 
                 }
-                Role role = roleRepository.findByName("Staff");
+                Role role = roleRepository.findByName("staff");
                 user.setRole(role);
                 // check User by phone
                 User userCheck = userRepository.findByPhone(user.getPhone());
@@ -434,7 +438,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserRequet> toTestCovid(String time) throws ParseException {
-        Long role_id = 3L;
+        Long role_id = 4L;
         Role role = roleRepository.findById(role_id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + role_id));
         List<User> searchList = userRepository.findByRole(role);
@@ -442,7 +446,7 @@ public class UserServiceImpl implements UserService {
         List<UserRequet> userRequets = new ArrayList<>();
 
         for (User user : searchList) {
-            Long totalDate = date.getTime() - user.getDateStart().getTime();
+
 
             if (TimeUnit.MILLISECONDS.toDays(date.getTime() - user.getDateStart().getTime()) == 7) {
                 userRequets.add(userConvert.convertToUserRequest(user));

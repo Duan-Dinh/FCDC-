@@ -23,6 +23,10 @@ public class User extends BaseEntity {
     private String username;
 
     @JsonProperty
+    @Column(name = "result")
+    private String result;
+
+    @JsonProperty
     @Column(name = "fullname")
     private String fullname;
 

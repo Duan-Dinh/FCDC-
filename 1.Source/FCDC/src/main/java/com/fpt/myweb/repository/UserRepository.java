@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     List<User> findByFullnameContaining(String text);
 
-    @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =3", nativeQuery = true)
+    @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4", nativeQuery = true)
     List<User> notSentReport(String time,Pageable pageable);
 
 }

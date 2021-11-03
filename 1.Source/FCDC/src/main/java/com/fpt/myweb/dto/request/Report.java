@@ -18,6 +18,8 @@ public class Report {
 
     private Double bodyTemperature;
 
+    private Double breathingRate;
+
     private Double oxygenConcentration;
 
     private String listSysptomId;
@@ -34,4 +36,5 @@ public class Report {
 
     private String dateReport;
     private String status;
+
 }

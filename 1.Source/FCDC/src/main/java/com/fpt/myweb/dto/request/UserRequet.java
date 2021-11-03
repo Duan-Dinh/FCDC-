@@ -15,16 +15,16 @@ public class UserRequet {
 
     private Long id;
 
-    //private String username;
+
 
 
     private String password;
 
 
-    //private String firstname;
+    private String result;
 
 
-    //private String lastname;
+
     private String fullname;
 
     private String gender;

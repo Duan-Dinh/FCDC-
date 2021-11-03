@@ -28,6 +28,9 @@ public class Daily_Report extends BaseEntity{
     @Column(name = "oxygenConcentration")
     private Double oxygenConcentration;
 
+    @Column(name = "breathingRate")
+    private Double breathingRate;
+
     @Column(name = "dateTime")
     private String dateTime;
 

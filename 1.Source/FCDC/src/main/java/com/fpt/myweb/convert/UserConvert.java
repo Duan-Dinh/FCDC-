@@ -42,6 +42,10 @@ public class UserConvert {
         DateFormat dateFormat1 = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         userRequet.setStartOfDate(dateFormat1.format(user.getDateStart()));
         }
+        if(user.getResult()!=null){
+            userRequet.setResult(user.getResult());
+        }
+
         return userRequet;
     }
 
