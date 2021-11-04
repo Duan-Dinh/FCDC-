@@ -229,6 +229,23 @@ public class UserController {
         }
         return ResponseEntity.ok(commonRes);
     }
+    @GetMapping("/sentReport")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> sentReport(@PathParam("time") String time) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            List<UserRequet> userRequets = userService.sentReport(time);
+            UserRes userRes = new UserRes();
+            userRes.setUserRequets(userRequets);
+            userRes.setTotal(userRequets.size()); //                                                          Chỗ ni chưa lấy đc tổng để phân trang
+            commonRes.setData(userRes);
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
     @GetMapping("/toTestCovid")// fomat sang DTO trả về dữ liệu
     public ResponseEntity<CommonRes> toTestCovid(@PathParam("time") String time) {
         CommonRes commonRes = new CommonRes();
@@ -247,5 +264,21 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
 
+    @PutMapping(value = "editResult")
+    public ResponseEntity<CommonRes> editResult(@PathParam("id") long id) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            userService.editResult(id);
+        } catch (AppException a){
+            commonRes.setResponseCode(a.getErrorCode());
+            commonRes.setMessage(a.getErrorMessage());
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
 
 }

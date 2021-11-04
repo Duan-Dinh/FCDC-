@@ -103,6 +103,7 @@ public class ReportController {
                 item.setDateReport(report.getDateTime());
                 item.setStatus(report.getStatus());
                 item.setBreathingRate(report.getBreathingRate());
+                item.setFeedback(report.getFeedback());
             }
             commonRes.setData(item);
         } catch (Exception e){
@@ -135,6 +136,7 @@ public class ReportController {
                     item.setDateReport(report.getDateTime());
                     item.setStatus(report.getStatus());
                     item.setBreathingRate(report.getBreathingRate());
+                    item.setFeedback(report.getFeedback());
                     reports.add(item);
                 }
             }
@@ -172,6 +174,7 @@ public class ReportController {
                     item.setDateReport(report.getDateTime());
                     item.setStatus(report.getStatus());
                     item.setBreathingRate(report.getBreathingRate());
+                    item.setFeedback(report.getFeedback());
                     reports.add(item);
                 }
             }

@@ -81,7 +81,7 @@ public class DailyReportServiceImpl implements DailyReportService {
         }
         daily_report.setBreathingRate(report.getBreathingRate());
         Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String strDate = formatter.format(date);
         daily_report.setDateTime(strDate);
 

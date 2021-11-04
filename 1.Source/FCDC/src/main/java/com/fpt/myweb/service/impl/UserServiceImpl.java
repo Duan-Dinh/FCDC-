@@ -153,6 +153,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserRequet editResult(long id) {
+        User user = userRepository.findById(id).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
+        user.setResult("-");
+        UserRequet userRequet = userConvert.convertToUserRequest(user);
+        userRepository.save(user);
+        return userRequet;
+    }
+
+
+    @Override
     public List<UserRequet> searchByRole(Long role_id) {
 //        if (page == null) {
 //            page = 0;
@@ -435,6 +446,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserRequet> notSentReport(String time) {
         List<User> searchList = userRepository.notSentReport(time);
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : searchList) {
+            if (Integer.parseInt(user.getIs_active())==1) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
+        }
+        return userRequets;
+    }
+
+    @Override
+    public List<UserRequet> sentReport(String time) {
+        List<User> searchList = userRepository.sentReport(time);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
             if (Integer.parseInt(user.getIs_active())==1) {

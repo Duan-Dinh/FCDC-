@@ -37,4 +37,6 @@ public class Report {
     private String dateReport;
     private String status;
 
+    private String feedback;
+
 }
