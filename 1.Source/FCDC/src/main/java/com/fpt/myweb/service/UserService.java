@@ -25,11 +25,11 @@ public interface UserService {
     public UserRequet edit(UserRequet userRequet) throws ParseException;
 
     // search
-    public List<UserRequet> searchByRole(Long role_id, Integer page);
+    public List<UserRequet> searchByRole(Long role_id);
 
     public int countByRole(long role_id);
 
-    public List<UserRequet> searchByTesxt(String text, Integer page);
+    public List<UserRequet> searchByTesxt(String text);
 
     public int countByTesxt(String text);
 
@@ -42,7 +42,7 @@ public interface UserService {
     public void importUserStaff(MultipartFile file) throws IOException, ParseException;
 
     // oke
-    public List<UserRequet> notSentReport(String time, Integer page);
+    public List<UserRequet> notSentReport(String time);
 
     public List<UserRequet> toTestCovid(String time) throws ParseException;
 }

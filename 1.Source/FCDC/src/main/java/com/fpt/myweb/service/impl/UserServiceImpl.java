@@ -67,7 +67,9 @@ public class UserServiceImpl implements UserService {
         List<User> userList = userRepository.findAll();
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : userList) {
-            userRequets.add(userConvert.convertToUserRequest(user));
+            if (Integer.parseInt(user.getIs_active())==1) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
         }
         return userRequets;
     }
@@ -100,12 +102,12 @@ public class UserServiceImpl implements UserService {
         user.setPhone(userRequet.getPhone());
         user.setImageUrl(userRequet.getImageUrl());
         user.setCreatedDate(new Date());
-        user.setIs_active("0");
+        user.setIs_active("1");
         if (userRequet.getStartOfDate() != null) {
             Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
             user.setDateStart(date1);
         }
-        if(userRequet.getRole_id()==4L){
+        if (userRequet.getRole_id() == 4L) {
             user.setResult("+");
         }
         User user1 = userRepository.save(user);
@@ -116,8 +118,10 @@ public class UserServiceImpl implements UserService {
     public UserRequet deleteUser(long id) {
         User user = userRepository.findById(id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
+        user.setIs_active("0");
         UserRequet userRequet = userConvert.convertToUserRequest(user);
-        userRepository.delete(user);
+        //userRepository.delete(user);
+        userRepository.save(user);
         return userRequet;
     }
 
@@ -149,17 +153,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequet> searchByRole(Long role_id, Integer page) {
-        if (page == null) {
-            page = 0;
-        } else {
-            page--;
-        }
-        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> searchList = userRepository.findAllUserByRoleId(role_id, pageable);
+    public List<UserRequet> searchByRole(Long role_id) {
+//        if (page == null) {
+//            page = 0;
+//        } else {
+//            page--;
+//        }
+//        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> searchList = userRepository.findAllUserByRoleId(role_id);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
-            userRequets.add(userConvert.convertToUserRequest(user));
+            if (Integer.parseInt(user.getIs_active())==1) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
         }
         return userRequets;
     }
@@ -176,17 +182,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequet> searchByTesxt(String text, Integer page) {
-        if (page == null) {
-            page = 1;
-        } else {
-            page--;
-        }
-        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> searchList = userRepository.findByFullnameContaining(text, pageable);
+    public List<UserRequet> searchByTesxt(String text) {
+//        if (page == null) {
+//            page = 1;
+//        } else {
+//            page--;
+//        }
+//        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> searchList = userRepository.findByFullnameContaining(text);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
-            userRequets.add(userConvert.convertToUserRequest(user));
+            if (Integer.parseInt(user.getIs_active())==1) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
         }
         return userRequets;
     }
@@ -217,7 +225,7 @@ public class UserServiceImpl implements UserService {
     public User login(String phone, String password) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = userRepository.findByPhone(phone);
-        if (passwordEncoder.matches(password, user.getPassword())) {
+        if (passwordEncoder.matches(password, user.getPassword()) && Integer.parseInt(user.getIs_active())==1){
             return user;
         }
         return null;
@@ -291,6 +299,7 @@ public class UserServiceImpl implements UserService {
                 Role role = roleRepository.findByName("patient");
                 user.setRole(role);
                 user.setResult("+");
+                user.setIs_active("1");
                 // check User by phone
                 User userCheck = userRepository.findByPhone(user.getPhone());
                 String pass = GetUtils.generateRandomPassword(8);
@@ -308,6 +317,7 @@ public class UserServiceImpl implements UserService {
                     userCheck.setModifiedDate(new Date());
                     userCheck.setRole(user.getRole());
                     userCheck.setDateStart(user.getDateStart());
+                    userCheck.setResult("+");
                     userRepository.save(userCheck);
                 }
                 // send pass to user with phone
@@ -389,6 +399,7 @@ public class UserServiceImpl implements UserService {
                 }
                 Role role = roleRepository.findByName("staff");
                 user.setRole(role);
+                user.setIs_active("1");
                 // check User by phone
                 User userCheck = userRepository.findByPhone(user.getPhone());
                 String pass = GetUtils.generateRandomPassword(8);
@@ -406,6 +417,7 @@ public class UserServiceImpl implements UserService {
                     userCheck.setModifiedDate(new Date());
                     userCheck.setRole(user.getRole());
                     userCheck.setDateStart(user.getDateStart());
+                    userCheck.setIs_active("1");
                     userRepository.save(userCheck);
                 }
                 // send pass to user with phone
@@ -421,17 +433,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequet> notSentReport(String time, Integer page) {
-        if (page == null) {
-            page = 1;
-        } else {
-            page--;
-        }
-        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> searchList = userRepository.notSentReport(time, pageable);
+    public List<UserRequet> notSentReport(String time) {
+        List<User> searchList = userRepository.notSentReport(time);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
-            userRequets.add(userConvert.convertToUserRequest(user));
+            if (Integer.parseInt(user.getIs_active())==1) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
         }
         return userRequets;
     }
@@ -444,14 +452,12 @@ public class UserServiceImpl implements UserService {
         List<User> searchList = userRepository.findByRole(role);
         Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(time);
         List<UserRequet> userRequets = new ArrayList<>();
-
         for (User user : searchList) {
-
-
             if (TimeUnit.MILLISECONDS.toDays(date.getTime() - user.getDateStart().getTime()) == 7) {
-                userRequets.add(userConvert.convertToUserRequest(user));
+                if (Integer.parseInt(user.getIs_active())==1) {
+                    userRequets.add(userConvert.convertToUserRequest(user));
+                }
             }
-
         }
         return userRequets;
     }

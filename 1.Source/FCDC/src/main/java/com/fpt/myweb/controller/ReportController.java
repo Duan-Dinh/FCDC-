@@ -83,8 +83,8 @@ public class ReportController {
 
 
     // getOne
-    @GetMapping(value = "/getById/{id}")
-    public ResponseEntity<CommonRes> getOneReport(@PathVariable("id") Long id) {
+    @GetMapping(value = "/getById")
+    public ResponseEntity<CommonRes> getOneReport(@PathParam("id") Long id) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
@@ -113,8 +113,8 @@ public class ReportController {
     }
 
     // getUserIdReport
-    @GetMapping(value = "/getByUserId/{userId}")
-    public ResponseEntity<CommonRes> getUserIdReport(@PathVariable("userId") Long userId) {
+    @GetMapping(value = "/getByUserId")
+    public ResponseEntity<CommonRes> getUserIdReport(@PathParam("userId") Long userId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
@@ -140,7 +140,9 @@ public class ReportController {
             }
             DailyReportRes reportRes = new DailyReportRes();
 
+
             reportRes.setDailyReports(reports);
+            reportRes.setTotal(reports.size());
             commonRes.setData(reportRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
