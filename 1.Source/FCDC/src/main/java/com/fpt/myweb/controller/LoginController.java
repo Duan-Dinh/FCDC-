@@ -42,7 +42,9 @@ public class LoginController {
                 commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
             }else{
                 LoginResponse loginResponse = new LoginResponse();
-                loginResponse.setUsername(user.getUsername());
+                if(user.getUsername()!=null) {
+                    loginResponse.setUsername(user.getUsername());
+                }
                 loginResponse.setRole(user.getRole().getName());
                 loginResponse.setFullname(user.getFullname()); //
                 loginResponse.setId(user.getId());

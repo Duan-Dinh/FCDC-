@@ -10,10 +10,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReportDetailRes {
+    private Long reportId;
     private Long userId;
     private String fullname;
     private String gender;
     private String phone;
     private String dateOfBirth;
-    private String vilaId;
+    private String address;
+    private String statusReport;
+
 }
