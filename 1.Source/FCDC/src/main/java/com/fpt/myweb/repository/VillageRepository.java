@@ -17,4 +17,6 @@ public interface VillageRepository extends JpaRepository<Village,Long> {
     List<Village> findTop20ByNameContainingAndDistrictOrderById(String name, District district);
 
     Village findByName(String name);
+
+    List<Village> findAllByDistrictId(Long districtId);
 }

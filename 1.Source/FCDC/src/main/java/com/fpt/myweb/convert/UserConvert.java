@@ -33,7 +33,12 @@ public class UserConvert {
         userRequet.setGender(user.getGender());
         userRequet.setEmail(user.getEmail());
         userRequet.setPhone(user.getPhone());
-        userRequet.setAddress(user.getVillage().getName()+" - "+ user.getVillage().getDistrict().getName()+" - "+user.getVillage().getDistrict().getProvince().getName());
+        if(user.getAddress()!=null) {
+            userRequet.setAddress(user.getAddress() + " - " + user.getVillage().getName() + " - " + user.getVillage().getDistrict().getName() + " - " + user.getVillage().getDistrict().getProvince().getName());
+        }else{
+            userRequet.setAddress(user.getVillage().getName() + " - " + user.getVillage().getDistrict().getName() + " - " + user.getVillage().getDistrict().getProvince().getName());
+
+        }
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         userRequet.setBirthOfdate(dateFormat.format(user.getBirthOfdate()));
         userRequet.setRole_id(user.getRole().getId());

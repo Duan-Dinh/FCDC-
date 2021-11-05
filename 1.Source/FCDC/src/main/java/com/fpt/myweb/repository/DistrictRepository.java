@@ -13,4 +13,5 @@ import java.util.List;
 public interface DistrictRepository extends JpaRepository<District,Long> {
 
     List<District> findTop20ByNameContainingAndProvinceOrderById(String name, Province province);
+    List<District> findAllByProvinceId(Long provinceId);
 }
