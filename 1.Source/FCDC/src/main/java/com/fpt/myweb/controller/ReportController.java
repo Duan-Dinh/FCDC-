@@ -1,14 +1,12 @@
 package com.fpt.myweb.controller;
 
-import com.fpt.myweb.convert.UserConvert;
 import com.fpt.myweb.dto.request.FeebackReqest;
 import com.fpt.myweb.dto.request.Report;
-import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.CommonRes;
 import com.fpt.myweb.dto.response.DailyReportRes;
-import com.fpt.myweb.dto.response.ReportDetailRes;
+import com.fpt.myweb.dto.response.ReportDetail;
+import com.fpt.myweb.dto.response.ReportRes;
 import com.fpt.myweb.entity.*;
-import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
 import com.fpt.myweb.service.DailyReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/report")
 public class ReportController {
@@ -141,8 +139,6 @@ public class ReportController {
                 }
             }
             DailyReportRes reportRes = new DailyReportRes();
-
-
             reportRes.setDailyReports(reports);
             reportRes.setTotal(reports.size());
             commonRes.setData(reportRes);
@@ -162,10 +158,10 @@ public class ReportController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             List< Daily_Report> daily_reports = dailyReportService.getByDate(time);
-            List<ReportDetailRes> reports = new ArrayList<>();
+            List<ReportDetail> reports = new ArrayList<>();
             if (!daily_reports.isEmpty()) {
                 for (Daily_Report report: daily_reports){
-                    ReportDetailRes item = new ReportDetailRes();
+                    ReportDetail item = new ReportDetail();
                     item.setReportId(report.getId());
                     item.setUserId(report.getUser().getId());
                     item.setFullname(report.getUser().getFullname());
@@ -178,8 +174,11 @@ public class ReportController {
                     reports.add(item);
                 }
             }
+            ReportRes reportRes = new ReportRes();
+            reportRes.setTotal(reports.size());
+            reportRes.setReportDetails(reports);
 
-            commonRes.setData(reports);
+            commonRes.setData(reportRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());

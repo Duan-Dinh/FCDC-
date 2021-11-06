@@ -2,7 +2,6 @@ package com.fpt.myweb.service;
 
 import com.fpt.myweb.dto.request.FeebackReqest;
 import com.fpt.myweb.dto.request.Report;
-import com.fpt.myweb.dto.response.ReportDetailRes;
 import com.fpt.myweb.entity.Daily_Report;
 import org.springframework.data.domain.Page;
 

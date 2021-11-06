@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReportDetailRes {
+public class ReportDetail {
     private Long reportId;
     private Long userId;
     private String fullname;

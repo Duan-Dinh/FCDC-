@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/new")
 public class NewController {
