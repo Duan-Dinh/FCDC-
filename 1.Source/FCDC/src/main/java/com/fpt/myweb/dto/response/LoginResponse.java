@@ -14,5 +14,6 @@ public class LoginResponse {
     private String role;
     private Long id;
     private String fullname;
+    private Long vilaId;
 }
 

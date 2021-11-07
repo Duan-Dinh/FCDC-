@@ -68,6 +68,13 @@ public class User extends BaseEntity {
     private String is_active;
 
     @JsonProperty
+    @Column(name = "currentStatus")
+    private String currentStatus;
+    @JsonProperty
+    @Column(name = "typeTakeCare")
+    private String typeTakeCare;
+
+    @JsonProperty
     @Column(name = "birthOfdate")
     private Date birthOfdate;
 

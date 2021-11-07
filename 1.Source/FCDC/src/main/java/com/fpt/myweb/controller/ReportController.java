@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/report")
@@ -29,13 +30,13 @@ public class ReportController {
     private DailyReportService dailyReportService;
 
     @PostMapping(value = "/addReport", consumes = {MediaType.ALL_VALUE})
-    public ResponseEntity<CommonRes> addReport(Report report){
+    public ResponseEntity<CommonRes> addReport(Report report) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             dailyReportService.addReport(report);
-        } catch (Exception e){
+        } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
         }
@@ -43,7 +44,7 @@ public class ReportController {
     }
 
     @GetMapping(value = "/getAllReport", consumes = {MediaType.ALL_VALUE})
-    public ResponseEntity<CommonRes> getAllReport(@PathParam("page") Integer page){
+    public ResponseEntity<CommonRes> getAllReport(@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
@@ -52,16 +53,16 @@ public class ReportController {
             List<Daily_Report> daily_reports = newList.getContent();
             List<Report> reports = new ArrayList<>();
             if (!daily_reports.isEmpty()) {
-                for (Daily_Report report: daily_reports){
+                for (Daily_Report report : daily_reports) {
                     Report item = new Report();
                     item.setId(report.getId());
                     item.setUserId(report.getUser().getId());
                     item.setComment(report.getComment());
                     item.setBodyTemperature(report.getBodyTemperature());
                     item.setOxygenConcentration(report.getOxygenConcentration());
-                    item.setListExercise(report.getExercises().stream().map(e->e.getId()).collect(Collectors.toList()));
-                    item.setListMedicine(report.getMedicines().stream().map(e->e.getId()).collect(Collectors.toList()));
-                    item.setListSysptom(report.getSysptoms().stream().map(e->e.getId()).collect(Collectors.toList()));
+                    item.setListExercise(report.getExercises().stream().map(e -> e.getId()).collect(Collectors.toList()));
+                    item.setListMedicine(report.getMedicines().stream().map(e -> e.getId()).collect(Collectors.toList()));
+                    item.setListSysptom(report.getSysptoms().stream().map(e -> e.getId()).collect(Collectors.toList()));
                     item.setDateReport(report.getDateTime());
                     item.setStatus(report.getStatus());
                     item.setBreathingRate(report.getBreathingRate());
@@ -72,7 +73,7 @@ public class ReportController {
             reportRes.setTotal(newList.getTotalElements());
             reportRes.setDailyReports(reports);
             commonRes.setData(reportRes);
-        } catch (Exception e){
+        } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
         }
@@ -95,16 +96,16 @@ public class ReportController {
                 item.setComment(report.getComment());
                 item.setBodyTemperature(report.getBodyTemperature());
                 item.setOxygenConcentration(report.getOxygenConcentration());
-                item.setListExercise(report.getExercises().stream().map(e->e.getId()).collect(Collectors.toList()));
-                item.setListMedicine(report.getMedicines().stream().map(e->e.getId()).collect(Collectors.toList()));
-                item.setListSysptom(report.getSysptoms().stream().map(e->e.getId()).collect(Collectors.toList()));
+                item.setListExercise(report.getExercises().stream().map(e -> e.getId()).collect(Collectors.toList()));
+                item.setListMedicine(report.getMedicines().stream().map(e -> e.getId()).collect(Collectors.toList()));
+                item.setListSysptom(report.getSysptoms().stream().map(e -> e.getId()).collect(Collectors.toList()));
                 item.setDateReport(report.getDateTime());
                 item.setStatus(report.getStatus());
                 item.setBreathingRate(report.getBreathingRate());
                 item.setFeedback(report.getFeedback());
             }
             commonRes.setData(item);
-        } catch (Exception e){
+        } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
         }
@@ -118,19 +119,19 @@ public class ReportController {
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List< Daily_Report> daily_reports = dailyReportService.getOneByUserID(userId);
+            List<Daily_Report> daily_reports = dailyReportService.getOneByUserID(userId);
             List<Report> reports = new ArrayList<>();
             if (!daily_reports.isEmpty()) {
-                for (Daily_Report report: daily_reports){
+                for (Daily_Report report : daily_reports) {
                     Report item = new Report();
                     item.setId(report.getId());
                     item.setUserId(report.getUser().getId());
                     item.setComment(report.getComment());
                     item.setBodyTemperature(report.getBodyTemperature());
                     item.setOxygenConcentration(report.getOxygenConcentration());
-                    item.setListExercise(report.getExercises().stream().map(e->e.getId()).collect(Collectors.toList()));
-                    item.setListMedicine(report.getMedicines().stream().map(e->e.getId()).collect(Collectors.toList()));
-                    item.setListSysptom(report.getSysptoms().stream().map(e->e.getId()).collect(Collectors.toList()));
+                    item.setListExercise(report.getExercises().stream().map(e -> e.getId()).collect(Collectors.toList()));
+                    item.setListMedicine(report.getMedicines().stream().map(e -> e.getId()).collect(Collectors.toList()));
+                    item.setListSysptom(report.getSysptoms().stream().map(e -> e.getId()).collect(Collectors.toList()));
                     item.setDateReport(report.getDateTime());
                     item.setStatus(report.getStatus());
                     item.setBreathingRate(report.getBreathingRate());
@@ -142,7 +143,7 @@ public class ReportController {
             reportRes.setDailyReports(reports);
             reportRes.setTotal(reports.size());
             commonRes.setData(reportRes);
-        } catch (Exception e){
+        } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
         }
@@ -157,21 +158,25 @@ public class ReportController {
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List< Daily_Report> daily_reports = dailyReportService.getByDate(time);
+            List<Daily_Report> daily_reports = dailyReportService.getByDate(time);
             List<ReportDetail> reports = new ArrayList<>();
             if (!daily_reports.isEmpty()) {
-                for (Daily_Report report: daily_reports){
-                    ReportDetail item = new ReportDetail();
-                    item.setReportId(report.getId());
-                    item.setUserId(report.getUser().getId());
-                    item.setFullname(report.getUser().getFullname());
-                    item.setGender(report.getUser().getGender());
-                    item.setPhone(report.getUser().getPhone());
-                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    item.setDateOfBirth(dateFormat.format(report.getUser().getBirthOfdate()));
-                    item.setAddress(report.getUser().getAddress() +" - "+report.getUser().getVillage().getName()+" - "+report.getUser().getVillage().getDistrict().getName()+" - "+report.getUser().getVillage().getDistrict().getProvince().getName());
-                    item.setStatusReport(report.getStatus());
-                    reports.add(item);
+                for (Daily_Report report : daily_reports) {
+                    if (report.getUser().getIs_active().equals("1")) {
+
+                        ReportDetail item = new ReportDetail();
+                        item.setReportId(report.getId());
+                        item.setUserId(report.getUser().getId());
+                        item.setFullname(report.getUser().getFullname());
+                        item.setGender(report.getUser().getGender());
+                        item.setPhone(report.getUser().getPhone());
+                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        item.setDateOfBirth(dateFormat.format(report.getUser().getBirthOfdate()));
+                        item.setAddress(report.getUser().getAddress() + " - " + report.getUser().getVillage().getName() + " - " + report.getUser().getVillage().getDistrict().getName() + " - " + report.getUser().getVillage().getDistrict().getProvince().getName());
+                        item.setStatusReport(report.getStatus());
+                        item.setFeedback(report.getFeedback());
+                        reports.add(item);
+                    }
                 }
             }
             ReportRes reportRes = new ReportRes();
@@ -179,7 +184,7 @@ public class ReportController {
             reportRes.setReportDetails(reports);
 
             commonRes.setData(reportRes);
-        } catch (Exception e){
+        } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
         }
@@ -187,15 +192,15 @@ public class ReportController {
     }
 
 
-  // dành cho thằng staff feedback report
+    // dành cho thằng staff feedback report
     @PutMapping(value = "/editFeeback", consumes = {MediaType.ALL_VALUE})
-    public ResponseEntity<CommonRes> editFeeback(FeebackReqest feebackReqest){
+    public ResponseEntity<CommonRes> editFeeback(FeebackReqest feebackReqest) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             dailyReportService.editFeeback(feebackReqest);
-        } catch (Exception e){
+        } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
         }

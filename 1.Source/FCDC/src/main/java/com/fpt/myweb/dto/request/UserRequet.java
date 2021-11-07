@@ -49,5 +49,7 @@ public class UserRequet {
 
 
     private String startOfDate;
+    private String currentStatus;
+    private String typeTakeCare;
 
 }

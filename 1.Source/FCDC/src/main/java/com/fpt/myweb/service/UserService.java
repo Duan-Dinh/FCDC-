@@ -43,6 +43,7 @@ public interface UserService {
     public void importUserPatient(MultipartFile file) throws IOException, ParseException;
 
     public void importUserStaff(MultipartFile file) throws IOException, ParseException;
+    public void importUserDoctor(MultipartFile file) throws IOException, ParseException;
 
     // oke
     public List<UserRequet> notSentReport(String time);

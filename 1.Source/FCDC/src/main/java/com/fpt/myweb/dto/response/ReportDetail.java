@@ -18,5 +18,6 @@ public class ReportDetail {
     private String dateOfBirth;
     private String address;
     private String statusReport;
+    private String feedback;
 
 }

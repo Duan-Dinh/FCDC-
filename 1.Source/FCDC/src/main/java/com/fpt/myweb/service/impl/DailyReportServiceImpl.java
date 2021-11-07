@@ -41,9 +41,9 @@ public class DailyReportServiceImpl implements DailyReportService {
 
     @Override
     public Page<Daily_Report> getReport(Integer page) {
-        if(page == null){
+        if (page == null) {
             page = 0;
-        }else{
+        } else {
             page--;
         }
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
@@ -60,36 +60,40 @@ public class DailyReportServiceImpl implements DailyReportService {
         daily_report.setComment(report.getComment());
         daily_report.setBodyTemperature(report.getBodyTemperature());
         daily_report.setOxygenConcentration(report.getOxygenConcentration());
-        if(report.getBodyTemperature()>=38 || report.getOxygenConcentration()>=90){
+        if (report.getOxygenConcentration() <= 92 || report.getBodyTemperature() >= 37.5 || report.getBreathingRate() < 16 || report.getBreathingRate() > 20) {
             daily_report.setStatus("Lưu ý");
-        }else{
-            daily_report.setStatus("Bình Thường nha");
+        }else {
+            daily_report.setStatus("Bình thường");
         }
         daily_report.setBreathingRate(report.getBreathingRate());
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String strDate = formatter.format(date);
         daily_report.setDateTime(strDate);
-
-        if(!StringUtils.isEmpty(report.getListSysptomId())){
+        if (report.getOxygenConcentration() <= 92 || report.getBodyTemperature() >= 37.5 || report.getBreathingRate() < 16 || report.getBreathingRate() > 20) {
+            user.setCurrentStatus("Lưu ý");
+        }else {
+            user.setCurrentStatus("Bình thường");
+        }
+        if (!StringUtils.isEmpty(report.getListSysptomId())) {
             List<Long> listSysptomId = GetUtils.convertStringToListLong(report.getListSysptomId());
-            for(int i = 0; i< listSysptomId.size() ;i++){
+            for (int i = 0; i < listSysptomId.size(); i++) {
                 Sysptom sysptom = sysptomRepository.findById(listSysptomId.get(i)).orElse(null);
                 daily_report.getSysptoms().add(sysptom);
             }
         }
 
-        if(!StringUtils.isEmpty(report.getListMedicineId())){
+        if (!StringUtils.isEmpty(report.getListMedicineId())) {
             List<Long> listMedicineId = GetUtils.convertStringToListLong(report.getListMedicineId());
-            for(int i = 0; i< listMedicineId.size() ;i++){
+            for (int i = 0; i < listMedicineId.size(); i++) {
                 Medicine medicine = medicineRepository.findById(listMedicineId.get(i)).orElse(null);
                 daily_report.getMedicines().add(medicine);
             }
         }
 
-        if(!StringUtils.isEmpty(report.getListExerciseId())){
+        if (!StringUtils.isEmpty(report.getListExerciseId())) {
             List<Long> lListExerciseId = GetUtils.convertStringToListLong(report.getListExerciseId());
-            for(int i = 0; i< lListExerciseId.size() ;i++){
+            for (int i = 0; i < lListExerciseId.size(); i++) {
                 Exercise exercise = exerciseRepository.findById(lListExerciseId.get(i)).orElse(null);
                 daily_report.getExercises().add(exercise);
             }
@@ -98,7 +102,7 @@ public class DailyReportServiceImpl implements DailyReportService {
     }
 
     @Override
-    public Daily_Report getOneReport(  Long id) {
+    public Daily_Report getOneReport(Long id) {
         return daily_reportRepository.findById(id).orElse(null);
     }
 

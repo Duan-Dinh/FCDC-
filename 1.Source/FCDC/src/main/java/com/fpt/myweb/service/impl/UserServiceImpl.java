@@ -108,8 +108,10 @@ public class UserServiceImpl implements UserService {
             user.setDateStart(date1);
         }
         if (userRequet.getRole_id() == 4L) {
-            user.setResult("+");
+            user.setResult("F0");
+
         }
+        user.setTypeTakeCare("1");
         User user1 = userRepository.save(user);
         return user1;
     }
@@ -309,8 +311,9 @@ public class UserServiceImpl implements UserService {
                 }
                 Role role = roleRepository.findByName("patient");
                 user.setRole(role);
-                user.setResult("+");
+                user.setResult("F0");
                 user.setIs_active("1");
+                user.setTypeTakeCare("1");
                 // check User by phone
                 User userCheck = userRepository.findByPhone(user.getPhone());
                 String pass = GetUtils.generateRandomPassword(8);
@@ -329,6 +332,7 @@ public class UserServiceImpl implements UserService {
                     userCheck.setRole(user.getRole());
                     userCheck.setDateStart(user.getDateStart());
                     userCheck.setResult("+");
+                    user.setTypeTakeCare("1");
                     userRepository.save(userCheck);
                 }
                 // send pass to user with phone
@@ -428,6 +432,99 @@ public class UserServiceImpl implements UserService {
                     userCheck.setModifiedDate(new Date());
                     userCheck.setRole(user.getRole());
                     userCheck.setDateStart(user.getDateStart());
+                    userCheck.setIs_active("1");
+                    userRepository.save(userCheck);
+                }
+                // send pass to user with phone
+                // test
+//                smsService.sendGetJSON("0385422617", "Hello Quảng!");
+
+            }
+
+            workbook.close();
+            inputStream.close();
+
+        }
+    }
+
+    @Override
+    public void importUserDoctor(MultipartFile file) throws IOException, ParseException {
+        String path = env.getProperty("folder.user.imports");
+        File fileUpload = new File(path);
+        if (!fileUpload.exists()) {
+            fileUpload.mkdir();
+        }
+        if (fileUpload != null) {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            // save file
+            InputStream inputStream = null;
+            File fileUrl = null;
+            inputStream = file.getInputStream();
+            String name = file.getResource().getFilename();
+            path += System.currentTimeMillis() + "_" + name;
+            fileUrl = new File(path);
+            OutputStream outStream = new FileOutputStream(fileUrl);
+            FileCopyUtils.copy(inputStream, outStream);
+            // import user
+            FileInputStream inputStreamImport = new FileInputStream(fileUrl);
+
+            Workbook workbook = new XSSFWorkbook(inputStreamImport);
+            Sheet firstSheet = workbook.getSheetAt(0);
+            Iterator<Row> iterator = firstSheet.iterator();
+
+            while (iterator.hasNext()) {
+                Row nextRow = iterator.next();
+                Iterator<Cell> cellIterator = nextRow.cellIterator();
+                User user = new User();
+                cellIterator.next();
+                while (cellIterator.hasNext()) {
+                    Cell cell = cellIterator.next();
+                    if (cell.getColumnIndex() == 1) {
+                        user.setFullname(cell.getStringCellValue());
+                    } else if (cell.getColumnIndex() == 2) {
+                        user.setGender(cell.getStringCellValue());
+                    } else if (cell.getColumnIndex() == 6) {
+                        String address = cell.getStringCellValue();
+                        Village village = villageRepository.findByName(address);
+                        if (village != null) {
+                            user.setVillage(village);
+                        }
+                    } else if (cell.getColumnIndex() == 5) {
+                        user.setPhone(cell.getStringCellValue());
+                    } else if (cell.getColumnIndex() == 4) {
+                        user.setEmail(cell.getStringCellValue());
+                    } else if (cell.getColumnIndex() == 7) {
+                        user.setAddress(cell.getStringCellValue());
+                    } else if (cell.getColumnIndex() == 3) {
+                        try {
+                            Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
+                            user.setBirthOfdate(date);
+                        } catch (Exception e) {
+
+                        }
+                    }
+
+                }
+                Role role = roleRepository.findByName("doctor");
+                user.setRole(role);
+                user.setIs_active("1");
+                // check User by phone
+                User userCheck = userRepository.findByPhone(user.getPhone());
+                String pass = GetUtils.generateRandomPassword(8);
+                user.setPassword(passwordEncoder.encode(pass));
+                if (userCheck == null) {
+                    user.setCreatedDate(new Date());
+                    userRepository.save(user);
+                } else {
+                    userCheck.setFullname(user.getFullname());
+                    userCheck.setGender(user.getGender());
+                    userCheck.setVillage(user.getVillage());
+                    userCheck.setEmail(user.getEmail());
+                    userCheck.setAddress(user.getAddress());
+                    userCheck.setBirthOfdate(user.getBirthOfdate());
+                    userCheck.setModifiedDate(new Date());
+                    userCheck.setRole(user.getRole());
+
                     userCheck.setIs_active("1");
                     userRepository.save(userCheck);
                 }
