@@ -25,6 +25,7 @@ public interface UserService {
     public UserRequet edit(UserRequet userRequet) throws ParseException;
 
     public UserRequet editResult(long id);
+    public UserRequet changeTypeTakeCare(long id);
 
 
     // search
@@ -50,5 +51,6 @@ public interface UserService {
     public List<UserRequet> sentReport(String time);
 
     public List<UserRequet> toTestCovid(String time) throws ParseException;
+    public List<UserRequet> getAllPatientForDoctor();
 
 }

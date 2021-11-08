@@ -50,8 +50,13 @@ public class UserConvert {
         if(user.getResult()!=null){
             userRequet.setResult(user.getResult());
         }
-        userRequet.setCurrentStatus(user.getCurrentStatus());
-        userRequet.setTypeTakeCare(user.getTypeTakeCare());
+        if(user.getCurrentStatus()!=null){
+            userRequet.setCurrentStatus(user.getCurrentStatus());
+        }
+        if(user.getTypeTakeCare()!=null){
+            userRequet.setTypeTakeCare(user.getTypeTakeCare());
+        }
+
 
 
         return userRequet;

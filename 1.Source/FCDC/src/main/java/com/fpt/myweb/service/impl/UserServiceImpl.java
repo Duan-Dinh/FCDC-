@@ -164,6 +164,16 @@ public class UserServiceImpl implements UserService {
         return userRequet;
     }
 
+    @Override
+    public UserRequet changeTypeTakeCare(long id) {
+        User user = userRepository.findById(id).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
+        user.setTypeTakeCare("2");
+        UserRequet userRequet = userConvert.convertToUserRequest(user);
+        userRepository.save(user);
+        return userRequet;
+    }
+
 
     @Override
     public List<UserRequet> searchByRole(Long role_id) {
@@ -577,6 +587,21 @@ public class UserServiceImpl implements UserService {
                 if (Integer.parseInt(user.getIs_active())==1) {
                     userRequets.add(userConvert.convertToUserRequest(user));
                 }
+            }
+        }
+        return userRequets;
+    }
+
+    @Override
+    public List<UserRequet> getAllPatientForDoctor() {
+        Long role_id = 4L;
+        Role role = roleRepository.findById(role_id).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + role_id));
+        List<User> userList = userRepository.findByRole(role);
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : userList) {
+            if (Integer.parseInt(user.getIs_active())==1 && Integer.parseInt(user.getTypeTakeCare())==2) {
+                userRequets.add(userConvert.convertToUserRequest(user));
             }
         }
         return userRequets;

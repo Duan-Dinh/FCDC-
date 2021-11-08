@@ -298,4 +298,47 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
 
+    @GetMapping("/allUserForDoctor")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> getAllUserForDoctor() {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            List<UserRequet> userPage = userService.getAllPatientForDoctor();
+//            List<User> users = new ArrayList<User>();
+//            List<UserRequet> userRequets = new ArrayList<>();
+//            users = userPage.getContent();
+//
+//            if (!users.isEmpty()) {
+//                for (User user: users){
+//                    userRequets.add(UserConvert.convertToUserRequest(user));
+//                }
+//            }
+            UserRes userRes = new UserRes();
+            userRes.setUserRequets(userPage);
+            userRes.setTotal(userPage.size());
+            commonRes.setData(userRes);
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+    @PutMapping(value = "changeTypeTakeCare")
+    public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            userService.changeTypeTakeCare(id);
+        } catch (AppException a){
+            commonRes.setResponseCode(a.getErrorCode());
+            commonRes.setMessage(a.getErrorMessage());
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
 }
