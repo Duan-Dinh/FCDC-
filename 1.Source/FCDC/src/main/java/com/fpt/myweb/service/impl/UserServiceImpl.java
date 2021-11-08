@@ -61,7 +61,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private SmsService smsService;
 
-
     @Override
     public List<UserRequet> getAllUser() {
         List<User> userList = userRepository.findAll();
@@ -83,7 +82,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addUser(UserRequet userRequet) throws ParseException {
+    public User addUser(UserRequet userRequet) throws ParseException, IOException {
+
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         Role role = roleRepository.findById(userRequet.getRole_id()).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + userRequet.getRole_id()));
@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setTypeTakeCare("1");
         User user1 = userRepository.save(user);
+        smsService.sendGetJSON(user.getPhone(),"Tài khoản của bạn đã được khởi tạo");
         return user1;
     }
 

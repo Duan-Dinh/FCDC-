@@ -17,7 +17,7 @@ public interface UserService {
     public UserRequet getUser(long id);
 
     //create new User
-    public User addUser(UserRequet userRequet) throws ParseException;
+    public User addUser(UserRequet userRequet) throws ParseException, IOException;
 
     //Delete User
     public UserRequet deleteUser(long id);
