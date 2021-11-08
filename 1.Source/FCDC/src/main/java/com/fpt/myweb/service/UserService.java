@@ -26,6 +26,7 @@ public interface UserService {
 
     public UserRequet editResult(long id);
     public UserRequet changeTypeTakeCare(long id);
+    public List<UserRequet> getAllDoctorByVila(Long vilageId);
 
 
     // search

@@ -2,6 +2,7 @@ package com.fpt.myweb.repository;
 
 import com.fpt.myweb.entity.Role;
 import com.fpt.myweb.entity.User;
+import com.fpt.myweb.entity.Village;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,Long> {
     public User findUsersByPhone(String phone);
 
-
+    List<User> findAllByVillage(Village village);
 
     List<User> findAllUserByRoleId(long roleId);
 

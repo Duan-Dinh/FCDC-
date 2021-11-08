@@ -174,6 +174,20 @@ public class UserServiceImpl implements UserService {
         return userRequet;
     }
 
+    @Override
+    public List<UserRequet> getAllDoctorByVila(Long vilageId) {
+        Village village = villageRepository.findById(vilageId).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_VILLAGE_ID.getKey(), ErrorCode.NOT_FOUND_VILLAGE_ID.getValue() + vilageId));
+        List<User> searchList = userRepository.findAllByVillage(village);
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : searchList) {
+            if (Integer.parseInt(user.getIs_active())==1 && (user.getRole().getId())==3) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
+        }
+        return userRequets;
+    }
+
 
     @Override
     public List<UserRequet> searchByRole(Long role_id) {
