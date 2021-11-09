@@ -2,16 +2,30 @@ package com.fpt.myweb.convert;
 
 import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.dto.request.UserRequet;
+import com.fpt.myweb.dto.response.DoctorRes;
 import com.fpt.myweb.entity.User;
+import com.fpt.myweb.entity.Village;
+import com.fpt.myweb.exception.AppException;
+import com.fpt.myweb.exception.ErrorCode;
+import com.fpt.myweb.repository.UserRepository;
+import com.fpt.myweb.repository.VillageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class UserConvert {
+    @Autowired
+    VillageRepository villageRepository;
+    @Autowired
+    private UserRepository userRepository;
+
     public static User convertToUser(UserRequet userRequet) throws ParseException {
         User user = new User();
         user.setFullname(userRequet.getFullname());
@@ -25,7 +39,7 @@ public class UserConvert {
 
        return user;
     }
-    public static UserRequet convertToUserRequest(User user){
+    public UserRequet convertToUserRequest(User user){
         UserRequet userRequet = new UserRequet();
         userRequet.setId(user.getId());
         userRequet.setFullname(user.getFullname());
@@ -57,7 +71,18 @@ public class UserConvert {
             userRequet.setTypeTakeCare(user.getTypeTakeCare());
         }
 
-
+        List<User> searchList = userRepository.findAllByVillage(user.getVillage());
+        List<DoctorRes> doctorRes = new ArrayList<>();
+        for (User user1 : searchList) {
+            if (Integer.parseInt(user1.getIs_active())==1 && (user1.getRole().getId())==3) {
+                DoctorRes doctorRes1  = new DoctorRes();
+                doctorRes1.setId(user1.getId());
+                doctorRes1.setName(user1.getFullname());
+                doctorRes1.setPhone(user1.getPhone());
+                doctorRes.add(doctorRes1);
+            }
+        }
+        userRequet.setDoctorRes(doctorRes);
 
         return userRequet;
     }

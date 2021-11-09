@@ -76,6 +76,7 @@ public class UserController {
             UserRes userRes = new UserRes();
             userRes.setUserRequets(userRequets);
             userRes.setTotal(userRequets.size());
+
             commonRes.setData(userRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
