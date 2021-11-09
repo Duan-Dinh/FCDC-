@@ -24,6 +24,21 @@ public class GetUtils {
             return new ArrayList<>();
         }
     }
+    public static List<String> splipStringTophone(String arr){
+        List<String> result = new ArrayList<>();
+        if(StringUtils.isEmpty(arr)){
+            return result;
+        }
+        try {
+            String[] strings = arr.split(",");
+            for (String s:strings){
+                result.add(s);
+            }
+            return result;
+        } catch (Exception e){
+            return new ArrayList<>();
+        }
+    }
 
     public static String generateRandomPassword(int len)
     {
