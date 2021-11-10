@@ -1,11 +1,12 @@
 package com.fpt.myweb.dto.request;
 
+import com.fpt.myweb.dto.response.DoctorRes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,5 +52,7 @@ public class UserRequet {
     private String startOfDate;
     private String currentStatus;
     private String typeTakeCare;
+    private List<DoctorRes> doctorRes;
+
 
 }

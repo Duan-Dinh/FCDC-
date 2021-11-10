@@ -13,4 +13,5 @@ import java.util.List;
 public class UserRes {
     private long total;
     private List<UserRequet> userRequets;
+
 }
