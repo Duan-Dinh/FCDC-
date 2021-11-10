@@ -2,9 +2,12 @@ package com.fpt.myweb.service;
 
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.entity.User;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
@@ -46,6 +49,9 @@ public interface UserService {
 
     public void importUserStaff(MultipartFile file) throws IOException, ParseException;
     public void importUserDoctor(MultipartFile file) throws IOException, ParseException;
+//    public void CreateCell(Row row, int columnCount, Object value, CellStyle style) ;
+    //export
+    public void exportUserPatient(HttpServletResponse file,String time) throws IOException, ParseException;
 
     // oke
     public List<UserRequet> notSentReport(String time);

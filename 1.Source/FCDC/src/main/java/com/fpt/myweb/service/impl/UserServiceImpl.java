@@ -15,10 +15,9 @@ import com.fpt.myweb.repository.VillageRepository;
 import com.fpt.myweb.service.SmsService;
 import com.fpt.myweb.service.UserService;
 import com.fpt.myweb.utils.GetUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -31,6 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.Style;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -462,7 +464,7 @@ public class UserServiceImpl implements UserService {
                 }
                 // send pass to user with phone
                 // test
-//                smsService.sendGetJSON("0385422617", "Hello Quảng!");
+//               smsService.sendGetJSON("0385422617", "Hello Quảng!");
 
             }
 
@@ -563,6 +565,63 @@ public class UserServiceImpl implements UserService {
             inputStream.close();
 
         }
+    }
+
+    private void CreateCell(XSSFSheet sheet, Row row, int columnCount, Object value, CellStyle style) {
+        sheet.autoSizeColumn(columnCount);
+        Cell cell = row.createCell(columnCount);
+        if (value instanceof Integer) {
+            cell.setCellValue((Integer) value);
+        } else if (value instanceof Boolean) {
+            cell.setCellValue((Boolean) value);
+        }else {
+            cell.setCellValue((String) value);
+        }
+        cell.setCellStyle(style);
+    }
+
+    @Override
+    public void exportUserPatient(HttpServletResponse response,String time) throws IOException, ParseException {
+
+        Object value = null;
+        List<UserRequet> listUser = toTestCovid(time);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("User");
+        Row row = sheet.createRow(0);
+        CellStyle style = workbook.createCellStyle();
+        XSSFFont font = workbook.createFont();
+        font.setBold(true);
+        font.setFontHeight(17);
+        style.setFont(font);
+        CreateCell(sheet,row,0,"Họ và Tên",style);
+        CreateCell(sheet,row,1,"Giới Tính",style);
+        CreateCell(sheet,row,2,"Ngày Sinh",style);
+        CreateCell(sheet,row,3,"Email",style);
+        CreateCell(sheet,row,4,"Số điện thoại",style);
+        CreateCell(sheet,row,5,"Ngày phát hiện",style);
+       CreateCell(sheet,row,6,"Phường,Xã",style);
+        int rowCount = 1;
+        for (UserRequet user : listUser){
+            CellStyle styleOfRow = workbook.createCellStyle();
+            XSSFFont fontt = workbook.createFont();
+            fontt.setFontHeight(14);
+            style.setFont(fontt);
+            row = sheet.createRow(rowCount++);
+            int columCount = 0;
+            CreateCell(sheet,row,columCount++,user.getFullname(),styleOfRow);
+            CreateCell(sheet,row,columCount++,user.getGender(),styleOfRow);
+            CreateCell(sheet,row,columCount++,user.getBirthOfdate(),styleOfRow);
+            CreateCell(sheet,row,columCount++,user.getEmail(),styleOfRow);
+            CreateCell(sheet,row,columCount++,user.getPhone(),styleOfRow);
+            CreateCell(sheet,row,columCount++,user.getStartOfDate(),styleOfRow);
+            CreateCell(sheet,row,columCount++,user.getAddress() ,styleOfRow);
+        }
+
+        ServletOutputStream outputStream = response.getOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+        outputStream.close();
     }
 
     @Override

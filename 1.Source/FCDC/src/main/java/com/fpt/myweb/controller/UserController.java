@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @CrossOrigin("*")
 @RestController
@@ -357,6 +359,17 @@ public class UserController {
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
         }
         return ResponseEntity.ok(commonRes);
+    }
+    //export
+    @GetMapping("/exportUer")
+    public void exportUer( HttpServletResponse response,@PathParam("time") String time) throws IOException, ParseException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy_HH_mm_ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=users_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+        userService.exportUserPatient(response,time);
     }
 
 }
