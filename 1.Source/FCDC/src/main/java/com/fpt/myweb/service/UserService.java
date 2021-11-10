@@ -58,6 +58,6 @@ public interface UserService {
     public List<UserRequet> sentReport(String time);
 
     public List<UserRequet> toTestCovid(String time) throws ParseException;
-    public List<UserRequet> getAllPatientForDoctor();
+    public List<UserRequet> getAllPatientForDoctor(String doctorId);
 
 }

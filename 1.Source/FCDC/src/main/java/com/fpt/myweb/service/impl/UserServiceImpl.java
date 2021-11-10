@@ -667,14 +667,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequet> getAllPatientForDoctor() {
+    public List<UserRequet> getAllPatientForDoctor(String doctorId) {
         Long role_id = 4L;
         Role role = roleRepository.findById(role_id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + role_id));
         List<User> userList = userRepository.findByRole(role);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : userList) {
-            if (Integer.parseInt(user.getIs_active())==1 && Integer.parseInt(user.getTypeTakeCare())==2) {
+            if (Integer.parseInt(user.getIs_active())==1 && user.getTypeTakeCare().equals(doctorId)) {
                 userRequets.add(userConvert.convertToUserRequest(user));
             }
         }

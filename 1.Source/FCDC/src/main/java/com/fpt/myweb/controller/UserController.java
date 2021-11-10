@@ -302,12 +302,12 @@ public class UserController {
     }
 
     @GetMapping("/allUserForDoctor")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllUserForDoctor() {
+    public ResponseEntity<CommonRes> getAllUserForDoctor(@PathParam("doctorId") String doctorId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userPage = userService.getAllPatientForDoctor();
+            List<UserRequet> userPage = userService.getAllPatientForDoctor(doctorId);
 //            List<User> users = new ArrayList<User>();
 //            List<UserRequet> userRequets = new ArrayList<>();
 //            users = userPage.getContent();
