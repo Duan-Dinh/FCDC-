@@ -24,6 +24,7 @@ public interface UserService {
 
     //Delete User
     public UserRequet deleteUser(long id);
+    public UserRequet changePass(long id , String newPass);
 
     public UserRequet edit(UserRequet userRequet) throws ParseException;
 
@@ -38,6 +39,10 @@ public interface UserService {
     public int countByRole(long role_id);
 
     public List<UserRequet> searchByTesxt(String text);
+    public List<UserRequet> searchByTextWithRole(String text , Long roleId);
+
+    public List<UserRequet> searchByTextForStaff(String text , Long villageId);
+
 
     public int countByTesxt(String text);
 
@@ -59,5 +64,7 @@ public interface UserService {
 
     public List<UserRequet> toTestCovid(String time) throws ParseException;
     public List<UserRequet> getAllPatientForDoctor(String doctorId);
+    public List<UserRequet> getAllPatientForStaff(Long VillageId);
+    public List<UserRequet> getNewPatientOneDay(String time,Long villageId) throws ParseException;
 
 }

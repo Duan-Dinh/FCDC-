@@ -47,15 +47,6 @@ public class UserController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             List<UserRequet> userPage = userService.getAllUser();
-//            List<User> users = new ArrayList<User>();
-//            List<UserRequet> userRequets = new ArrayList<>();
-//            users = userPage.getContent();
-//
-//            if (!users.isEmpty()) {
-//                for (User user: users){
-//                    userRequets.add(UserConvert.convertToUserRequest(user));
-//                }
-//            }
             UserRes userRes = new UserRes();
             userRes.setUserRequets(userPage);
             userRes.setTotal(userPage.size());
@@ -181,14 +172,65 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
 
-    @PostMapping("/importUer")
-    public ResponseEntity<CommonRes> importUer(@RequestParam("file") MultipartFile file) {
 
+
+
+    @GetMapping("/allUserForDoctor")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> getAllUserForDoctor(@PathParam("doctorId") String doctorId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            userService.importUserPatient(file);
+            List<UserRequet> userPage = userService.getAllPatientForDoctor(doctorId);
+//            List<User> users = new ArrayList<User>();
+//            List<UserRequet> userRequets = new ArrayList<>();
+//            users = userPage.getContent();
+//
+//            if (!users.isEmpty()) {
+//                for (User user: users){
+//                    userRequets.add(UserConvert.convertToUserRequest(user));
+//                }
+//            }
+            UserRes userRes = new UserRes();
+            userRes.setUserRequets(userPage);
+            userRes.setTotal(userPage.size());
+            commonRes.setData(userRes);
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
+
+    @GetMapping("/getDoctorByVillageId")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> getDoctorByVillageId(@PathParam("villageId") Long villageId) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            List<UserRequet> userRequets = userService.getAllDoctorByVila(villageId);
+            UserRes userRes = new UserRes();
+            userRes.setUserRequets(userRequets);
+            userRes.setTotal(userRequets.size());
+            commonRes.setData(userRes);
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+    //export
+
+
+
+    @PutMapping(value = "changePass")
+    public ResponseEntity<CommonRes> changePass(@PathParam("id") long id,@PathParam("newPass") String newPass) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            userService.changePass(id,newPass);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -198,40 +240,7 @@ public class UserController {
         }
         return ResponseEntity.ok(commonRes);
     }
-    @PostMapping("/importStaff")
-    public ResponseEntity<CommonRes> importStaff(@RequestParam("file") MultipartFile file) {
 
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            userService.importUserStaff(file);
-        } catch (AppException a){
-            commonRes.setResponseCode(a.getErrorCode());
-            commonRes.setMessage(a.getErrorMessage());
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
-    @PostMapping("/importDoctor")
-    public ResponseEntity<CommonRes> importDoctor(@RequestParam("file") MultipartFile file) {
-
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            userService.importUserDoctor(file);
-        } catch (AppException a){
-            commonRes.setResponseCode(a.getErrorCode());
-            commonRes.setMessage(a.getErrorMessage());
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
     @GetMapping("/notSentReport")// fomat sang DTO trả về dữ liệu
     public ResponseEntity<CommonRes> notSentReport(@PathParam("time") String time) {
         CommonRes commonRes = new CommonRes();
@@ -301,32 +310,6 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
 
-    @GetMapping("/allUserForDoctor")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllUserForDoctor(@PathParam("doctorId") String doctorId) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userPage = userService.getAllPatientForDoctor(doctorId);
-//            List<User> users = new ArrayList<User>();
-//            List<UserRequet> userRequets = new ArrayList<>();
-//            users = userPage.getContent();
-//
-//            if (!users.isEmpty()) {
-//                for (User user: users){
-//                    userRequets.add(UserConvert.convertToUserRequest(user));
-//                }
-//            }
-            UserRes userRes = new UserRes();
-            userRes.setUserRequets(userPage);
-            userRes.setTotal(userPage.size());
-            commonRes.setData(userRes);
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
     @PutMapping(value = "changeTypeTakeCare")
     public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id) {
         CommonRes commonRes = new CommonRes();
@@ -343,27 +326,8 @@ public class UserController {
         }
         return ResponseEntity.ok(commonRes);
     }
-
-    @GetMapping("/getDoctorByVillageId")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getDoctorByVillageId(@PathParam("villageId") Long villageId) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userRequets = userService.getAllDoctorByVila(villageId);
-            UserRes userRes = new UserRes();
-            userRes.setUserRequets(userRequets);
-            userRes.setTotal(userRequets.size());
-            commonRes.setData(userRes);
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
-    //export
     @GetMapping("/exportUer")
-    public void exportUer( HttpServletResponse response,@PathParam("time") String time) throws IOException, ParseException {
+    public void exportUer(HttpServletResponse response, @PathParam("time") String time) throws IOException, ParseException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy_HH_mm_ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -372,5 +336,55 @@ public class UserController {
         response.setHeader(headerKey, headerValue);
         userService.exportUserPatient(response,time);
     }
+    @PostMapping("/importUer")
+    public ResponseEntity<CommonRes> importUer(@RequestParam("file") MultipartFile file) {
 
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            userService.importUserPatient(file);
+        } catch (AppException a){
+            commonRes.setResponseCode(a.getErrorCode());
+            commonRes.setMessage(a.getErrorMessage());
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+    @PostMapping("/importStaff")
+    public ResponseEntity<CommonRes> importStaff(@RequestParam("file") MultipartFile file) {
+
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            userService.importUserStaff(file);
+        } catch (AppException a){
+            commonRes.setResponseCode(a.getErrorCode());
+            commonRes.setMessage(a.getErrorMessage());
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+    @PostMapping("/importDoctor")
+    public ResponseEntity<CommonRes> importDoctor(@RequestParam("file") MultipartFile file) {
+
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            userService.importUserDoctor(file);
+        } catch (AppException a){
+            commonRes.setResponseCode(a.getErrorCode());
+            commonRes.setMessage(a.getErrorMessage());
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
 }

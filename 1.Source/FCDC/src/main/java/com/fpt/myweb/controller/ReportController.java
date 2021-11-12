@@ -163,7 +163,6 @@ public class ReportController {
             if (!daily_reports.isEmpty()) {
                 for (Daily_Report report : daily_reports) {
                     if (report.getUser().getIs_active().equals("1")) {
-
                         ReportDetail item = new ReportDetail();
                         item.setReportId(report.getId());
                         item.setUserId(report.getUser().getId());
