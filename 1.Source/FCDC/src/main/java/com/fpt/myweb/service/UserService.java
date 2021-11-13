@@ -20,13 +20,13 @@ public interface UserService {
     public UserRequet getUser(long id);
 
     //create new User
-    public User addUser(UserRequet userRequet) throws ParseException, IOException;
+    public User addUser(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
 
     //Delete User
     public UserRequet deleteUser(long id);
     public UserRequet changePass(long id , String newPass);
 
-    public UserRequet edit(UserRequet userRequet) throws ParseException;
+    public UserRequet edit(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
 
     public UserRequet editResult(long id);
     public UserRequet changeTypeTakeCare(long id);

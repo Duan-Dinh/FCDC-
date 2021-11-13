@@ -4,11 +4,13 @@ package com.fpt.myweb.service.impl;
 import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.convert.UserConvert;
 import com.fpt.myweb.dto.request.UserRequet;
+import com.fpt.myweb.entity.FileDB;
 import com.fpt.myweb.entity.Role;
 import com.fpt.myweb.entity.User;
 import com.fpt.myweb.entity.Village;
 import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
+import com.fpt.myweb.repository.FileDBRepository;
 import com.fpt.myweb.repository.RoleRepository;
 import com.fpt.myweb.repository.UserRepository;
 import com.fpt.myweb.repository.VillageRepository;
@@ -28,6 +30,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -64,6 +67,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private SmsService smsService;
 
+    @Autowired
+    private FileDBRepository fileDBRepository;
+
     @Override
     public List<UserRequet> getAllUser() {
         List<User> userList = userRepository.findAll();
@@ -85,7 +91,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addUser(UserRequet userRequet) throws ParseException, IOException {
+    public User addUser(UserRequet userRequet, MultipartFile file) throws ParseException, IOException {
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         Role role = roleRepository.findById(userRequet.getRole_id()).orElseThrow(()
@@ -93,6 +99,7 @@ public class UserServiceImpl implements UserService {
         Village village = villageRepository.findById(userRequet.getVillage_id()).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_VILLAGE_ID.getKey(), ErrorCode.NOT_FOUND_VILLAGE_ID.getValue() + userRequet.getVillage_id()));
         User user = userConvert.convertToUser(userRequet);
+
         user.setRole(role);
         user.setVillage(village);
         user.setFullname(userRequet.getFullname());
@@ -103,7 +110,11 @@ public class UserServiceImpl implements UserService {
         user.setBirthOfdate(date);
         user.setGender(userRequet.getGender());
         user.setPhone(userRequet.getPhone());
-        user.setImageUrl(userRequet.getImageUrl());
+        user.setImageUrl(userRequet.getImageUrl()
+
+        );
+
+
         user.setCreatedDate(new Date());
         user.setIs_active("1");
         if (userRequet.getStartOfDate() != null) {
@@ -114,6 +125,13 @@ public class UserServiceImpl implements UserService {
             user.setResult("F0");
         }
         user.setTypeTakeCare("1");
+        // luu file
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+
+        FileDB fileDB = fileDBRepository.save(FileDB);
+        user.setIdFile(fileDB.getId());
+
         User user1 = userRepository.save(user);
         smsService.sendGetJSON(user.getPhone(), "Tài khoản của bạn đã được khởi tạo");
         return user1;
@@ -142,7 +160,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRequet edit(UserRequet userRequet) throws ParseException {
+    public UserRequet edit(UserRequet userRequet, MultipartFile file) throws ParseException, IOException {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = userRepository.findById(userRequet.getId()).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + userRequet.getId()));
@@ -163,6 +181,17 @@ public class UserServiceImpl implements UserService {
         user.setImageUrl(userRequet.getImageUrl());
         Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
         user.setDateStart(date1);
+        // luu file
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+            FileDB.setId(user.getIdFile());
+            FileDB fileDB = fileDBRepository.save(FileDB);
+
+            user.setIdFile(fileDB.getId());
+
+
+
         UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));
         return userRequet1;
     }
@@ -624,6 +653,7 @@ public class UserServiceImpl implements UserService {
         XSSFFont font = workbook.createFont();
         font.setBold(true);
         font.setFontHeight(17);
+        font.setBoldweight((short) 18);
         style.setFont(font);
         CreateCell(sheet, row, 0, "Họ và Tên", style);
         CreateCell(sheet, row, 1, "Giới Tính", style);

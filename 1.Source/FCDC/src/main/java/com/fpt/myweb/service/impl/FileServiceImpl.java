@@ -2,11 +2,13 @@ package com.fpt.myweb.service.impl;
 
 
 import com.fpt.myweb.common.Contants;
+import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.service.FileService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -23,10 +25,13 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String saveFile(MultipartFile file, String type) throws IOException {
+
         String result = "";
         File fileUpload = null;
         if(type.equalsIgnoreCase(Contants.TYPE_USER)){
+
             result = env.getProperty("folder.user.images");
+
 
         } else if(type.equalsIgnoreCase(Contants.TYPE_NEW)){
             result = env.getProperty("folder.new.images");

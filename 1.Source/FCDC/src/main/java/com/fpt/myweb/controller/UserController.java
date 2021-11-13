@@ -101,12 +101,12 @@ public class UserController {
 
     //Add new user
     @PostMapping("/add")
-    public ResponseEntity<CommonRes> addUsers(UserRequet userRequet) {
+    public ResponseEntity<CommonRes> addUsers(UserRequet userRequet, @RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            userService.addUser(userRequet);
+            userService.addUser(userRequet, file);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -119,12 +119,12 @@ public class UserController {
 
     // Update
     @PutMapping(value = "/edit")
-    public ResponseEntity<CommonRes> edit(UserRequet userRequet) {
+    public ResponseEntity<CommonRes> edit(UserRequet userRequet, @RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            userService.edit(userRequet);
+            userService.edit(userRequet,file);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());

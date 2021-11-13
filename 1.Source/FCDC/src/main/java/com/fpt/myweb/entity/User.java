@@ -103,5 +103,5 @@ public class User extends BaseEntity {
 //    @OneToMany(mappedBy = "user")
 //    private List<Medical_Staff> medical_staffs = new ArrayList<>();
 
-
+    private Long idFile;
 }

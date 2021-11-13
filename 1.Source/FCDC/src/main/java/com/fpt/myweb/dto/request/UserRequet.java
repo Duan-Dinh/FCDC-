@@ -46,7 +46,7 @@ public class UserRequet {
     private long role_id;
 
     private long village_id;
-
+    private long idFile;
 
 
     private String startOfDate;
