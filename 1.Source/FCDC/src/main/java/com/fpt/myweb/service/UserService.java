@@ -67,4 +67,6 @@ public interface UserService {
     public List<UserRequet> getAllPatientForStaff(Long VillageId);
     public List<UserRequet> getNewPatientOneDay(String time,Long villageId) throws ParseException;
 
+    public List<UserRequet> getAllPatientCuredForStaff(Long VillageId);
+
 }

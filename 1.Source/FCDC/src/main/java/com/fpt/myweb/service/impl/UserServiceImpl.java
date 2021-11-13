@@ -743,5 +743,19 @@ public class UserServiceImpl implements UserService {
         return userRequets;
     }
 
+    @Override
+    public List<UserRequet> getAllPatientCuredForStaff(Long VillageId) {
+        Village village = villageRepository.findById(VillageId).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_VILLAGE_ID.getKey(), ErrorCode.NOT_FOUND_VILLAGE_ID.getValue() + VillageId));
+        List<User> userList = userRepository.findAllByVillage(village);
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : userList) {
+            if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == 4L && user.getResult().equals("-")) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
+        }
+        return userRequets;
+    }
+
 
 }

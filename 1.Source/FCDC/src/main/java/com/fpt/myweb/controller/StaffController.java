@@ -81,4 +81,22 @@ public class StaffController {
         return ResponseEntity.ok(commonRes);
     }
 
+    @GetMapping("/allPatientCuredForStaff")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> getAllCured(@PathParam("villageId") Long villageId) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            List<UserRequet> userPage = userService.getAllPatientCuredForStaff(villageId);
+            UserRes userRes = new UserRes();
+            userRes.setUserRequets(userPage);
+            userRes.setTotal(userPage.size());
+            commonRes.setData(userRes);
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
 }
