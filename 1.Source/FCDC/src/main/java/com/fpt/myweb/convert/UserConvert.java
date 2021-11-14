@@ -3,6 +3,7 @@ package com.fpt.myweb.convert;
 import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.DoctorRes;
+import com.fpt.myweb.entity.FileDB;
 import com.fpt.myweb.entity.User;
 import com.fpt.myweb.entity.Village;
 import com.fpt.myweb.exception.AppException;
@@ -12,6 +13,7 @@ import com.fpt.myweb.repository.VillageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.xml.bind.DatatypeConverter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,6 +59,13 @@ public class UserConvert {
         userRequet.setBirthOfdate(dateFormat.format(user.getBirthOfdate()));
         userRequet.setRole_id(user.getRole().getId());
         userRequet.setVillage_id(user.getVillage().getId());
+
+       // userRequet.setId_File(user.getFiles().getId());
+        FileDB fileDB = new FileDB();
+        if(user.getFiles() != null){
+            String base64 = DatatypeConverter.printBase64Binary(user.getFiles().getData());
+            userRequet.setImageBase64(base64);
+        }
         if(user.getDateStart()!=null){
         DateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
         userRequet.setStartOfDate(dateFormat1.format(user.getDateStart()));

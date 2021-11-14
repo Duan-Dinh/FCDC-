@@ -90,6 +90,11 @@ public class User extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "village_id")
     private Village village;
+
+    //private Long idFile;
+    @ManyToOne
+    @JoinColumn(name = "id_file")
+    private FileDB files;
     // new
     @OneToMany(mappedBy = "user")
     private List<New> news = new ArrayList<>();
@@ -103,5 +108,5 @@ public class User extends BaseEntity {
 //    @OneToMany(mappedBy = "user")
 //    private List<Medical_Staff> medical_staffs = new ArrayList<>();
 
-    private Long idFile;
+
 }

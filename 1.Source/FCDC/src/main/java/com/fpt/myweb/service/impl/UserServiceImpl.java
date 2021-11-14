@@ -27,6 +27,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -36,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.Style;
+import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -130,7 +132,8 @@ public class UserServiceImpl implements UserService {
         FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
 
         FileDB fileDB = fileDBRepository.save(FileDB);
-        user.setIdFile(fileDB.getId());
+        user.setFiles(fileDB);
+
 
         User user1 = userRepository.save(user);
         smsService.sendGetJSON(user.getPhone(), "Tài khoản của bạn đã được khởi tạo");
@@ -184,12 +187,11 @@ public class UserServiceImpl implements UserService {
         // luu file
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
-            FileDB.setId(user.getIdFile());
-            FileDB fileDB = fileDBRepository.save(FileDB);
+        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+        FileDB.setId(user.getFiles().getId());
+        FileDB fileDB = fileDBRepository.save(FileDB);
 
-            user.setIdFile(fileDB.getId());
-
+        user.setFiles(fileDB);
 
 
         UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));

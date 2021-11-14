@@ -16,9 +16,6 @@ public class UserRequet {
 
     private Long id;
 
-
-
-
     private String password;
 
 
@@ -46,7 +43,7 @@ public class UserRequet {
     private long role_id;
 
     private long village_id;
-    private long idFile;
+
 
 
     private String startOfDate;
@@ -54,5 +51,6 @@ public class UserRequet {
     private String typeTakeCare;
     private List<DoctorRes> doctorRes;
 
+    private String imageBase64;
 
 }
