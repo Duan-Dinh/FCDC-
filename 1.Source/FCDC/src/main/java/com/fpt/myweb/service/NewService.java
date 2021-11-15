@@ -5,13 +5,14 @@ import com.fpt.myweb.entity.New;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 public interface NewService {
 
-    public New addNew(NewRequet newRequet);
+    public New addNew(NewRequet newRequet,MultipartFile file) throws IOException, ParseException;
 
-    public New editNew(NewRequet newRequet);
+    public New editNew(NewRequet newRequet, MultipartFile file) throws IOException, ParseException;
 
     public void deleteNew(Integer id);
 

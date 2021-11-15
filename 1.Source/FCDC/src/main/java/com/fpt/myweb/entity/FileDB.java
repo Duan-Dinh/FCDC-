@@ -13,8 +13,11 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "files")
-public class FileDB extends BaseEntity {
-
+public class FileDB {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
+    private Long id;
 
 
     @JsonProperty
@@ -28,8 +31,13 @@ public class FileDB extends BaseEntity {
     @Column(name = "data")
     @Lob
     private byte[] data;
-    @OneToMany(mappedBy = "files") // chỗ ni tên gióng với tên chỗ khởi tạo role
+
+    @OneToMany(mappedBy = "files")
     private List<User> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "filesNew")
+    private List<New> news = new ArrayList<>();
+
     public FileDB() {
     }
 

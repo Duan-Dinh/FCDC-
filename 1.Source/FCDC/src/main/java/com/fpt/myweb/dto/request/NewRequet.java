@@ -17,6 +17,7 @@ public class NewRequet {
 
     private String decription;
 
-    private String imageUrl;
+    //private String imageBase64;
+
 
 }

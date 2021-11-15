@@ -42,13 +42,13 @@ public class NewController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CommonRes> addNew( @RequestBody NewRequet newRequet) {
+    public ResponseEntity<CommonRes> addNew(NewRequet newRequet,@RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            New aNew = newService.addNew(newRequet);
-            commonRes.setData(aNew);
+             newService.addNew(newRequet,file);
+           // commonRes.setData(aNew);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -60,13 +60,13 @@ public class NewController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<CommonRes> editNew(@RequestBody NewRequet newRequet) {
+    public ResponseEntity<CommonRes> editNew(NewRequet newRequet, @RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            New aNew = newService.editNew(newRequet);
-            commonRes.setData(aNew);
+             newService.editNew(newRequet,file);
+            //commonRes.setData(aNew);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());

@@ -78,7 +78,8 @@ public class UserServiceImpl implements UserService {
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : userList) {
             if (Integer.parseInt(user.getIs_active()) == 1) {
-                userRequets.add(userConvert.convertToUserRequest(user));
+                UserRequet userRequet = userConvert.convertToUserRequest(user);
+                userRequets.add(userRequet);
             }
         }
         return userRequets;

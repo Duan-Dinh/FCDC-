@@ -61,7 +61,7 @@ public class UserConvert {
         userRequet.setVillage_id(user.getVillage().getId());
 
        // userRequet.setId_File(user.getFiles().getId());
-        FileDB fileDB = new FileDB();
+      //  FileDB fileDB = new FileDB();
         if(user.getFiles() != null){
             String base64 = DatatypeConverter.printBase64Binary(user.getFiles().getData());
             userRequet.setImageBase64(base64);

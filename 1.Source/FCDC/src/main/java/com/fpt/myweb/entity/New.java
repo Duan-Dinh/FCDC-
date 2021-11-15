@@ -35,4 +35,7 @@ public class New extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user ;
 
+    @ManyToOne
+    @JoinColumn(name = "id_file")
+    private FileDB filesNew;
 }
