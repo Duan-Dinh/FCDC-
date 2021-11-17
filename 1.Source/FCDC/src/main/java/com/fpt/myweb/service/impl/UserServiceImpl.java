@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService {
     public UserRequet editResult(long id) {
         User user = userRepository.findById(id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
-        user.setResult("-");
+
         if(user.getResult().equals("-")){
             user.setResult("F0");
         }else{
@@ -238,10 +238,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRequet changeTypeTakeCare(long id) {
+    public UserRequet changeTypeTakeCare(long id,Long doctorId) {
         User user = userRepository.findById(id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
-        user.setTypeTakeCare("2");
+        user.setTypeTakeCare(String.valueOf(doctorId));
         UserRequet userRequet = userConvert.convertToUserRequest(user);
         userRepository.save(user);
         return userRequet;

@@ -34,7 +34,7 @@ public interface UserService {
     public UserRequet edit(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
 
     public UserRequet editResult(long id);
-    public UserRequet changeTypeTakeCare(long id);
+    public UserRequet changeTypeTakeCare(long id , Long doctorId);
     public List<UserRequet> getAllDoctorByVila(Long vilageId);
 
 

@@ -336,12 +336,12 @@ public class UserController {
     }
 
     @PutMapping(value = "changeTypeTakeCare")
-    public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id) {
+    public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id,@PathParam("doctorId") Long doctorId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            userService.changeTypeTakeCare(id);
+            userService.changeTypeTakeCare(id,doctorId);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
