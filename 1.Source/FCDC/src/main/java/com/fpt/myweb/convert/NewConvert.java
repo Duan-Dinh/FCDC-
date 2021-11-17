@@ -14,14 +14,14 @@ public class NewConvert {
         newRequet.setId(news.getId());
         newRequet.setTitle(news.getTitle());
         newRequet.setDecription(news.getDecription());
-        //  FileDB fileDB = new FileDB();
-
-        if(news.getFilesNew() != null){
-
-            String type ="data:"+ DatatypeConverter.parseAnySimpleType(news.getFilesNew().getType()) +";base64,"+ DatatypeConverter.printBase64Binary(news.getFilesNew().getData());
-            newRequet.setImage(type);
+        if (news.getFilesNew() != null) {
+            if (!news.getFilesNew().getName().isEmpty()) {
+                String type = "data:" + DatatypeConverter.parseAnySimpleType(news.getFilesNew().getType()) + ";base64," + DatatypeConverter.printBase64Binary(news.getFilesNew().getData());
+                newRequet.setImage(type);
+            } else {
+                newRequet.setImage(null);
+            }
         }
-
         return newRequet;
     }
 

@@ -1,5 +1,6 @@
 package com.fpt.myweb.repository;
 
+import com.fpt.myweb.dto.request.NewRequet;
 import com.fpt.myweb.entity.District;
 import com.fpt.myweb.entity.New;
 import com.fpt.myweb.entity.Village;
@@ -18,4 +19,7 @@ public interface NewRepository extends JpaRepository<New,Long> {
 
     @Query(value = "SELECT u FROM New u ORDER BY id")
     List<New> findAllNewsWithPagination(Pageable pageable);
+
+
+
 }

@@ -3,12 +3,9 @@ package com.fpt.myweb.service.impl;
 
 import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.convert.NewConvert;
-import com.fpt.myweb.convert.UserConvert;
 import com.fpt.myweb.dto.request.NewRequet;
-import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.entity.FileDB;
 import com.fpt.myweb.entity.New;
-import com.fpt.myweb.entity.User;
 import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
 import com.fpt.myweb.repository.FileDBRepository;
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,17 +87,25 @@ public class NewServiceImpl implements NewService {
     }
 
     @Override
-    public List<New> getNew(Integer page) {
+    public List<NewRequet> getNew(Integer page) {
         if(page == null){
             page = 0;
         }else{
             page--;
         }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE_New);
+       List<New> newList=  newRepository.findAllNewsWithPagination(pageable);
+        List<NewRequet> newRequets = new ArrayList<>();
+        for (New news : newList) {
+            if (news.getFilesNew() != null) {
+                NewRequet newRequet = newConvert.convertToNewRequest(news);
+                newRequets.add(newRequet);
+            }
+        }
+        return newRequets;
 
-        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-
-        return newRepository.findAllNewsWithPagination(pageable);
     }
+
 
     @Override
     public List<NewRequet> getAllNew() {
