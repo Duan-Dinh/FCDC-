@@ -117,6 +117,31 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
 
+    @GetMapping("/checkPhone")
+    public ResponseEntity<CommonRes> checkPhone( @PathParam("phone") String phone) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            boolean aBoolean = userService.checkPhone(phone);
+            if(!aBoolean){
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            }
+            else {
+                commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
+                commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
+            }
+            } catch (AppException a){
+            commonRes.setResponseCode(a.getErrorCode());
+            commonRes.setMessage(a.getErrorMessage());
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
+
+
     // Update
     @PutMapping(value = "/edit")
     public ResponseEntity<CommonRes> edit(UserRequet userRequet, @RequestParam("file") MultipartFile file) {

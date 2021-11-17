@@ -39,9 +39,10 @@ public class UserConvert {
         Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getBirthOfdate());
         user.setBirthOfdate(date);
 
-       return user;
+        return user;
     }
-    public UserRequet convertToUserRequest(User user){
+
+    public UserRequet convertToUserRequest(User user) {
         UserRequet userRequet = new UserRequet();
         userRequet.setId(user.getId());
         userRequet.setFullname(user.getFullname());
@@ -49,9 +50,9 @@ public class UserConvert {
         userRequet.setGender(user.getGender());
         userRequet.setEmail(user.getEmail());
         userRequet.setPhone(user.getPhone());
-        if(user.getAddress()!=null) {
+        if (user.getAddress() != null) {
             userRequet.setAddress(user.getAddress() + " - " + user.getVillage().getName() + " - " + user.getVillage().getDistrict().getName() + " - " + user.getVillage().getDistrict().getProvince().getName());
-        }else{
+        } else {
             userRequet.setAddress(user.getVillage().getName() + " - " + user.getVillage().getDistrict().getName() + " - " + user.getVillage().getDistrict().getProvince().getName());
 
         }
@@ -60,31 +61,35 @@ public class UserConvert {
         userRequet.setRole_id(user.getRole().getId());
         userRequet.setVillage_id(user.getVillage().getId());
 
-       // userRequet.setId_File(user.getFiles().getId());
-      //  FileDB fileDB = new FileDB();
-        if(user.getFiles() != null){
-            String base64 = DatatypeConverter.printBase64Binary(user.getFiles().getData());
-            userRequet.setImageBase64(base64);
+        // userRequet.setId_File(user.getFiles().getId());
+        //  FileDB fileDB = new FileDB();
+        if (user.getFiles() != null) {
+            if (!user.getFiles().getName().isEmpty()) {
+                String type = "data:" + DatatypeConverter.parseAnySimpleType(user.getFiles().getType()) + ";base64," + DatatypeConverter.printBase64Binary(user.getFiles().getData());
+                userRequet.setImage(type);
+            } else {
+                userRequet.setImage(null);
+            }
         }
-        if(user.getDateStart()!=null){
-        DateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
-        userRequet.setStartOfDate(dateFormat1.format(user.getDateStart()));
+        if (user.getDateStart() != null) {
+            DateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
+            userRequet.setStartOfDate(dateFormat1.format(user.getDateStart()));
         }
-        if(user.getResult()!=null){
+        if (user.getResult() != null) {
             userRequet.setResult(user.getResult());
         }
-        if(user.getCurrentStatus()!=null){
+        if (user.getCurrentStatus() != null) {
             userRequet.setCurrentStatus(user.getCurrentStatus());
         }
-        if(user.getTypeTakeCare()!=null){
+        if (user.getTypeTakeCare() != null) {
             userRequet.setTypeTakeCare(user.getTypeTakeCare());
         }
 
         List<User> searchList = userRepository.findAllByVillage(user.getVillage());
         List<DoctorRes> doctorRes = new ArrayList<>();
         for (User user1 : searchList) {
-            if (Integer.parseInt(user1.getIs_active())==1 && (user1.getRole().getId())==3) {
-                DoctorRes doctorRes1  = new DoctorRes();
+            if (Integer.parseInt(user1.getIs_active()) == 1 && (user1.getRole().getId()) == 3) {
+                DoctorRes doctorRes1 = new DoctorRes();
                 doctorRes1.setId(user1.getId());
                 doctorRes1.setName(user1.getFullname());
                 doctorRes1.setPhone(user1.getPhone());

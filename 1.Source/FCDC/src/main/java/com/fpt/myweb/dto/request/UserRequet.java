@@ -50,7 +50,6 @@ public class UserRequet {
     private String currentStatus;
     private String typeTakeCare;
     private List<DoctorRes> doctorRes;
-
-    private String imageBase64;
+    private String image;
 
 }

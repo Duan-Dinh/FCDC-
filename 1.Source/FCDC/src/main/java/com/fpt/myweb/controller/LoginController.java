@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.DatatypeConverter;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/api")
@@ -46,6 +48,10 @@ public class LoginController {
                 loginResponse.setFullname(user.getFullname()); //
                 loginResponse.setId(user.getId());
                 loginResponse.setVilaId(user.getVillage().getId());
+                if(user.getFiles() != null){
+                    String type ="data:"+ DatatypeConverter.parseAnySimpleType(user.getFiles().getType()) +";base64,"+ DatatypeConverter.printBase64Binary(user.getFiles().getData());
+                    loginResponse.setImage(type);
+                }
                 commonRes.setData(loginResponse);
                 HttpSession session = httpSessionFactory.getObject();
                 session.setAttribute(Contants.USER_SESSION, user);

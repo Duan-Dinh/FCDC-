@@ -143,6 +143,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean checkPhone(String phone) {
+        User user = userRepository.findUsersByPhone(phone);
+        if(user!=null){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public UserRequet deleteUser(long id) {
         User user = userRepository.findById(id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
@@ -186,15 +195,13 @@ public class UserServiceImpl implements UserService {
         user.setImageUrl(userRequet.getImageUrl());
         Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
         user.setDateStart(date1);
+
         // luu file
-
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
-            FileDB.setId(user.getFiles().getId());
-            FileDB fileDB = fileDBRepository.save(FileDB);
-
-            user.setFiles(fileDB);
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+        FileDB.setId(user.getFiles().getId());
+        FileDB fileDB = fileDBRepository.save(FileDB);
+        user.setFiles(fileDB);
 
 
         UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));

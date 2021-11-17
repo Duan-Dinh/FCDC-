@@ -15,13 +15,11 @@ public class NewConvert {
         newRequet.setTitle(news.getTitle());
         newRequet.setDecription(news.getDecription());
         //  FileDB fileDB = new FileDB();
+
         if(news.getFilesNew() != null){
-            String base64 = DatatypeConverter.printBase64Binary(news.getFilesNew().getData());
-            newRequet.setImageBase64(base64);
-        }
-        if(news.getFilesNew() != null){
-            String type = DatatypeConverter.parseAnySimpleType(news.getFilesNew().getType());
-            newRequet.setImageBase64(type);
+
+            String type ="data:"+ DatatypeConverter.parseAnySimpleType(news.getFilesNew().getType()) +";base64,"+ DatatypeConverter.printBase64Binary(news.getFilesNew().getData());
+            newRequet.setImage(type);
         }
 
         return newRequet;

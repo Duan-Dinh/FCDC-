@@ -21,9 +21,11 @@ public interface UserService {
 
     //create new User
     public User addUser(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
+    public boolean checkPhone(String phone);
 
     //Delete User
     public UserRequet deleteUser(long id);
+
     public UserRequet changePass(long id , String newPass);
 
     public UserRequet edit(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
