@@ -32,6 +32,8 @@ public interface UserService {
     public UserRequet changePass(long id , String newPass);
 
     public UserRequet edit(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
+//edit user by id
+    public UserRequet editUserById(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
 
     public UserRequet editResult(long id);
     public UserRequet changeTypeTakeCare(long id , Long doctorId);

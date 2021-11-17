@@ -16,7 +16,7 @@ public interface NewService {
 
     public void deleteNew(Integer id);
 
-    public List<NewRequet> getNew(Integer page);
+    public List<NewRequet> getTopNew(Integer page);
 
 
     public List<NewRequet> getAllNew();

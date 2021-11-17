@@ -87,7 +87,7 @@ public class NewServiceImpl implements NewService {
     }
 
     @Override
-    public List<NewRequet> getNew(Integer page) {
+    public List<NewRequet> getTopNew(Integer page) {
         if(page == null){
             page = 0;
         }else{

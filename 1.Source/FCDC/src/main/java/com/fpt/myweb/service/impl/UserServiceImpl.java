@@ -222,6 +222,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserRequet editUserById(UserRequet userRequet, MultipartFile file) throws ParseException, IOException {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        User user = userRepository.findById(userRequet.getId()).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + userRequet.getId()));
+
+        // luu file
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+        FileDB.setId(user.getFiles().getId());
+        FileDB fileDB = fileDBRepository.save(FileDB);
+
+        user.setFiles(fileDB);
+
+        UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));
+        return userRequet1;
+    }
+
+    @Override
     public UserRequet editResult(long id) {
         User user = userRepository.findById(id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));

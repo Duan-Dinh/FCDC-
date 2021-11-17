@@ -41,7 +41,7 @@ public class NewController {
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<NewRequet> newList = newService.getNew(page);
+            List<NewRequet> newList = newService.getTopNew(page);
             commonRes.setData(newList);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
