@@ -122,7 +122,7 @@ public class UserController {
         CommonRes commonRes = new CommonRes();
         try {
             boolean aBoolean = userService.checkPhone(phone);
-            if(!aBoolean){
+            if(aBoolean){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             }

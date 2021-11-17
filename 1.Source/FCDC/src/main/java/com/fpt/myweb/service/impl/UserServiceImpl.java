@@ -146,6 +146,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkPhone(String phone) {
+        User user = userRepository.findUsersByPhone(phone);
+        if(user!=null){
+            return true;
+        }
         return false;
     }
 
