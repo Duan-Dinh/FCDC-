@@ -1,6 +1,7 @@
 package com.fpt.myweb.service;
 
 import com.fpt.myweb.dto.request.UserRequet;
+import com.fpt.myweb.dto.response.ChartStaffRes;
 import com.fpt.myweb.dto.response.ResetPassRes;
 import com.fpt.myweb.entity.User;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -76,5 +77,6 @@ public interface UserService {
     public List<UserRequet> getCuredPatientOneDay(String time,Long villageId) throws ParseException;
 
     public List<UserRequet> getAllPatientCuredForStaff(Long VillageId);
+    public List<ChartStaffRes> getChartForStaff(String startDate, String endDate,Long villageId) throws ParseException;
 
 }

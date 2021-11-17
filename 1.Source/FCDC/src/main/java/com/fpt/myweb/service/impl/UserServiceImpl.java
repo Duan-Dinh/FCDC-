@@ -4,6 +4,8 @@ package com.fpt.myweb.service.impl;
 import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.convert.UserConvert;
 import com.fpt.myweb.dto.request.UserRequet;
+import com.fpt.myweb.dto.response.ChartStaffRes;
+import com.fpt.myweb.dto.response.DetailOneDayRes;
 import com.fpt.myweb.dto.response.ResetPassRes;
 import com.fpt.myweb.entity.FileDB;
 import com.fpt.myweb.entity.Role;
@@ -856,5 +858,35 @@ public class UserServiceImpl implements UserService {
         return userRequets;
     }
 
+    @Override
+    public List<ChartStaffRes> getChartForStaff(String startDate, String endDate,Long villageId) throws ParseException {
+        List<Date> dates = new ArrayList<Date>();
+        DateFormat formatter ;
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date  srtDate = (Date)formatter.parse(startDate);
+        Date  edDate = (Date)formatter.parse(endDate);
+        long interval = 24*1000 * 60 * 60; // 1 hour in millis
+        long endTime =edDate.getTime() ; // create your endtime here, possibly using Calendar or Date
+        long curTime = srtDate.getTime();
+        while (curTime <= endTime) {
+            dates.add(new Date(curTime));
+            curTime += interval;
+        }
+        List<ChartStaffRes> chartStaffResList = new ArrayList<>();
+
+        for(int i=0;i<dates.size();i++){
+            Date lDate =(Date)dates.get(i);
+            String ds = formatter.format(lDate);
+            DetailOneDayRes detailOneDayRes = new DetailOneDayRes();
+            detailOneDayRes.setTotalNewF0(getNewPatientOneDay(ds,villageId).size());
+            detailOneDayRes.setTotalCured(getCuredPatientOneDay(ds,villageId).size());
+            detailOneDayRes.setTotalCurrentF0(getAllPatientForStaff(villageId).size());
+            ChartStaffRes chartStaffRes1 = new ChartStaffRes();
+            chartStaffRes1.setDate(ds);
+            chartStaffRes1.setDetailOneDayRes(detailOneDayRes);
+            chartStaffResList.add(chartStaffRes1);
+        }
+        return chartStaffResList;
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.fpt.myweb.controller;
 
 import com.fpt.myweb.dto.request.UserRequet;
+import com.fpt.myweb.dto.response.ChartStaffRes;
 import com.fpt.myweb.dto.response.CommonRes;
 import com.fpt.myweb.dto.response.DetailOneDayRes;
 import com.fpt.myweb.dto.response.UserRes;
@@ -113,6 +114,21 @@ public class StaffController {
             userRes.setUserRequets(userPage);
             userRes.setTotal(userPage.size());
             commonRes.setData(userRes);
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
+    @GetMapping("/chartForStaff")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> chartForStaff(@PathParam("startDate")String startDate, @PathParam("endDate") String endDate,@PathParam("villageId") Long villageId) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            List<ChartStaffRes> chartStaffRes = userService.getChartForStaff(startDate,endDate,villageId);
+            commonRes.setData(chartStaffRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
