@@ -2,9 +2,13 @@ package com.fpt.myweb.service.impl;
 
 
 import com.fpt.myweb.common.Contants;
+import com.fpt.myweb.convert.NewConvert;
+import com.fpt.myweb.convert.UserConvert;
 import com.fpt.myweb.dto.request.NewRequet;
+import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.entity.FileDB;
 import com.fpt.myweb.entity.New;
+import com.fpt.myweb.entity.User;
 import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
 import com.fpt.myweb.repository.FileDBRepository;
@@ -19,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +35,8 @@ public class NewServiceImpl implements NewService {
     private NewRepository newRepository;
     @Autowired
     private FileDBRepository fileDBRepository;
+    @Autowired
+    private NewConvert newConvert;
 
     @Override
     public New addNew(NewRequet newRequet,MultipartFile file) throws IOException  {
@@ -95,4 +102,19 @@ public class NewServiceImpl implements NewService {
 
         return newRepository.findAllNewsWithPagination(pageable);
     }
+
+    @Override
+    public List<NewRequet> getAllNew() {
+        List<New> newList = newRepository.findAll();
+        List<NewRequet> newRequets = new ArrayList<>();
+        for (New news : newList) {
+            if (news.getFilesNew() != null) {
+                NewRequet newRequet = newConvert.convertToNewRequest(news);
+                newRequets.add(newRequet);
+            }
+        }
+        return newRequets;
+    }
+
+
 }

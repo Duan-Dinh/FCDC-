@@ -1,17 +1,11 @@
 package com.fpt.myweb.controller;
 
 import com.fpt.myweb.dto.request.NewRequet;
-import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.CommonRes;
-import com.fpt.myweb.dto.response.UserRes;
-import com.fpt.myweb.entity.New;
-import com.fpt.myweb.entity.Province;
 import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
-import com.fpt.myweb.service.FileService;
 import com.fpt.myweb.service.NewService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,12 +21,12 @@ public class NewController {
     private NewService newService;
 
     @GetMapping("/get")
-    public ResponseEntity<CommonRes> getNew(@PathParam("page") Integer page) {
+    public ResponseEntity<CommonRes> getNew() {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<New> newList = newService.getNew(page);
+            List<NewRequet> newList = newService.getAllNew();
             commonRes.setData(newList);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

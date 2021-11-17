@@ -129,12 +129,13 @@ public class UserServiceImpl implements UserService {
         }
         user.setTypeTakeCare("1");
         // luu file
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+        if(file != null) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
 
-        FileDB fileDB = fileDBRepository.save(FileDB);
-        user.setFiles(fileDB);
-
+            FileDB fileDB = fileDBRepository.save(FileDB);
+            user.setFiles(fileDB);
+        }
 
         User user1 = userRepository.save(user);
         smsService.sendGetJSON(user.getPhone(), "Tài khoản của bạn đã được khởi tạo");
@@ -186,13 +187,14 @@ public class UserServiceImpl implements UserService {
         Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
         user.setDateStart(date1);
         // luu file
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
-        FileDB.setId(user.getFiles().getId());
-        FileDB fileDB = fileDBRepository.save(FileDB);
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-        user.setFiles(fileDB);
+            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+            FileDB.setId(user.getFiles().getId());
+            FileDB fileDB = fileDBRepository.save(FileDB);
+
+            user.setFiles(fileDB);
 
 
         UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));
