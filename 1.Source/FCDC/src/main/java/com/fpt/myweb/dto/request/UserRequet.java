@@ -18,21 +18,15 @@ public class UserRequet {
 
     private String password;
 
-
     private String result;
-
-
 
     private String fullname;
 
     private String gender;
 
-
     private String email;
 
-
     private String phone;
-
 
     private String address;
 
@@ -44,11 +38,12 @@ public class UserRequet {
 
     private long village_id;
 
-
-
     private String startOfDate;
+
     private String currentStatus;
+
     private String typeTakeCare;
+
     private List<DoctorRes> doctorRes;
     private String image;
 

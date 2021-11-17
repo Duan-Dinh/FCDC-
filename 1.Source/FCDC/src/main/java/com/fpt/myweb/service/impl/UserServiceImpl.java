@@ -4,6 +4,7 @@ package com.fpt.myweb.service.impl;
 import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.convert.UserConvert;
 import com.fpt.myweb.dto.request.UserRequet;
+import com.fpt.myweb.dto.response.ResetPassRes;
 import com.fpt.myweb.entity.FileDB;
 import com.fpt.myweb.entity.Role;
 import com.fpt.myweb.entity.User;
@@ -129,13 +130,12 @@ public class UserServiceImpl implements UserService {
         }
         user.setTypeTakeCare("1");
         // luu file
-        if(file != null) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
 
-            FileDB fileDB = fileDBRepository.save(FileDB);
-            user.setFiles(fileDB);
-        }
+        FileDB fileDB = fileDBRepository.save(FileDB);
+        user.setFiles(fileDB);
+
 
         User user1 = userRepository.save(user);
         smsService.sendGetJSON(user.getPhone(), "Tài khoản của bạn đã được khởi tạo");
@@ -144,10 +144,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkPhone(String phone) {
-        User user = userRepository.findUsersByPhone(phone);
-        if(user!=null){
-            return true;
-        }
         return false;
     }
 
@@ -159,6 +155,22 @@ public class UserServiceImpl implements UserService {
         UserRequet userRequet = userConvert.convertToUserRequest(user);
         userRepository.save(user);
         return userRequet;
+    }
+
+    @Override
+    public ResetPassRes resetPass(String phone) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        User user = userRepository.findUsersByPhone(phone);
+        if(user!=null){
+            String pas = GetUtils.generateRandomPassword(6);
+            user.setPassword(passwordEncoder.encode(pas));
+            ResetPassRes resetPassRes = new ResetPassRes();
+            resetPassRes.setPhone(user.getPhone());
+            resetPassRes.setPass(pas);
+            userRepository.save(user);
+            return resetPassRes;
+        }
+        return null;
     }
 
     @Override
@@ -195,12 +207,13 @@ public class UserServiceImpl implements UserService {
         user.setImageUrl(userRequet.getImageUrl());
         Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
         user.setDateStart(date1);
-
         // luu file
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
         FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
         FileDB.setId(user.getFiles().getId());
         FileDB fileDB = fileDBRepository.save(FileDB);
+
         user.setFiles(fileDB);
 
 
@@ -213,6 +226,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
         user.setResult("-");
+        if(user.getResult().equals("-")){
+            user.setResult("F0");
+        }else{
+            user.setResult("-");
+        }
         user.setModifiedDate(new Date());
         UserRequet userRequet = userConvert.convertToUserRequest(user);
         userRepository.save(user);
@@ -412,9 +430,9 @@ public class UserServiceImpl implements UserService {
                 user.setTypeTakeCare("-1");
                 // check User by phone
                 User userCheck = userRepository.findByPhone(user.getPhone());
-//                String pass = GetUtils.generateRandomPassword(8);
-//                user.setPassword(passwordEncoder.encode(pass));
-                user.setPassword("123");
+
+                user.setPassword(passwordEncoder.encode("123"));
+
                 if (userCheck == null) {
                     user.setCreatedDate(new Date());
                     userRepository.save(user);
@@ -429,7 +447,7 @@ public class UserServiceImpl implements UserService {
                     userCheck.setRole(user.getRole());
                     userCheck.setDateStart(user.getDateStart());
                     userCheck.setResult("F0");
-                    user.setTypeTakeCare("1");
+                    user.setTypeTakeCare("-1");
                     userRepository.save(userCheck);
                 }
                 // send pass to user with phone
@@ -512,11 +530,10 @@ public class UserServiceImpl implements UserService {
                 Role role = roleRepository.findByName("staff");
                 user.setRole(role);
                 user.setIs_active("1");
+                user.setTypeTakeCare("-1");
                 // check User by phone
                 User userCheck = userRepository.findByPhone(user.getPhone());
-//                String pass = GetUtils.generateRandomPassword(8);
-//                user.setPassword(passwordEncoder.encode(pass));
-                user.setPassword("123");
+                user.setPassword(passwordEncoder.encode("123"));
                 if (userCheck == null) {
                     user.setCreatedDate(new Date());
                     userRepository.save(user);
@@ -531,6 +548,7 @@ public class UserServiceImpl implements UserService {
                     userCheck.setRole(user.getRole());
                     userCheck.setDateStart(user.getDateStart());
                     userCheck.setIs_active("1");
+                    user.setTypeTakeCare("-1");
                     userRepository.save(userCheck);
                 }
                 // send pass to user with phone
@@ -606,11 +624,12 @@ public class UserServiceImpl implements UserService {
                 Role role = roleRepository.findByName("doctor");
                 user.setRole(role);
                 user.setIs_active("1");
+                user.setTypeTakeCare("-1");
                 // check User by phone
                 User userCheck = userRepository.findByPhone(user.getPhone());
-                //String pass = GetUtils.generateRandomPassword(8);
-                //user.setPassword(passwordEncoder.encode(pass));
-                user.setPassword("123");
+
+                user.setPassword(passwordEncoder.encode("123"));
+
                 if (userCheck == null) {
                     user.setCreatedDate(new Date());
                     userRepository.save(user);
@@ -623,7 +642,7 @@ public class UserServiceImpl implements UserService {
                     userCheck.setBirthOfdate(user.getBirthOfdate());
                     userCheck.setModifiedDate(new Date());
                     userCheck.setRole(user.getRole());
-
+                    user.setTypeTakeCare("-1");
                     userCheck.setIs_active("1");
                     userRepository.save(userCheck);
                 }
@@ -656,7 +675,8 @@ public class UserServiceImpl implements UserService {
     public void exportUserPatient(HttpServletResponse response, String time) throws IOException, ParseException {
 
         Object value = null;
-        List<UserRequet> listUser = toTestCovid(time);
+        //List<UserRequet> listUser = toTestCovid(time);
+        List<UserRequet> listUser = new ArrayList<>();
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("User");
@@ -698,11 +718,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequet> notSentReport(String time) {
+    public List<UserRequet> notSentReport(String time,Long villageId) {
         List<User> searchList = userRepository.notSentReport(time);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
-            if (Integer.parseInt(user.getIs_active()) == 1) {
+            if (Integer.parseInt(user.getIs_active()) == 1&& user.getVillage().getId() == villageId.longValue()) {
                 userRequets.add(userConvert.convertToUserRequest(user));
             }
         }
@@ -722,7 +742,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequet> toTestCovid(String time) throws ParseException {
+    public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException {
         Long role_id = 4L;
         Role role = roleRepository.findById(role_id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + role_id));
@@ -730,7 +750,7 @@ public class UserServiceImpl implements UserService {
         Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(time);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
-            if ((TimeUnit.MILLISECONDS.toDays(date.getTime() - user.getDateStart().getTime()) == 14 || TimeUnit.MILLISECONDS.toDays(date.getTime() - user.getDateStart().getTime()) == 21) && user.getResult().equals("F0")) {
+            if ((TimeUnit.MILLISECONDS.toDays(date.getTime() - user.getDateStart().getTime()) == 14 || TimeUnit.MILLISECONDS.toDays(date.getTime() - user.getDateStart().getTime()) == 21) && user.getResult().equals("F0")&& user.getVillage().getId() == villageId.longValue()) {
                 if (Integer.parseInt(user.getIs_active()) == 1) {
                     userRequets.add(userConvert.convertToUserRequest(user));
                 }
@@ -761,7 +781,7 @@ public class UserServiceImpl implements UserService {
         List<User> userList = userRepository.findAllByVillage(village);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : userList) {
-            if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == 4L) {
+            if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == 4L && user.getResult().equals("F0")) {
                 userRequets.add(userConvert.convertToUserRequest(user));
             }
         }
@@ -776,11 +796,29 @@ public class UserServiceImpl implements UserService {
         DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
-            if (sdf.format(user.getCreatedDate()).equals(time) && user.getRole().getId() == 4L ) {
+            if (sdf.format(user.getCreatedDate()).equals(time) && user.getRole().getId() == 4L && user.getResult().equals("F0") ) {
                 if (Integer.parseInt(user.getIs_active()) == 1) {
                     userRequets.add(userConvert.convertToUserRequest(user));
                 }
             }
+        }
+        return userRequets;
+    }
+
+    @Override
+    public List<UserRequet> getCuredPatientOneDay(String time, Long villageId) throws ParseException {
+        Village village = villageRepository.findById(villageId).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_VILLAGE_ID.getKey(), ErrorCode.NOT_FOUND_VILLAGE_ID.getValue() + villageId));
+        List<User> searchList = userRepository.findAllByVillage(village);
+        DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : searchList) {
+            if(user.getModifiedDate()!=null){
+            if (sdf.format(user.getModifiedDate()).equals(time) && user.getRole().getId() == 4L && user.getResult().equals("-") ) {
+                if (Integer.parseInt(user.getIs_active()) == 1) {
+                    userRequets.add(userConvert.convertToUserRequest(user));
+                }
+            }}
         }
         return userRequets;
     }

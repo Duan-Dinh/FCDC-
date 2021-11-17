@@ -4,6 +4,7 @@ import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.dto.request.LoginRequest;
 import com.fpt.myweb.dto.response.CommonRes;
 import com.fpt.myweb.dto.response.LoginResponse;
+import com.fpt.myweb.dto.response.ResetPassRes;
 import com.fpt.myweb.entity.User;
 import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 import javax.xml.bind.DatatypeConverter;
 
 @CrossOrigin("*")
@@ -77,4 +79,25 @@ public class LoginController {
         }
         return ResponseEntity.ok(commonRes);
     }
+    @PutMapping(value = "/resetPass", consumes = {MediaType.ALL_VALUE})
+    public ResponseEntity<CommonRes> resetPass(@PathParam("phone") String phone) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            ResetPassRes resetPassRes = userService.resetPass(phone);
+            if(resetPassRes!=null) {
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                commonRes.setData(resetPassRes);
+            }else {
+                commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
+                commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
+            }
+
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
 }

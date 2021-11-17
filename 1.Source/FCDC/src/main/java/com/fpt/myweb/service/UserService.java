@@ -1,6 +1,7 @@
 package com.fpt.myweb.service;
 
 import com.fpt.myweb.dto.request.UserRequet;
+import com.fpt.myweb.dto.response.ResetPassRes;
 import com.fpt.myweb.entity.User;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,6 +26,8 @@ public interface UserService {
 
     //Delete User
     public UserRequet deleteUser(long id);
+
+    public ResetPassRes resetPass(String phone);
 
     public UserRequet changePass(long id , String newPass);
 
@@ -61,13 +64,14 @@ public interface UserService {
     public void exportUserPatient(HttpServletResponse file,String time) throws IOException, ParseException;
 
     // oke
-    public List<UserRequet> notSentReport(String time);
+    public List<UserRequet> notSentReport(String time,Long villageId);
     public List<UserRequet> sentReport(String time);
 
-    public List<UserRequet> toTestCovid(String time) throws ParseException;
+    public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException;
     public List<UserRequet> getAllPatientForDoctor(String doctorId);
     public List<UserRequet> getAllPatientForStaff(Long VillageId);
     public List<UserRequet> getNewPatientOneDay(String time,Long villageId) throws ParseException;
+    public List<UserRequet> getCuredPatientOneDay(String time,Long villageId) throws ParseException;
 
     public List<UserRequet> getAllPatientCuredForStaff(Long VillageId);
 

@@ -153,7 +153,7 @@ public class ReportController {
     // truyền vào 1 ngày và trả về nhưng thằng đã gửi report và tình trạng report đó
 
     @GetMapping(value = "/getAllSentReportOnedate")
-    public ResponseEntity<CommonRes> getAllSentReportOnedate(@RequestParam("time") String time) {
+    public ResponseEntity<CommonRes> getAllSentReportOnedate(@RequestParam("time") String time , @PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
@@ -162,7 +162,7 @@ public class ReportController {
             List<ReportDetail> reports = new ArrayList<>();
             if (!daily_reports.isEmpty()) {
                 for (Daily_Report report : daily_reports) {
-                    if (report.getUser().getIs_active().equals("1")) {
+                    if (report.getUser().getIs_active().equals("1") && report.getUser().getVillage().getId() == villageId.longValue()) {
                         ReportDetail item = new ReportDetail();
                         item.setReportId(report.getId());
                         item.setUserId(report.getUser().getId());
