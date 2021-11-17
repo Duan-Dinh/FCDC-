@@ -57,7 +57,7 @@ public class NewController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
              newService.addNew(newRequet,file);
-           // commonRes.setData(aNew);
+            commonRes.setData(newService);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -75,7 +75,7 @@ public class NewController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
              newService.editNew(newRequet,file);
-            //commonRes.setData(aNew);
+            commonRes.setData(newService);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
