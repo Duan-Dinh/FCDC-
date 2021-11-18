@@ -60,7 +60,8 @@ public class UserConvert {
         userRequet.setBirthOfdate(dateFormat.format(user.getBirthOfdate()));
         userRequet.setRole_id(user.getRole().getId());
         userRequet.setVillage_id(user.getVillage().getId());
-
+       userRequet.setDistrict_id(user.getVillage().getDistrict().getId());
+        userRequet.setDistrict_id(user.getVillage().getDistrict().getProvince().getId());
         // userRequet.setId_File(user.getFiles().getId());
         //  FileDB fileDB = new FileDB();
         if (user.getFiles() != null) {

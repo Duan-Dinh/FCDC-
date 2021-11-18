@@ -37,7 +37,8 @@ public class UserRequet {
     private long role_id;
 
     private long village_id;
-
+    private long district_id;
+    private long province_id;
     private String startOfDate;
 
     private String currentStatus;
