@@ -1,6 +1,7 @@
 package com.fpt.myweb.service;
 
 import com.fpt.myweb.dto.request.NewRequet;
+import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.entity.New;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,7 @@ public interface NewService {
 
     public List<NewRequet> getTopNew(Integer page);
 
+    public List<NewRequet> searchByTitle(String text);
 
     public List<NewRequet> getAllNew();
 }

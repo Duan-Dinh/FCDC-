@@ -3,6 +3,7 @@ package com.fpt.myweb.repository;
 import com.fpt.myweb.dto.request.NewRequet;
 import com.fpt.myweb.entity.District;
 import com.fpt.myweb.entity.New;
+import com.fpt.myweb.entity.User;
 import com.fpt.myweb.entity.Village;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ public interface NewRepository extends JpaRepository<New,Long> {
 
     @Query(value = "SELECT u FROM New u ORDER BY id")
     List<New> findAllNewsWithPagination(Pageable pageable);
-
+    List<New> findByTitleContaining(String title);
 
 
 }

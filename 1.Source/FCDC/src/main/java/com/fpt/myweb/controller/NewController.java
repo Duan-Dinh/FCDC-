@@ -1,7 +1,10 @@
 package com.fpt.myweb.controller;
 
 import com.fpt.myweb.dto.request.NewRequet;
+import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.CommonRes;
+import com.fpt.myweb.dto.response.NewRes;
+import com.fpt.myweb.dto.response.UserRes;
 import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
 import com.fpt.myweb.service.NewService;
@@ -96,6 +99,25 @@ public class NewController {
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
+    // get usser by title in New
+    @GetMapping("/searchTitle")
+    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            List<NewRequet> newRequets = newService.searchByTitle(key);
+            NewRes newRes = new NewRes();
+            newRes.setNewRequets(newRequets);
+            newRes.setTotal(newRequets.size());
+            commonRes.setData(newRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());

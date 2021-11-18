@@ -4,8 +4,10 @@ package com.fpt.myweb.service.impl;
 import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.convert.NewConvert;
 import com.fpt.myweb.dto.request.NewRequet;
+import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.entity.FileDB;
 import com.fpt.myweb.entity.New;
+import com.fpt.myweb.entity.User;
 import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
 import com.fpt.myweb.repository.FileDBRepository;
@@ -104,6 +106,19 @@ public class NewServiceImpl implements NewService {
         }
         return newRequets;
 
+    }
+
+    @Override
+    public List<NewRequet> searchByTitle(String text) {
+        List<New> searchList = newRepository.findByTitleContaining(text);
+        List<NewRequet> newRequets = new ArrayList<>();
+        for (New news : searchList) {
+            if (news.getFilesNew() != null) {
+                NewRequet newRequet = newConvert.convertToNewRequest(news);
+                newRequets.add(newRequet);
+            }
+        }
+        return newRequets;
     }
 
 

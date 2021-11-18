@@ -403,11 +403,10 @@ public class UserServiceImpl implements UserService {
             FileCopyUtils.copy(inputStream, outStream);
             // import user
             FileInputStream inputStreamImport = new FileInputStream(fileUrl);
-
             Workbook workbook = new XSSFWorkbook(inputStreamImport);
             Sheet firstSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = firstSheet.iterator();
-
+            iterator.next();
             while (iterator.hasNext()) {
                 Row nextRow = iterator.next();
                 Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -511,7 +510,7 @@ public class UserServiceImpl implements UserService {
             Workbook workbook = new XSSFWorkbook(inputStreamImport);
             Sheet firstSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = firstSheet.iterator();
-
+            iterator.next();
             while (iterator.hasNext()) {
                 Row nextRow = iterator.next();
                 Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -612,7 +611,7 @@ public class UserServiceImpl implements UserService {
             Workbook workbook = new XSSFWorkbook(inputStreamImport);
             Sheet firstSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = firstSheet.iterator();
-
+            iterator.next();
             while (iterator.hasNext()) {
                 Row nextRow = iterator.next();
                 Iterator<Cell> cellIterator = nextRow.cellIterator();
