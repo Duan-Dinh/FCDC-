@@ -908,13 +908,11 @@ public class UserServiceImpl implements UserService {
         for(int i=0;i<dates.size();i++){
             Date lDate =(Date)dates.get(i);
             String ds = formatter.format(lDate);
-            DetailOneDayRes detailOneDayRes = new DetailOneDayRes();
-            detailOneDayRes.setTotalNewF0(getNewPatientOneDay(ds,villageId).size());
-            detailOneDayRes.setTotalCured(getCuredPatientOneDay(ds,villageId).size());
-            detailOneDayRes.setTotalCurrentF0(getAllPatientForStaff(villageId).size());
             ChartStaffRes chartStaffRes1 = new ChartStaffRes();
             chartStaffRes1.setDate(ds);
-            chartStaffRes1.setDetailOneDayRes(detailOneDayRes);
+            chartStaffRes1.setTotalNewF0(getNewPatientOneDay(ds,villageId).size());
+            chartStaffRes1.setTotalCured(getCuredPatientOneDay(ds,villageId).size());
+            chartStaffRes1.setTotalCurrentF0(getAllPatientForStaff(villageId).size());
             chartStaffResList.add(chartStaffRes1);
         }
         return chartStaffResList;
