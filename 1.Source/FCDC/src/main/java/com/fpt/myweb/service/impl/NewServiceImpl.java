@@ -121,6 +121,14 @@ public class NewServiceImpl implements NewService {
         return newRequets;
     }
 
+    @Override
+    public NewRequet getNew(long id) {
+        New news = newRepository.findById(id).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
+        NewRequet newRequet = newConvert.convertToNewRequest(news);
+        return newRequet;
+    }
+
 
     @Override
     public List<NewRequet> getAllNew() {

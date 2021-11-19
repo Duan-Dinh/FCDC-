@@ -21,5 +21,8 @@ public interface NewService {
 
     public List<NewRequet> searchByTitle(String text);
 
+    //get by id
+    public NewRequet getNew(long id);
+
     public List<NewRequet> getAllNew();
 }

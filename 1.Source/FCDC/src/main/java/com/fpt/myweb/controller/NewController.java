@@ -53,6 +53,25 @@ public class NewController {
         return ResponseEntity.ok(commonRes);
     }
 
+    // getOne
+    @GetMapping(value = "/getNew/{id}")
+    public ResponseEntity<CommonRes> getUser1(@PathVariable("id") long id) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            NewRequet newRequet = newService.getNew(id);
+            commonRes.setData(newRequet);
+        } catch (AppException a){
+            commonRes.setResponseCode(a.getErrorCode());
+            commonRes.setMessage(a.getErrorMessage());
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<CommonRes> addNew(NewRequet newRequet,@RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
