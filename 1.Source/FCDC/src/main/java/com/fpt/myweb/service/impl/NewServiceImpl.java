@@ -131,8 +131,14 @@ public class NewServiceImpl implements NewService {
 
 
     @Override
-    public List<NewRequet> getAllNew() {
-        List<New> newList = newRepository.findAll();
+    public List<NewRequet> getAllNew(Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<New> newList=  newRepository.findAllNewsWithPagination(pageable);
         List<NewRequet> newRequets = new ArrayList<>();
         for (New news : newList) {
             if (news.getFilesNew() != null) {

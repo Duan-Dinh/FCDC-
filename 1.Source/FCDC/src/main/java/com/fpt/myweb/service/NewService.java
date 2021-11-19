@@ -24,5 +24,5 @@ public interface NewService {
     //get by id
     public NewRequet getNew(long id);
 
-    public List<NewRequet> getAllNew();
+    public List<NewRequet> getAllNew(Integer page);
 }

@@ -24,13 +24,16 @@ public class NewController {
     private NewService newService;
 
     @GetMapping("/get")
-    public ResponseEntity<CommonRes> getNew() {
+    public ResponseEntity<CommonRes> getNew(@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<NewRequet> newList = newService.getAllNew();
-            commonRes.setData(newList);
+            List<NewRequet> newList = newService.getAllNew(page);
+            NewRes newRes = new NewRes();
+            newRes.setNewRequets(newList);
+            newRes.setTotal(newList.size());
+            commonRes.setData(newRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
