@@ -28,12 +28,12 @@ public class StaffController {
     @Autowired
     private UserService userService;
     @GetMapping("/allPatientForStaff")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAll(@PathParam("villageId") Long villageId) {
+    public ResponseEntity<CommonRes> getAll(@PathParam("page") Integer page,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userPage = userService.getAllPatientForStaff(villageId);
+            List<UserRequet> userPage = userService.getAllPatientForStaff1(villageId,page);
             UserRes userRes = new UserRes();
             userRes.setUserRequets(userPage);
             userRes.setTotal(userPage.size());
@@ -46,12 +46,12 @@ public class StaffController {
     }
 
     @GetMapping("/searchTextForStaff")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key, @PathParam("villageId") Long villageId) {
+    public ResponseEntity<CommonRes> getAllByText(@PathParam("page") Integer page,@PathParam("key") String key, @PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userRequets = userService.searchByTextForStaff(key, villageId);
+            List<UserRequet> userRequets = userService.searchByTextForStaff(key, villageId,page);
             UserRes userRes = new UserRes();
             userRes.setUserRequets(userRequets);
             userRes.setTotal(userRequets.size());
@@ -66,12 +66,12 @@ public class StaffController {
 
 
     @GetMapping("/getNewPatientOneDay")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getNewPatientOneDay(@PathParam("time") String time,@PathParam("villageId") Long villageId) {
+    public ResponseEntity<CommonRes> getNewPatientOneDay(@PathParam("page") Integer page,@PathParam("time") String time,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userRequets = userService.getNewPatientOneDay(time,villageId);
+            List<UserRequet> userRequets = userService.getNewPatientOneDay1(time,villageId,page);
             UserRes userRes = new UserRes();
             userRes.setUserRequets(userRequets);
             userRes.setTotal(userRequets.size()); //                                                          Chỗ ni chưa lấy đc tổng để phân trang
@@ -104,12 +104,12 @@ public class StaffController {
     }
 
     @GetMapping("/allPatientCuredForStaff")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllCured(@PathParam("villageId") Long villageId) {
+    public ResponseEntity<CommonRes> getAllCured(@PathParam("page") Integer page,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userPage = userService.getAllPatientCuredForStaff(villageId);
+            List<UserRequet> userPage = userService.getAllPatientCuredForStaff1(villageId,page);
             UserRes userRes = new UserRes();
             userRes.setUserRequets(userPage);
             userRes.setTotal(userPage.size());

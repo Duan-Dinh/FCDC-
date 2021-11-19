@@ -359,10 +359,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequet> searchByTextForStaff(String text, Long villageId) {
-        Village village = villageRepository.findById(villageId).orElseThrow(()
-                -> new AppException(ErrorCode.NOT_FOUND_VILLAGE_ID.getKey(), ErrorCode.NOT_FOUND_VILLAGE_ID.getValue() + villageId));
-        List<User> userList = userRepository.findAllByVillage(village);
+    public List<UserRequet> searchByTextForStaff(String text, Long villageId, Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> userList = userRepository.findAllByVillage1(villageId,pageable);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : userList) {
             if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == 4L && user.getFullname().contains(text)) {
@@ -834,6 +838,63 @@ public class UserServiceImpl implements UserService {
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : userList) {
             if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == 4L && user.getResult().equals("F0")) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
+        }
+        return userRequets;
+    }
+
+    @Override
+    public List<UserRequet> getAllPatientForStaff1(Long villageId, Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> userList = userRepository.findAllByVillage1(villageId,pageable);
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : userList) {
+            if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == 4L && user.getResult().equals("F0")) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
+        }
+        return userRequets;
+    }
+
+    @Override
+    public List<UserRequet> getNewPatientOneDay1(String time, Long villageId, Integer page) throws ParseException {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> searchList = userRepository.findAllByVillage1(villageId,pageable);
+        DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : searchList) {
+            if (sdf.format(user.getCreatedDate()).equals(time) && user.getRole().getId() == 4L && user.getResult().equals("F0") ) {
+                if (Integer.parseInt(user.getIs_active()) == 1) {
+                    userRequets.add(userConvert.convertToUserRequest(user));
+                }
+            }
+        }
+        return userRequets;
+    }
+
+    @Override
+    public List<UserRequet> getAllPatientCuredForStaff1(Long VillageId, Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> userList = userRepository.findAllByVillage1(VillageId,pageable);
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : userList) {
+            if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == 4L && user.getResult().equals("-")) {
                 userRequets.add(userConvert.convertToUserRequest(user));
             }
         }

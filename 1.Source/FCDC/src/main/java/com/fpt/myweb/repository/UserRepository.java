@@ -17,6 +17,10 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     List<User> findAllByVillage(Village village);
 
+    //get village
+    @Query(value = "SELECT u FROM User u where village_id = ?1 ORDER BY id")
+    List<User> findAllByVillage1(Long pageable, Pageable village);
+
     List<User> findAllUserByRoleId(long roleId);
 
     @Query(value = "SELECT u FROM User u where role_id = ?1 ORDER BY id")

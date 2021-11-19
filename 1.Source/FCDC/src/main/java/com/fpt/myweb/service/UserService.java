@@ -48,7 +48,7 @@ public interface UserService {
     public List<ListUserRequest> searchByTesxt(String text, Integer page);
     public List<ListUserRequest> searchByTextWithRole(String text , Long roleId, Integer page);
 
-    public List<UserRequet> searchByTextForStaff(String text , Long villageId);
+    public List<UserRequet> searchByTextForStaff(String text , Long villageId, Integer page);
 
 
     public int countByTesxt(String text,Integer page);
@@ -72,10 +72,16 @@ public interface UserService {
     public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException;
     public List<UserRequet> getAllPatientForDoctor(String doctorId);
     public List<UserRequet> getAllPatientForStaff(Long VillageId);
+
+    public List<UserRequet> getAllPatientForStaff1(Long VillageId,Integer page);
+    public List<UserRequet> getNewPatientOneDay1(String time,Long villageId,Integer page) throws ParseException;
+    public List<UserRequet> getAllPatientCuredForStaff1(Long VillageId,Integer page);
+
     public List<UserRequet> getNewPatientOneDay(String time,Long villageId) throws ParseException;
     public List<UserRequet> getCuredPatientOneDay(String time,Long villageId) throws ParseException;
 
     public List<UserRequet> getAllPatientCuredForStaff(Long VillageId);
+
     public List<ChartStaffRes> getChartForStaff(String startDate, String endDate,Long villageId) throws ParseException;
 
 }
