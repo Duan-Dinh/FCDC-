@@ -81,23 +81,23 @@ public class UserController {
     }
 
     // get usser by text in Username
-    @GetMapping("/searchText")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key,@PathParam("page") Integer page) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.searchByTesxt(key,page);
-            ListUserRes listUserRes = new ListUserRes();
-            listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(listUserRequests.size());
-            commonRes.setData(listUserRes);
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
+//    @GetMapping("/searchText")// fomat sang DTO trả về dữ liệu
+//    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key,@PathParam("page") Integer page) {
+//        CommonRes commonRes = new CommonRes();
+//        try {
+//            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+//            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+//            List<ListUserRequest> listUserRequests = userService.searchByTesxt(key,page);
+//            ListUserRes listUserRes = new ListUserRes();
+//            listUserRes.setListUserRequests(listUserRequests);
+//            listUserRes.setTotal(listUserRequests.size());
+//            commonRes.setData(listUserRes);
+//        } catch (Exception e){
+//            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+//            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+//        }
+//        return ResponseEntity.ok(commonRes);
+//    }
 
 
 
