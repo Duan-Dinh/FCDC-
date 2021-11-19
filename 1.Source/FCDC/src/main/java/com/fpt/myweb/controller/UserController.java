@@ -1,8 +1,10 @@
 package com.fpt.myweb.controller;
 
 import com.fpt.myweb.convert.UserConvert;
+import com.fpt.myweb.dto.request.ListUserRequest;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.CommonRes;
+import com.fpt.myweb.dto.response.ListUserRes;
 import com.fpt.myweb.dto.response.UserRes;
 import com.fpt.myweb.entity.User;
 import com.fpt.myweb.exception.AppException;
@@ -41,12 +43,12 @@ public class UserController {
 
     // get all
     @GetMapping("/all")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAll() {
+    public ResponseEntity<CommonRes> getAll(@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userPage = userService.getAllUser();
+            List<UserRequet> userPage = userService.getAllUser(page);
             UserRes userRes = new UserRes();
             userRes.setUserRequets(userPage);
             userRes.setTotal(userPage.size());
@@ -60,17 +62,17 @@ public class UserController {
 
     // get usser by role
     @GetMapping("/searchByRole")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllByRole(@PathParam("roleId") Long roleId) {
+    public ResponseEntity<CommonRes> getAllByRole(@PathParam("page") Integer page,@PathParam("roleId") Long roleId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userRequets = userService.searchByRole(roleId);
-            UserRes userRes = new UserRes();
-            userRes.setUserRequets(userRequets);
-            userRes.setTotal(userRequets.size());
+            List<ListUserRequest> listUserRequests = userService.searchByRole(roleId,page);
+            ListUserRes listUserRes = new ListUserRes();
+            listUserRes.setListUserRequests(listUserRequests);
+            listUserRes.setTotal(listUserRequests.size());
 
-            commonRes.setData(userRes);
+            commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -80,16 +82,16 @@ public class UserController {
 
     // get usser by text in Username
     @GetMapping("/searchText")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key) {
+    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userRequets = userService.searchByTesxt(key);
-            UserRes userRes = new UserRes();
-            userRes.setUserRequets(userRequets);
-            userRes.setTotal(userRequets.size());
-            commonRes.setData(userRes);
+            List<ListUserRequest> listUserRequests = userService.searchByTesxt(key,page);
+            ListUserRes listUserRes = new ListUserRes();
+            listUserRes.setListUserRequests(listUserRequests);
+            listUserRes.setTotal(listUserRequests.size());
+            commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());

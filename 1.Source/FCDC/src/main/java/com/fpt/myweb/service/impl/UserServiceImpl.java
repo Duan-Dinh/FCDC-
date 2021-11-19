@@ -3,6 +3,7 @@ package com.fpt.myweb.service.impl;
 
 import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.convert.UserConvert;
+import com.fpt.myweb.dto.request.ListUserRequest;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.ChartStaffRes;
 import com.fpt.myweb.dto.response.DetailOneDayRes;
@@ -30,7 +31,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -39,8 +39,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.Style;
-import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -66,6 +64,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserConvert userConvert;
 
+
+
     @Autowired
     private Environment env;
 
@@ -76,8 +76,14 @@ public class UserServiceImpl implements UserService {
     private FileDBRepository fileDBRepository;
 
     @Override
-    public List<UserRequet> getAllUser() {
-        List<User> userList = userRepository.findAll();
+    public List<UserRequet> getAllUser(Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> userList = userRepository.findAllUserWithPagination(pageable);
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : userList) {
             if (Integer.parseInt(user.getIs_active()) == 1) {
@@ -288,13 +294,18 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<UserRequet> searchByRole(Long role_id) {
-
-        List<User> searchList = userRepository.findAllUserByRoleId(role_id);
-        List<UserRequet> userRequets = new ArrayList<>();
+    public List<ListUserRequest> searchByRole(Long role_id, Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> searchList = userRepository.findAllUserByRoleId1(pageable,role_id);
+        List<ListUserRequest> userRequets = new ArrayList<>();
         for (User user : searchList) {
             if (Integer.parseInt(user.getIs_active()) == 1) {
-                userRequets.add(userConvert.convertToUserRequest(user));
+                userRequets.add(userConvert.convertToListUserRequest(user));
             }
         }
         return userRequets;
@@ -312,28 +323,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequet> searchByTesxt(String text) {
-
-        List<User> searchList = userRepository.findByFullnameContaining(text);
-        List<UserRequet> userRequets = new ArrayList<>();
+    public List<ListUserRequest> searchByTesxt(String text, Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> searchList = userRepository.findByFullnameContaining(text,pageable);
+        List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : searchList) {
             if (Integer.parseInt(user.getIs_active()) == 1) {
-                userRequets.add(userConvert.convertToUserRequest(user));
+                listUserRequests.add(userConvert.convertToListUserRequest(user));
             }
         }
-        return userRequets;
+        return listUserRequests;
     }
 
     @Override
-    public List<UserRequet> searchByTextWithRole(String text, Long roleId) {
-        List<User> searchList = userRepository.findByFullnameContaining(text);
-        List<UserRequet> userRequets = new ArrayList<>();
+    public List<ListUserRequest> searchByTextWithRole(String text, Long roleId, Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> searchList = userRepository.findByFullnameContaining(text,pageable);
+        List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : searchList) {
             if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == roleId) {
-                userRequets.add(userConvert.convertToUserRequest(user));
+                listUserRequests.add(userConvert.convertToListUserRequest(user));
             }
         }
-        return userRequets;
+        return listUserRequests;
     }
 
     @Override
@@ -352,8 +374,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int countByTesxt(String text) {
-        List<User> searchList = userRepository.findByFullnameContaining(text);
+    public int countByTesxt(String text,Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> searchList = userRepository.findByFullnameContaining(text,pageable);
         if (searchList == null) {
             return 0;
         }

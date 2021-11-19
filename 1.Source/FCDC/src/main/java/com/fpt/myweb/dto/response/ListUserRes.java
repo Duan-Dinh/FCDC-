@@ -11,9 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class UserRes {
+public class ListUserRes {
     private long total;
-    private List<UserRequet> userRequets;
-
-
+    private List<ListUserRequest> listUserRequests;
 }

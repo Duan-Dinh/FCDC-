@@ -1,11 +1,10 @@
 package com.fpt.myweb.service;
 
+import com.fpt.myweb.dto.request.ListUserRequest;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.ChartStaffRes;
 import com.fpt.myweb.dto.response.ResetPassRes;
 import com.fpt.myweb.entity.User;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +15,7 @@ import java.util.List;
 
 public interface UserService {
     //get all user
-    public List<UserRequet> getAllUser();
+    public List<UserRequet> getAllUser(Integer page);
 
     //get by id
     public UserRequet getUser(long id);
@@ -42,17 +41,17 @@ public interface UserService {
 
 
     // search
-    public List<UserRequet> searchByRole(Long role_id);
+    public List<ListUserRequest> searchByRole(Long role_id, Integer page);
 
     public int countByRole(long role_id);
 
-    public List<UserRequet> searchByTesxt(String text);
-    public List<UserRequet> searchByTextWithRole(String text , Long roleId);
+    public List<ListUserRequest> searchByTesxt(String text, Integer page);
+    public List<ListUserRequest> searchByTextWithRole(String text , Long roleId, Integer page);
 
     public List<UserRequet> searchByTextForStaff(String text , Long villageId);
 
 
-    public int countByTesxt(String text);
+    public int countByTesxt(String text,Integer page);
 
     public Page<User> getAllUserByPage(Integer page);
 

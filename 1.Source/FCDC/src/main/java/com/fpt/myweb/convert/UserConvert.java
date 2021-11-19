@@ -1,6 +1,7 @@
 package com.fpt.myweb.convert;
 
 import com.fpt.myweb.common.Contants;
+import com.fpt.myweb.dto.request.ListUserRequest;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.DoctorRes;
 import com.fpt.myweb.entity.FileDB;
@@ -100,6 +101,58 @@ public class UserConvert {
         userRequet.setDoctorRes(doctorRes);
 
         return userRequet;
+    }
+    public ListUserRequest convertToListUserRequest(User user) {
+        ListUserRequest listUserRequest = new ListUserRequest();
+        listUserRequest.setId(user.getId());
+        listUserRequest.setFullname(user.getFullname());
+       // listUserRequest.setPassword(user.getPassword());
+        listUserRequest.setGender(user.getGender());
+        listUserRequest.setEmail(user.getEmail());
+        listUserRequest.setPhone(user.getPhone());
+        if (user.getAddress() != null) {
+            listUserRequest.setAddress(user.getAddress() + " - " + user.getVillage().getName() + " - " + user.getVillage().getDistrict().getName() + " - " + user.getVillage().getDistrict().getProvince().getName());
+        } else {
+            listUserRequest.setAddress(user.getVillage().getName() + " - " + user.getVillage().getDistrict().getName() + " - " + user.getVillage().getDistrict().getProvince().getName());
+
+        }
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        listUserRequest.setBirthOfdate(dateFormat.format(user.getBirthOfdate()));
+       // listUserRequest.setRole_id(user.getRole().getId());
+        listUserRequest.setVillage_id(user.getVillage().getId());
+        listUserRequest.setDistrict_id(user.getVillage().getDistrict().getId());
+        listUserRequest.setProvince_id(user.getVillage().getDistrict().getProvince().getId());
+        // userRequet.setId_File(user.getFiles().getId());
+        //  FileDB fileDB = new FileDB();
+
+        if (user.getDateStart() != null) {
+            DateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
+            listUserRequest.setStartOfDate(dateFormat1.format(user.getDateStart()));
+        }
+        if (user.getResult() != null) {
+            listUserRequest.setResult(user.getResult());
+        }
+        if (user.getCurrentStatus() != null) {
+            listUserRequest.setCurrentStatus(user.getCurrentStatus());
+        }
+        if (user.getTypeTakeCare() != null) {
+            listUserRequest.setTypeTakeCare(user.getTypeTakeCare());
+        }
+
+        List<User> searchList = userRepository.findAllByVillage(user.getVillage());
+        List<DoctorRes> doctorRes = new ArrayList<>();
+        for (User user1 : searchList) {
+            if (Integer.parseInt(user1.getIs_active()) == 1 && (user1.getRole().getId()) == 3) {
+                DoctorRes doctorRes1 = new DoctorRes();
+                doctorRes1.setId(user1.getId());
+                doctorRes1.setName(user1.getFullname());
+                doctorRes1.setPhone(user1.getPhone());
+                doctorRes.add(doctorRes1);
+            }
+        }
+        listUserRequest.setDoctorRes(doctorRes);
+
+        return listUserRequest;
     }
 
 }
