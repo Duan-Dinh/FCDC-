@@ -95,7 +95,7 @@ public class NewServiceImpl implements NewService {
         }else{
             page--;
         }
-        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE_New);
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE_NEW_TOP);
        List<New> newList=  newRepository.findAllNewsWithPagination(pageable);
         List<NewRequet> newRequets = new ArrayList<>();
         for (New news : newList) {
@@ -137,7 +137,7 @@ public class NewServiceImpl implements NewService {
         }else{
             page--;
         }
-        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE_NEW);
         List<New> newList=  newRepository.findAllNewsWithPagination(pageable);
         List<NewRequet> newRequets = new ArrayList<>();
         for (New news : newList) {

@@ -2,7 +2,8 @@ package com.fpt.myweb.common;
 
 public class Contants {
     public final static Integer PAGE_SIZE = 20;
-    public final static Integer PAGE_SIZE_New = 6;
+    public final static Integer PAGE_SIZE_NEW_TOP = 6;
+    public final static Integer PAGE_SIZE_NEW = 10;
     public final static String TYPE_USER = "user";
 
     public final static String TYPE_NEW = "new";
