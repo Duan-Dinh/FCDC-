@@ -63,8 +63,6 @@ public class StaffController {
         return ResponseEntity.ok(commonRes);
     }
 
-
-
     @GetMapping("/getNewPatientOneDay")// fomat sang DTO trả về dữ liệu
     public ResponseEntity<CommonRes> getNewPatientOneDay(@PathParam("page") Integer page,@PathParam("time") String time,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();

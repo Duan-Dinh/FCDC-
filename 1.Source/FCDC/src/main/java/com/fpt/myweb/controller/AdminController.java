@@ -29,10 +29,11 @@ public class AdminController {
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.searchByTextWithRole(key, roleId,page);
-            ListUserRes listUserRes = new ListUserRes();
-            listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(listUserRequests.size());
+            List<UserRequet> listUserRequests = userService.searchByTextWithRole(key, roleId,page);
+            long total = userService.countByRole(roleId);
+            UserRes listUserRes = new UserRes();
+            listUserRes.setUserRequets(listUserRequests);
+            listUserRes.setTotal(total);
             commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

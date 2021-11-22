@@ -14,5 +14,5 @@ public class ChartStaffRes {
     // private DetailOneDayRes detailOneDayRes;
     private int totalNewF0;
     private int totalCured;
-    private int totalCurrentF0;
+    //private int totalCurrentF0;
 }

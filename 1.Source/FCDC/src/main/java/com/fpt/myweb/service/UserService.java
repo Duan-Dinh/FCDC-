@@ -36,17 +36,17 @@ public interface UserService {
     public UserRequet editUserById(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
 
     public UserRequet editResult(long id);
-    public UserRequet changeTypeTakeCare(long id , Long doctorId);
+    public UserRequet changeTypeTakeCare(long id , long doctorId);
     public List<UserRequet> getAllDoctorByVila(Long vilageId);
 
 
     // search
-    public List<ListUserRequest> searchByRole(Long role_id, Integer page);
+    public List<UserRequet> searchByRole(Long role_id, Integer page);
 
     public int countByRole(long role_id);
 
     public List<ListUserRequest> searchByTesxt(String text, Integer page);
-    public List<ListUserRequest> searchByTextWithRole(String text , Long roleId, Integer page);
+    public List<UserRequet> searchByTextWithRole(String text , Long roleId, Integer page);
 
     public List<UserRequet> searchByTextForStaff(String text , Long villageId, Integer page);
 
@@ -57,7 +57,7 @@ public interface UserService {
 
     public User login(String phone, String password);
 
-    public void importUserPatient(MultipartFile file) throws IOException, ParseException;
+    public boolean importUserPatient(MultipartFile file) throws IOException, ParseException;
 
     public void importUserStaff(MultipartFile file) throws IOException, ParseException;
     public void importUserDoctor(MultipartFile file) throws IOException, ParseException;

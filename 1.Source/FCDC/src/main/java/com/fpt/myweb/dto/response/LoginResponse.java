@@ -16,5 +16,6 @@ public class LoginResponse {
     private String fullname;
     private Long vilaId;
     private String image;
+    private String address;
 }
 

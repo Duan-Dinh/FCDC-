@@ -67,10 +67,11 @@ public class UserController {
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.searchByRole(roleId,page);
-            ListUserRes listUserRes = new ListUserRes();
-            listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(listUserRequests.size());
+            List<UserRequet> listUserRequests = userService.searchByRole(roleId,page);
+            long total = userService.countByRole(roleId);
+            UserRes listUserRes = new UserRes();
+            listUserRes.setUserRequets(listUserRequests);
+            listUserRes.setTotal(total);
 
             commonRes.setData(listUserRes);
         } catch (Exception e){
@@ -79,25 +80,26 @@ public class UserController {
         }
         return ResponseEntity.ok(commonRes);
     }
+
 
     // get usser by text in Username
-    @GetMapping("/searchText")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key,@PathParam("page") Integer page) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.searchByTesxt(key,page);
-            ListUserRes listUserRes = new ListUserRes();
-            listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(listUserRequests.size());
-            commonRes.setData(listUserRes);
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
+//    @GetMapping("/searchText")// fomat sang DTO trả về dữ liệu
+//    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key,@PathParam("page") Integer page) {
+//        CommonRes commonRes = new CommonRes();
+//        try {
+//            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+//            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+//            List<ListUserRequest> listUserRequests = userService.searchByTesxt(key,page);
+//            ListUserRes listUserRes = new ListUserRes();
+//            listUserRes.setListUserRequests(listUserRequests);
+//            listUserRes.setTotal(listUserRequests.size());
+//            commonRes.setData(listUserRes);
+//        } catch (Exception e){
+//            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+//            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+//        }
+//        return ResponseEntity.ok(commonRes);
+//    }
 
 
 
@@ -357,7 +359,7 @@ public class UserController {
     }
 
     @PutMapping(value = "changeTypeTakeCare")
-    public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id,@PathParam("doctorId") Long doctorId) {
+    public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id,@PathParam("doctorId") long doctorId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
@@ -388,9 +390,14 @@ public class UserController {
 
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            userService.importUserPatient(file);
+            boolean check = userService.importUserPatient(file);
+            if(check) {
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            }else {
+                commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
+                commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
+            }
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());

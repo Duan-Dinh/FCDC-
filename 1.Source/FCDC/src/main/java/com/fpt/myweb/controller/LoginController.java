@@ -50,6 +50,7 @@ public class LoginController {
                 loginResponse.setFullname(user.getFullname()); //
                 loginResponse.setId(user.getId());
                 loginResponse.setVilaId(user.getVillage().getId());
+                loginResponse.setAddress(user.getAddress());
                 if(user.getFiles() != null){
                     String type ="data:"+ DatatypeConverter.parseAnySimpleType(user.getFiles().getType()) +";base64,"+ DatatypeConverter.printBase64Binary(user.getFiles().getData());
                     loginResponse.setImage(type);
