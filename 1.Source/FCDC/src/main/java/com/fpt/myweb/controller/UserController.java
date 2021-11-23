@@ -68,10 +68,9 @@ public class UserController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             List<ListUserRequest> listUserRequests = userService.searchByRole(roleId,page);
-            long total = userService.countByRole(roleId);
             ListUserRes listUserRes = new ListUserRes();
             listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(total);
+            listUserRes.setTotal(userService.countSearchByRole(roleId));
 
             commonRes.setData(listUserRes);
         } catch (Exception e){

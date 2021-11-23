@@ -324,6 +324,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int countSearchByRole(Long roleId) {
+        List<User> searchList = userRepository.findAllUserByRoleId1(roleId);
+        if(searchList == null){
+            return 0;
+        }
+        return searchList.size();
+    }
+
+    @Override
     public int countByRole(long role_id) {
         Role role = roleRepository.findById(role_id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + role_id));
