@@ -52,6 +52,9 @@ public interface UserService {
 
     public List<ListUserRequest> searchByTextForStaff(String text , Long villageId, Integer page);
 
+    public List<ListUserRequest> searchByTextPatientsCuredForStaff(String text , Long villageId, Integer page);
+    public int countByTesxtPatientsCuredForStaff(String text, Long villageId);
+
     public int countByTesxtForStaff(String text, Long villageId);
 
     public int countByTesxt(String text);

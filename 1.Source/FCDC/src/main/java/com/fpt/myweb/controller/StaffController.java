@@ -117,6 +117,25 @@ public class StaffController {
         return ResponseEntity.ok(commonRes);
     }
 
+    @GetMapping("/searchPatientCuredForStaffByText")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> searchAllByText(@PathParam("page") Integer page,@PathParam("key") String key, @PathParam("villageId") Long villageId) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            List<ListUserRequest> listUserRequests = userService.searchByTextPatientsCuredForStaff(key, villageId,page);
+            ListUserRes listUserRes = new ListUserRes();
+            listUserRes.setListUserRequests(listUserRequests);
+            listUserRes.setTotal(userService.countByTesxtPatientsCuredForStaff(key,villageId));
+            commonRes.setData(listUserRes);
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
+
     @GetMapping("/chartForStaff")// fomat sang DTO trả về dữ liệu
     public ResponseEntity<CommonRes> chartForStaff(@PathParam("startDate")String startDate, @PathParam("endDate") String endDate,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();

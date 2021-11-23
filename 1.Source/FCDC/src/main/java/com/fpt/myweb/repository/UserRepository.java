@@ -32,6 +32,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findAllTextForStaff(Long village ,String text);
 
 
+
     //searchTextWithRol
     @Query(value = "SELECT u FROM User u where role_id = ?1 and is_active = 1 and fullname like %?2% ORDER BY id")
     List<User> findAllTextWithRole(Long role_id ,String text,Pageable pageable);
@@ -45,6 +46,13 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' ORDER BY id")
     List<User> findAllPatientsCuredForStaff(Long village );
+    //searchAllPatientsCuredForStaff
+    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' and fullname like %?2% ORDER BY id")
+    List<User> searchAllPatientsCuredForStaff(Long village ,String text,Pageable pageable);
+
+    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' and fullname like %?2% ORDER BY id")
+    List<User> searchAllPatientsCuredForStaff(Long village ,String text);
+
 //notsentreport
     @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0' ORDER BY id", nativeQuery = true)
     List<User> UserNotSentReport(String time,Long village,Pageable pageable);

@@ -230,15 +230,6 @@ public class UserController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             List<ListUserRequest> listUserRequests = userService.getAllPatientForDoctor(doctorId,page);
-//            List<User> users = new ArrayList<User>();
-//            List<UserRequet> userRequets = new ArrayList<>();
-//            users = userPage.getContent();
-//
-//            if (!users.isEmpty()) {
-//                for (User user: users){
-//                    userRequets.add(UserConvert.convertToUserRequest(user));
-//                }
-//            }
             ListUserRes listUserRes = new ListUserRes();
             listUserRes.setListUserRequests(listUserRequests);
             listUserRes.setTotal(userService.countAllPatientForDoctor(doctorId));

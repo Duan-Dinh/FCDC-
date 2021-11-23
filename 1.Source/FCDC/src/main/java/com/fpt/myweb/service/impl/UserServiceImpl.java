@@ -399,6 +399,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<ListUserRequest> searchByTextPatientsCuredForStaff(String text, Long villageId, Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> userList = userRepository.searchAllPatientsCuredForStaff(villageId,text,pageable);
+        List<ListUserRequest> listUserRequests = new ArrayList<>();
+        for (User user : userList) {
+            listUserRequests.add(userConvert.convertToListUserRequest(user));
+        }
+        return listUserRequests;
+    }
+
+    @Override
+    public int countByTesxtPatientsCuredForStaff(String text, Long villageId) {
+        List<User> searchList = userRepository.searchAllPatientsCuredForStaff(villageId,text);
+        if (searchList == null) {
+            return 0;
+        }
+        return searchList.size();
+    }
+
+    @Override
     public int countByTesxtForStaff(String text, Long villageId) {
         List<User> searchList = userRepository.findAllTextForStaff(villageId,text);
         if (searchList == null) {
