@@ -22,7 +22,7 @@ public class ListUserRequest {
 
     private String gender;
 
-    private String email;
+    //private String email;
 
     private String phone;
 

@@ -36,22 +36,26 @@ public interface UserService {
     public UserRequet editUserById(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
 
     public UserRequet editResult(long id);
-    public UserRequet changeTypeTakeCare(long id , long doctorId);
-    public List<UserRequet> getAllDoctorByVila(Long vilageId);
+    public UserRequet changeTypeTakeCare(long id , Long doctorId);
+    public List<ListUserRequest> getAllDoctorByVila(Long vilageId, Integer page);
+    public int countAllDoctorByVila(Long villageId);
 
 
     // search
-    public List<UserRequet> searchByRole(Long role_id, Integer page);
+    public List<ListUserRequest> searchByRole(Long role_id, Integer page);
 
     public int countByRole(long role_id);
 
     public List<ListUserRequest> searchByTesxt(String text, Integer page);
-    public List<UserRequet> searchByTextWithRole(String text , Long roleId, Integer page);
+    public List<ListUserRequest> searchByTextWithRole(Long roleId,String text , Integer page);
+    public int countByTextWithRole(Long roleId,String text);
 
-    public List<UserRequet> searchByTextForStaff(String text , Long villageId, Integer page);
+    public List<ListUserRequest> searchByTextForStaff(String text , Long villageId, Integer page);
 
+    public int countByTesxtForStaff(String text, Long villageId);
 
-    public int countByTesxt(String text,Integer page);
+    public int countByTesxt(String text);
+
 
     public Page<User> getAllUserByPage(Integer page);
 
@@ -66,18 +70,29 @@ public interface UserService {
     public void exportUserPatient(HttpServletResponse file,String time) throws IOException, ParseException;
 
     // oke
-    public List<UserRequet> notSentReport(String time,Long villageId);
-    public List<UserRequet> sentReport(String time);
+    public List<ListUserRequest> notSentReport(String time,Long villageId,Integer page);
+
+    public int countNotSentReport(String time,Long villageId);
+
+    public List<ListUserRequest> sentReport(String time,Long villageId,Integer page);
+    public int countSentReport(String time,Long villageId);
 
     public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException;
-    public List<UserRequet> getAllPatientForDoctor(String doctorId);
+    public List<ListUserRequest> getAllPatientForDoctor(String doctorId,Integer page);
+    public int countAllPatientForDoctor(String doctorId);
     public List<UserRequet> getAllPatientForStaff(Long VillageId);
 
-    public List<UserRequet> getAllPatientForStaff1(Long VillageId,Integer page);
+    public List<ListUserRequest> getAllPatientForStaff(Long VillageId,Integer page);
+
+    public int countByPatientsForStaff(Long VillageId);
+
     public List<UserRequet> getNewPatientOneDay1(String time,Long villageId,Integer page) throws ParseException;
-    public List<UserRequet> getAllPatientCuredForStaff1(Long VillageId,Integer page);
+
+    public List<ListUserRequest> getAllPatientsCuredForStaff(Long VillageId,Integer page);
+    public int countAllPatientCuredForStaff(Long villageId);
 
     public List<UserRequet> getNewPatientOneDay(String time,Long villageId) throws ParseException;
+
     public List<UserRequet> getCuredPatientOneDay(String time,Long villageId) throws ParseException;
 
     public List<UserRequet> getAllPatientCuredForStaff(Long VillageId);

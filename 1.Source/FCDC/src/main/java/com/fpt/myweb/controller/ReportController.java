@@ -114,12 +114,12 @@ public class ReportController {
 
     // getUserIdReport
     @GetMapping(value = "/getByUserId")
-    public ResponseEntity<CommonRes> getUserIdReport(@PathParam("userId") Long userId) {
+    public ResponseEntity<CommonRes> getUserIdReport(@PathParam("userId") Long userId,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<Daily_Report> daily_reports = dailyReportService.getOneByUserID(userId);
+            List<Daily_Report> daily_reports = dailyReportService.getOneByUserID(userId,page);
             List<Report> reports = new ArrayList<>();
             if (!daily_reports.isEmpty()) {
                 for (Daily_Report report : daily_reports) {
@@ -141,7 +141,7 @@ public class ReportController {
             }
             DailyReportRes reportRes = new DailyReportRes();
             reportRes.setDailyReports(reports);
-            reportRes.setTotal(reports.size());
+            reportRes.setTotal(dailyReportService.countAllUserID(userId));
             commonRes.setData(reportRes);
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

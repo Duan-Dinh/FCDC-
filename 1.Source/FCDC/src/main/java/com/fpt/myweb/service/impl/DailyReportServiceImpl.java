@@ -107,16 +107,33 @@ public class DailyReportServiceImpl implements DailyReportService {
     }
 
     @Override
-    public List<Daily_Report> getOneByUserID(Long id) {
-        List<Daily_Report> daily_report = daily_reportRepository.findByUserId(id);
+    public List<Daily_Report> getOneByUserID(Long id,Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<Daily_Report> daily_report = daily_reportRepository.findAllByUserId(id,pageable);
         return daily_report;
     }
 
     @Override
+    public int countAllUserID(Long id) {
+        List<Daily_Report> searchList = daily_reportRepository.findAllByUserId(id);
+        if(searchList == null){
+            return 0;
+        }
+        return searchList.size();
+    }
+
+    @Override
     public List<Daily_Report> getByDate(String time) {
+
         List<Daily_Report> daily_report = daily_reportRepository.findByDateTime(time);
         return daily_report;
     }
+
 
     @Override
     public void editFeeback(FeebackReqest feebackReqest) {

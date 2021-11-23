@@ -109,7 +109,7 @@ public class UserConvert {
         listUserRequest.setFullname(user.getFullname());
        // listUserRequest.setPassword(user.getPassword());
         listUserRequest.setGender(user.getGender());
-        listUserRequest.setEmail(user.getEmail());
+        //listUserRequest.setEmail(user.getEmail());
         listUserRequest.setPhone(user.getPhone());
         if (user.getAddress() != null) {
             listUserRequest.setAddress(user.getAddress() + " - " + user.getVillage().getName() + " - " + user.getVillage().getDistrict().getName() + " - " + user.getVillage().getDistrict().getProvince().getName());

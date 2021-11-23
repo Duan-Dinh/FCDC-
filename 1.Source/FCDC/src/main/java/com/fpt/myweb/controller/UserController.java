@@ -61,16 +61,16 @@ public class UserController {
     }
 
     // get usser by role
-    @GetMapping("/searchByRole")// fomat sang DTO trả về dữ liệu
+    @GetMapping("/getByRole")// fomat sang DTO trả về dữ liệu
     public ResponseEntity<CommonRes> getAllByRole(@PathParam("page") Integer page,@PathParam("roleId") Long roleId) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> listUserRequests = userService.searchByRole(roleId,page);
+            List<ListUserRequest> listUserRequests = userService.searchByRole(roleId,page);
             long total = userService.countByRole(roleId);
-            UserRes listUserRes = new UserRes();
-            listUserRes.setUserRequets(listUserRequests);
+            ListUserRes listUserRes = new ListUserRes();
+            listUserRes.setListUserRequests(listUserRequests);
             listUserRes.setTotal(total);
 
             commonRes.setData(listUserRes);
@@ -224,12 +224,12 @@ public class UserController {
 
 
     @GetMapping("/allUserForDoctor")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllUserForDoctor(@PathParam("doctorId") String doctorId) {
+    public ResponseEntity<CommonRes> getAllUserForDoctor(@PathParam("doctorId") String doctorId,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userPage = userService.getAllPatientForDoctor(doctorId);
+            List<ListUserRequest> listUserRequests = userService.getAllPatientForDoctor(doctorId,page);
 //            List<User> users = new ArrayList<User>();
 //            List<UserRequet> userRequets = new ArrayList<>();
 //            users = userPage.getContent();
@@ -239,10 +239,10 @@ public class UserController {
 //                    userRequets.add(UserConvert.convertToUserRequest(user));
 //                }
 //            }
-            UserRes userRes = new UserRes();
-            userRes.setUserRequets(userPage);
-            userRes.setTotal(userPage.size());
-            commonRes.setData(userRes);
+            ListUserRes listUserRes = new ListUserRes();
+            listUserRes.setListUserRequests(listUserRequests);
+            listUserRes.setTotal(userService.countAllPatientForDoctor(doctorId));
+            commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -252,16 +252,16 @@ public class UserController {
 
 
     @GetMapping("/getDoctorByVillageId")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getDoctorByVillageId(@PathParam("villageId") Long villageId) {
+    public ResponseEntity<CommonRes> getDoctorByVillageId(@PathParam("villageId") Long villageId,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userRequets = userService.getAllDoctorByVila(villageId);
-            UserRes userRes = new UserRes();
-            userRes.setUserRequets(userRequets);
-            userRes.setTotal(userRequets.size());
-            commonRes.setData(userRes);
+            List<ListUserRequest> listUserRequests = userService.getAllDoctorByVila(villageId,page);
+            ListUserRes listUserRes = new ListUserRes();
+            listUserRes.setListUserRequests(listUserRequests);
+            listUserRes.setTotal(userService.countAllDoctorByVila(villageId));
+            commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -290,16 +290,16 @@ public class UserController {
     }
 
     @GetMapping("/notSentReport")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> notSentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId) {
+    public ResponseEntity<CommonRes> notSentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userRequets = userService.notSentReport(time,villageId);
-            UserRes userRes = new UserRes();
-            userRes.setUserRequets(userRequets);
-            userRes.setTotal(userRequets.size()); //                                                          Chỗ ni chưa lấy đc tổng để phân trang
-            commonRes.setData(userRes);
+            List<ListUserRequest> listUserRequests = userService.notSentReport(time,villageId,page);
+            ListUserRes listUserRes = new ListUserRes();
+            listUserRes.setListUserRequests(listUserRequests);
+            listUserRes.setTotal(userService.countNotSentReport(time,villageId));
+            commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -307,16 +307,16 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
     @GetMapping("/sentReport")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> sentReport(@PathParam("time") String time) {
+    public ResponseEntity<CommonRes> sentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<UserRequet> userRequets = userService.sentReport(time);
-            UserRes userRes = new UserRes();
-            userRes.setUserRequets(userRequets);
-            userRes.setTotal(userRequets.size()); //                                                          Chỗ ni chưa lấy đc tổng để phân trang
-            commonRes.setData(userRes);
+            List<ListUserRequest> listUserRequests = userService.sentReport(time,villageId,page);
+            ListUserRes listUserRes = new ListUserRes();
+            listUserRes.setListUserRequests(listUserRequests);
+            listUserRes.setTotal(userService.countSentReport(time,villageId));
+            commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -332,7 +332,7 @@ public class UserController {
             List<UserRequet> userRequets = userService.toTestCovid(time,villageId);
             UserRes userRes = new UserRes();
             userRes.setUserRequets(userRequets);
-            userRes.setTotal(userRequets.size()); //                                                          Chỗ ni chưa lấy đc tổng để phân trang
+            userRes.setTotal(userRequets.size()); //                                                         dk
             commonRes.setData(userRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

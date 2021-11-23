@@ -16,7 +16,6 @@ import java.util.List;
 @Getter
 @Setter
 public class Exercise  extends BaseEntity{
-
     @JoinColumn(name = "name")
     private String name;
 
