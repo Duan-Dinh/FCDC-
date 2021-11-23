@@ -313,7 +313,7 @@ public class UserServiceImpl implements UserService {
             page--;
         }
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> searchList = userRepository.findAllUserByRoleId1(pageable,role_id);
+        List<User> searchList = userRepository.findAllUserByRoleId(pageable,role_id);
         List<ListUserRequest> userRequets = new ArrayList<>();
         for (User user : searchList) {
             if (Integer.parseInt(user.getIs_active()) == 1) {
@@ -325,7 +325,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int countSearchByRole(Long roleId) {
-        List<User> searchList = userRepository.findAllUserByRoleId1(roleId);
+        List<User> searchList = userRepository.findAllUserByRoleId(roleId);
         if(searchList == null){
             return 0;
         }
