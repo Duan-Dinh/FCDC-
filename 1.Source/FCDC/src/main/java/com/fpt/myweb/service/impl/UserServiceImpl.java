@@ -306,26 +306,26 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<ListUserRequest> searchByRole(Long role_id, Integer page) {
+    public List<ListUserRequest> searchByRole(Long role_id,String text, Integer page) {
         if(page == null){
             page = 0;
         }else{
             page--;
         }
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> searchList = userRepository.findAllUserByRoleId(pageable,role_id);
+        List<User> searchList = userRepository.findAllUserByRoleId(role_id,text,pageable);
         List<ListUserRequest> userRequets = new ArrayList<>();
         for (User user : searchList) {
-            if (Integer.parseInt(user.getIs_active()) == 1) {
+
                 userRequets.add(userConvert.convertToListUserRequest(user));
-            }
+
         }
         return userRequets;
     }
 
     @Override
-    public int countSearchByRole(Long roleId) {
-        List<User> searchList = userRepository.findAllUserByRoleId(roleId);
+    public int countSearchByRole(Long roleId,String text) {
+        List<User> searchList = userRepository.findAllUserByRoleId(roleId,text);
         if(searchList == null){
             return 0;
         }

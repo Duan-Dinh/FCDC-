@@ -61,17 +61,16 @@ public class UserController {
     }
 
     // get usser by role
-    @GetMapping("/getByRole")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllByRole(@PathParam("page") Integer page,@PathParam("roleId") Long roleId) {
+    @GetMapping("/getByRoleAndSearchText")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> getAllByRole(@PathParam("roleId") Long roleId,@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.searchByRole(roleId,page);
+            List<ListUserRequest> listUserRequests = userService.searchByRole(roleId,key,page);
             ListUserRes listUserRes = new ListUserRes();
             listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(userService.countSearchByRole(roleId));
-
+            listUserRes.setTotal(userService.countSearchByRole(roleId,key));
             commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

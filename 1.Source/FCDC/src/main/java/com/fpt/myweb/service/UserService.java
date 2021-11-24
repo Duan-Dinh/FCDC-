@@ -42,8 +42,8 @@ public interface UserService {
 
 
     // search
-    public List<ListUserRequest> searchByRole(Long role_id, Integer page);
-    public int countSearchByRole(Long roleId);
+    public List<ListUserRequest> searchByRole(Long role_id,String text, Integer page);
+    public int countSearchByRole(Long roleId,String text);
     public int countByRole(long role_id);
 
     public List<ListUserRequest> searchByTesxt(String text, Integer page);

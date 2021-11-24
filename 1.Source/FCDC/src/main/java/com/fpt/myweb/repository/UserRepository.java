@@ -82,11 +82,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     List<User> findAllUserByRoleId(long roleId);
 
-    @Query(value = "SELECT u FROM User u where role_id = ?1 ORDER BY id")
-    List<User> findAllUserByRoleId(Pageable pageable, Long roleId);
+    @Query(value = "SELECT u FROM User u where role_id = ?1 and is_active = 1 and fullname like %?2% ORDER BY id")
+    List<User> findAllUserByRoleId( Long roleId,String text,Pageable pageable);
 
-    @Query(value = "SELECT u FROM User u where role_id = ?1 ORDER BY id")
-    List<User> findAllUserByRoleId( Long roleId);
+    @Query(value = "SELECT u FROM User u where role_id = ?1 and is_active = 1 and fullname like %?2% ORDER BY id")
+    List<User> findAllUserByRoleId( Long roleId,String text);
 
     List<User> findByRole(Role role);
 
