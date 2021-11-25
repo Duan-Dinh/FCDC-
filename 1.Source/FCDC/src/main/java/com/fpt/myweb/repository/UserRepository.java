@@ -17,12 +17,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     List<User> findAllByVillage(Village village);
 
-    //get village
-    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = 'F0' ORDER BY id")
-    List<User> findAllPatientForStaff(Long village ,Pageable pageable);
-
-    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = 'F0' ORDER BY id")
-    List<User> findAllPatientForStaff(Long village );
+    //findAllPatientForStaff
+    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = 'F0' and fullname like %?2% ORDER BY id")
+    List<User> findAllPatientForStaff(Long village,String search,String key ,Pageable pageable);
+    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = 'F0' and fullname like %?2% ORDER BY id")
+    List<User> findAllPatientForStaff(Long village,String search,String key );
 
     //searchTextForStaff
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = 'F0' and fullname like %?2% ORDER BY id")
@@ -41,11 +40,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findAllTextWithRole(Long role_id ,String text);
 
     //getAllPatientsCuredForStaff
-    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' ORDER BY id")
-    List<User> findAllPatientsCuredForStaff(Long village ,Pageable pageable);
+    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' and fullname like %?2% ORDER BY id")
+    List<User> findAllPatientsCuredForStaff(Long village,String search,String key ,Pageable pageable);
 
-    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' ORDER BY id")
-    List<User> findAllPatientsCuredForStaff(Long village );
+    @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' and fullname like %?2% ORDER BY id")
+    List<User> findAllPatientsCuredForStaff(Long village,String search,String key );
     //searchAllPatientsCuredForStaff
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' and fullname like %?2% ORDER BY id")
     List<User> searchAllPatientsCuredForStaff(Long village ,String text,Pageable pageable);
@@ -55,18 +54,18 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
 //notsentreport
     @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0' and fullname like %?3% ORDER BY id", nativeQuery = true)
-    List<User> UserNotSentReport(String time,Long village,String text,Pageable pageable);
+    List<User> UserNotSentReport(String time,Long village,String text,String key,Pageable pageable);
 
     @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0' and fullname like %?3% ORDER BY id", nativeQuery = true)
-    List<User> UserNotSentReport(String time,Long village,String text);
+    List<User> UserNotSentReport(String time,Long village,String text,String key);
 
 
     //sentreport
     @Query( value = "SELECT * FROM user as u WHERE u.id    IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0'and fullname like %?3% ORDER BY id", nativeQuery = true)
-    List<User> userSentReport(String time,Long village,String text,Pageable pageable);
+    List<User> userSentReport(String time,Long village,String text,String key,Pageable pageable);
 
     @Query( value = "SELECT * FROM user as u WHERE u.id    IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0' and fullname like %?3% ORDER BY id", nativeQuery = true)
-    List<User> userSentReport(String time,Long village,String text);
+    List<User> userSentReport(String time,Long village,String text,String key);
 
     //getAllPatientForDoctor
     @Query(value = "SELECT u FROM User u where typeTakeCare = ?1 and is_active = 1 and role_id = 4 and result = 'F0' ORDER BY id")

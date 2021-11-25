@@ -73,26 +73,26 @@ public interface UserService {
     public void exportUserPatient(HttpServletResponse file,String time) throws IOException, ParseException;
 
     // oke
-    public List<ListUserRequest> notSentReport(String time,Long villageId,String text,Integer page);
+    public List<ListUserRequest> notSentAndSentReport(String time,Long villageId,String text,String key,Integer page);
 
-    public int countNotSentReport(String time,Long villageId,String text);
+    public int countNotSentAndSentReport(String time,Long villageId,String text,String key);
 
-    public List<ListUserRequest> sentReport(String time,Long villageId,String text,Integer page);
-    public int countSentReport(String time,Long villageId,String text);
+//    public List<ListUserRequest> sentReport(String time,Long villageId,String text,Integer page);
+//    public int countSentReport(String time,Long villageId,String text);
 
     public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException;
     public List<ListUserRequest> getAllPatientForDoctor(String doctorId,Integer page);
     public int countAllPatientForDoctor(String doctorId);
     public List<UserRequet> getAllPatientForStaff(Long VillageId);
 
-    public List<ListUserRequest> getAllPatientForStaff(Long VillageId,Integer page);
+    public List<ListUserRequest> getAllPatientForStaff(Long villageId,String search,String key,Integer page);
 
-    public int countByPatientsForStaff(Long VillageId);
+    public int countByPatientsForStaff(Long villageId,String search,String key);
 
-    public List<UserRequet> getNewPatientOneDay1(String time,Long villageId,Integer page) throws ParseException;
+//    public List<UserRequet> getNewPatientOneDay1(String time,Long villageId,Integer page) throws ParseException;
 
-    public List<ListUserRequest> getAllPatientsCuredForStaff(Long VillageId,Integer page);
-    public int countAllPatientCuredForStaff(Long villageId);
+//    public List<ListUserRequest> getAllPatientsCuredForStaff(Long VillageId,Integer page);
+//    public int countAllPatientCuredForStaff(Long villageId);
 
     public List<UserRequet> getNewPatientOneDay(String time,Long villageId) throws ParseException;
 

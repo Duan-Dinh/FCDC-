@@ -26,15 +26,15 @@ public class StaffController {
     @Autowired
     private UserService userService;
     @GetMapping("/allPatientForStaff")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAll(@PathParam("page") Integer page,@PathParam("villageId") Long villageId) {
+        public ResponseEntity<CommonRes> getAll(@PathParam("villageId") Long villageId,@PathParam("search") String search,@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.getAllPatientForStaff(villageId,page);
+            List<ListUserRequest> listUserRequests = userService.getAllPatientForStaff(villageId,search,key,page);
             ListUserRes listUserRes = new ListUserRes();
             listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(userService.countByPatientsForStaff(villageId));
+            listUserRes.setTotal(userService.countByPatientsForStaff(villageId,search,key));
             commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -99,23 +99,23 @@ public class StaffController {
         return ResponseEntity.ok(commonRes);
     }
 
-    @GetMapping("/allPatientCuredForStaff")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> getAllCured(@PathParam("page") Integer page,@PathParam("villageId") Long villageId) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.getAllPatientsCuredForStaff(villageId,page);
-            ListUserRes listUserRes = new ListUserRes();
-            listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(userService.countAllPatientCuredForStaff(villageId));
-            commonRes.setData(listUserRes);
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
+//    @GetMapping("/allPatientCuredForStaff")// fomat sang DTO trả về dữ liệu
+//    public ResponseEntity<CommonRes> getAllCured(@PathParam("page") Integer page,@PathParam("villageId") Long villageId) {
+//        CommonRes commonRes = new CommonRes();
+//        try {
+//            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+//            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+//            List<ListUserRequest> listUserRequests = userService.getAllPatientsCuredForStaff(villageId,page);
+//            ListUserRes listUserRes = new ListUserRes();
+//            listUserRes.setListUserRequests(listUserRequests);
+//            listUserRes.setTotal(userService.countAllPatientCuredForStaff(villageId));
+//            commonRes.setData(listUserRes);
+//        } catch (Exception e){
+//            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+//            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+//        }
+//        return ResponseEntity.ok(commonRes);
+//    }
 
     @GetMapping("/searchPatientCuredForStaffByText")// fomat sang DTO trả về dữ liệu
     public ResponseEntity<CommonRes> searchAllByText(@PathParam("page") Integer page,@PathParam("key") String key, @PathParam("villageId") Long villageId) {
