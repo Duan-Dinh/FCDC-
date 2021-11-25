@@ -109,16 +109,28 @@ public class NewServiceImpl implements NewService {
     }
 
     @Override
-    public List<NewRequet> searchByTitle(String text) {
-        List<New> searchList = newRepository.findByTitleContaining(text);
+    public List<NewRequet> searchByTitle(String text,Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE_NEW);
+        List<New> searchList = newRepository.findAllNewsByTitle(text,pageable);
         List<NewRequet> newRequets = new ArrayList<>();
         for (New news : searchList) {
-            if (news.getFilesNew() != null) {
-                NewRequet newRequet = newConvert.convertToNewRequest(news);
-                newRequets.add(newRequet);
+                newRequets.add(newConvert.convertToNewRequest(news));
             }
-        }
         return newRequets;
+    }
+
+    @Override
+    public int countsearchByTitle(String text) {
+        List<New> searchList = newRepository.findAllNewsByTitle(text);
+        if(searchList == null){
+            return 0;
+        }
+        return searchList.size();
     }
 
     @Override
@@ -141,12 +153,20 @@ public class NewServiceImpl implements NewService {
         List<New> newList=  newRepository.findAllNewsWithPagination(pageable);
         List<NewRequet> newRequets = new ArrayList<>();
         for (New news : newList) {
-            if (news.getFilesNew() != null) {
-                NewRequet newRequet = newConvert.convertToNewRequest(news);
-                newRequets.add(newRequet);
+                newRequets.add(newConvert.convertToNewRequest(news));
             }
-        }
+
         return newRequets;
+    }
+
+    @Override
+    public int countByTesxt() {
+        List<New> searchList = newRepository.findAllNewsWithPagination();
+        if(searchList == null){
+            return 0;
+        }
+        return searchList.size();
+
     }
 
 

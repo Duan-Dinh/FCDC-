@@ -19,10 +19,12 @@ public interface NewService {
 
     public List<NewRequet> getTopNew(Integer page);
 
-    public List<NewRequet> searchByTitle(String text);
+    public List<NewRequet> searchByTitle(String text,Integer page);
 
+    public int countsearchByTitle(String text);
     //get by id
     public NewRequet getNew(long id);
 
     public List<NewRequet> getAllNew(Integer page);
+    public int countByTesxt();
 }

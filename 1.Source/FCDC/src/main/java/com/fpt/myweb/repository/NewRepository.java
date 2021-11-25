@@ -18,9 +18,18 @@ public interface NewRepository extends JpaRepository<New,Long> {
 
     List<New> findTop20ByTitleContainingOrderById(String title);
 
-    @Query(value = "SELECT u FROM New u ORDER BY id")
+    @Query(value = "SELECT n FROM New n ORDER BY id")
     List<New> findAllNewsWithPagination(Pageable pageable);
+    @Query(value = "SELECT n FROM New n ORDER BY id")
+    List<New> findAllNewsWithPagination();
+
+    @Query(value = "SELECT n FROM New n where title like %?1% ORDER BY id")
+    List<New> findAllNewsByTitle(String text,Pageable pageable);
+    @Query(value = "SELECT n FROM New n where title like %?1% ORDER BY id")
+    List<New> findAllNewsByTitle(String text);
+
     List<New> findByTitleContaining(String title);
+
 
 
 }

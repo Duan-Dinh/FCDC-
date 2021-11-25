@@ -32,7 +32,7 @@ public class NewController {
             List<NewRequet> newList = newService.getAllNew(page);
             NewRes newRes = new NewRes();
             newRes.setNewRequets(newList);
-            newRes.setTotal(newList.size());
+            newRes.setTotal(newService.countByTesxt());
             commonRes.setData(newRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -130,15 +130,15 @@ public class NewController {
 
     // get usser by title in New
     @GetMapping("/searchTitle")
-    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key) {
+    public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<NewRequet> newRequets = newService.searchByTitle(key);
+            List<NewRequet> newRequets = newService.searchByTitle(key,page);
             NewRes newRes = new NewRes();
             newRes.setNewRequets(newRequets);
-            newRes.setTotal(newRequets.size());
+            newRes.setTotal(newService.countsearchByTitle(key));
             commonRes.setData(newRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
