@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class DailyReportServiceImpl implements DailyReportService {
         daily_report.setOxygenConcentration(report.getOxygenConcentration());
         if (report.getOxygenConcentration() <= 92 || report.getBodyTemperature() >= 37.5 || report.getBreathingRate() < 16 || report.getBreathingRate() > 20) {
             daily_report.setStatus("Lưu ý");
-        }else {
+        } else {
             daily_report.setStatus("Bình thường");
         }
         daily_report.setBreathingRate(report.getBreathingRate());
@@ -72,7 +73,7 @@ public class DailyReportServiceImpl implements DailyReportService {
         daily_report.setDateTime(strDate);
         if (report.getOxygenConcentration() <= 92 || report.getBodyTemperature() >= 37.5 || report.getBreathingRate() < 16 || report.getBreathingRate() > 20) {
             user.setCurrentStatus("Lưu ý");
-        }else {
+        } else {
             user.setCurrentStatus("Bình thường");
         }
         if (!StringUtils.isEmpty(report.getListSysptomId())) {
@@ -107,21 +108,26 @@ public class DailyReportServiceImpl implements DailyReportService {
     }
 
     @Override
-    public List<Daily_Report> getOneByUserID(Long id,Integer page) {
-        if(page == null){
-            page = 0;
-        }else{
-            page--;
+    public List<Daily_Report> getOneByUserID(Long id, Integer page) {
+        List<Daily_Report> daily_report = new ArrayList<>();
+        if (page != -1) {
+            if (page == null) {
+                page = 0;
+            } else {
+                page--;
+            }
+            Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+             daily_report = daily_reportRepository.findAllByUserId(id, pageable);
+        }else {
+            daily_report= daily_reportRepository.findAllByUserId(id);
         }
-        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<Daily_Report> daily_report = daily_reportRepository.findAllByUserId(id,pageable);
         return daily_report;
     }
 
     @Override
     public int countAllUserID(Long id) {
         List<Daily_Report> searchList = daily_reportRepository.findAllByUserId(id);
-        if(searchList == null){
+        if (searchList == null) {
             return 0;
         }
         return searchList.size();

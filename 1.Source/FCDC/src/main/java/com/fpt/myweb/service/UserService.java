@@ -102,4 +102,5 @@ public interface UserService {
 
     public List<ChartStaffRes> getChartForStaff(String startDate, String endDate,Long villageId) throws ParseException;
 
+    public int totalCurrentF0(Long villageId);
 }

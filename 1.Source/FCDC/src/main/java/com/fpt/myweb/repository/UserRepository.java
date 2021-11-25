@@ -111,4 +111,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query( value = "SELECT * FROM user as u WHERE u.id    IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4", nativeQuery = true)
     List<User> sentReport(String time);
 
+    @Query(value = "SELECT count(*) FROM fcdc.user where village_id = ?1 and is_active = 1 and result like 'F0' and role_id =4",nativeQuery = true)
+    int totalCurrentF0(Long villageId);
 }

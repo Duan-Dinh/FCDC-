@@ -1100,4 +1100,9 @@ public class UserServiceImpl implements UserService {
         return chartStaffResList;
     }
 
+    @Override
+    public int totalCurrentF0(Long villageId) {
+        return userRepository.totalCurrentF0(villageId);
+    }
+
 }

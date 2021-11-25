@@ -151,4 +151,17 @@ public class StaffController {
         return ResponseEntity.ok(commonRes);
     }
 
+    @GetMapping("/totalCurrentF0")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> totalCurrentF0(@PathParam("villageId") Long villageId) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            commonRes.setData(userService.totalCurrentF0(villageId));
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
 }
