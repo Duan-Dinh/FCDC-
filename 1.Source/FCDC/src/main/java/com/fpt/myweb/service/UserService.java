@@ -73,12 +73,12 @@ public interface UserService {
     public void exportUserPatient(HttpServletResponse file,String time) throws IOException, ParseException;
 
     // oke
-    public List<ListUserRequest> notSentReport(String time,Long villageId,Integer page);
+    public List<ListUserRequest> notSentReport(String time,Long villageId,String text,Integer page);
 
-    public int countNotSentReport(String time,Long villageId);
+    public int countNotSentReport(String time,Long villageId,String text);
 
-    public List<ListUserRequest> sentReport(String time,Long villageId,Integer page);
-    public int countSentReport(String time,Long villageId);
+    public List<ListUserRequest> sentReport(String time,Long villageId,String text,Integer page);
+    public int countSentReport(String time,Long villageId,String text);
 
     public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException;
     public List<ListUserRequest> getAllPatientForDoctor(String doctorId,Integer page);
