@@ -279,15 +279,15 @@ public class UserController {
     }
 
     @GetMapping("/notSentReport")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> notSentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("page") Integer page) {
+    public ResponseEntity<CommonRes> notSentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.notSentReport(time,villageId,page);
+            List<ListUserRequest> listUserRequests = userService.notSentReport(time,villageId,key,page);
             ListUserRes listUserRes = new ListUserRes();
             listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(userService.countNotSentReport(time,villageId));
+            listUserRes.setTotal(userService.countNotSentReport(time,villageId,key));
             commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -296,15 +296,15 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
     @GetMapping("/sentReport")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> sentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("page") Integer page) {
+    public ResponseEntity<CommonRes> sentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.sentReport(time,villageId,page);
+            List<ListUserRequest> listUserRequests = userService.sentReport(time,villageId,key,page);
             ListUserRes listUserRes = new ListUserRes();
             listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(userService.countSentReport(time,villageId));
+            listUserRes.setTotal(userService.countSentReport(time,villageId,key));
             commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

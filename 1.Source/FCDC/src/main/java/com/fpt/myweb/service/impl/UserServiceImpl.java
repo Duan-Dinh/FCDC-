@@ -834,14 +834,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ListUserRequest> notSentReport(String time,Long villageId,Integer page) {
+    public List<ListUserRequest> notSentReport(String time,Long villageId,String text,Integer page) {
         if(page == null){
             page = 0;
         }else{
             page--;
         }
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> searchList = userRepository.UserNotSentReport(time,villageId,pageable);
+        List<User> searchList = userRepository.UserNotSentReport(time,villageId,text,pageable);
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : searchList) {
 //            if (Integer.parseInt(user.getIs_active()) == 1&& user.getVillage().getId() == villageId.longValue()) {
@@ -852,8 +852,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int countNotSentReport(String time, Long villageId) {
-        List<User> searchList = userRepository.UserNotSentReport(time,villageId);
+    public int countNotSentReport(String time, Long villageId,String text) {
+        List<User> searchList = userRepository.UserNotSentReport(time,villageId,text);
         if(searchList == null){
             return 0;
         }
@@ -861,14 +861,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ListUserRequest> sentReport(String time,Long villageId,Integer page) {
+    public List<ListUserRequest> sentReport(String time,Long villageId,String text,Integer page) {
         if(page == null){
             page = 0;
         }else{
             page--;
         }
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> searchList = userRepository.userSentReport(time,villageId,pageable);
+        List<User> searchList = userRepository.userSentReport(time,villageId,text,pageable);
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : searchList) {
            // if (Integer.parseInt(user.getIs_active()) == 1) {
@@ -879,8 +879,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int countSentReport(String time, Long villageId) {
-        List<User> searchList = userRepository.userSentReport(time,villageId);
+    public int countSentReport(String time, Long villageId,String text) {
+        List<User> searchList = userRepository.userSentReport(time,villageId,text);
         if(searchList == null){
             return 0;
         }
