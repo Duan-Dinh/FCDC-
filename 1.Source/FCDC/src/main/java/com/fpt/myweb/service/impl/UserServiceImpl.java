@@ -47,6 +47,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -257,11 +258,12 @@ public class UserServiceImpl implements UserService {
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
 
         if(user.getResult().equals("-")){
+            user.setCreatedDate(new Date());
             user.setResult("F0");
         }else{
             user.setResult("-");
+            user.setModifiedDate(new Date());
         }
-        user.setModifiedDate(new Date());
         UserRequet userRequet = userConvert.convertToUserRequest(user);
         userRepository.save(user);
         return userRequet;
@@ -576,6 +578,156 @@ public class UserServiceImpl implements UserService {
 
         }
         return false;
+    }
+
+    @Override
+    public List<UserRequet> importUserPatient1(MultipartFile file, String type) throws IOException, ParseException {
+        String regexPhone = "^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$";
+        String regexDate = "^(0[1-9]|[12][0-9]|[3][01])/(0[1-9]|1[012])/(19[0-9]{2}|20[0-9]{2})$";
+        String regexName = "^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]*( [aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]+)*$";
+        boolean checkDataExcel = true;
+        List<User> userList = new ArrayList<>();
+        List<User> userListDuplicatePhone = new ArrayList<>();
+        List<String> excelDuplicatePhone = new ArrayList<>();
+        List<String> excelDuplicatePhoneCheck = new ArrayList<>();
+        List<UserRequet> userRequets = new ArrayList<>();
+        String path = env.getProperty("folder.user.imports");
+        File fileUpload = new File(path);
+        if (!fileUpload.exists()) {
+            fileUpload.mkdir();
+        }
+        if (fileUpload != null) {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            // save file
+            InputStream inputStream = null;
+            File fileUrl = null;
+            inputStream = file.getInputStream();
+            String name = file.getResource().getFilename();
+            path += System.currentTimeMillis() + "_" + name;
+            fileUrl = new File(path);
+            OutputStream outStream = new FileOutputStream(fileUrl);
+            FileCopyUtils.copy(inputStream, outStream);
+            // import user
+            FileInputStream inputStreamImport = new FileInputStream(fileUrl);
+            Workbook workbook = new XSSFWorkbook(inputStreamImport);
+            Sheet firstSheet = workbook.getSheetAt(0);
+            Iterator<Row> iterator = firstSheet.iterator();
+            iterator.next();
+            while (iterator.hasNext()) {
+                Row nextRow = iterator.next();
+                Iterator<Cell> cellIterator = nextRow.cellIterator();
+                User user = new User();
+                // cellIterator.next();
+                while (cellIterator.hasNext()) {
+                    Cell cell = cellIterator.next();
+                    if (cell.getColumnIndex() == 0) {
+                        if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexName, cell.getStringCellValue())) {
+                            user.setFullname(cell.getStringCellValue());
+                        }
+                    } else if (cell.getColumnIndex() == 1) {
+                        if (!cell.getStringCellValue().isEmpty() && (cell.getStringCellValue().equals("Nam") || cell.getStringCellValue().equals("Nữ"))) {
+                            user.setGender(cell.getStringCellValue());
+                        }
+                    } else if (cell.getColumnIndex() == 5) {
+                        if (!cell.getStringCellValue().isEmpty()) {
+                            String address = cell.getStringCellValue();
+                            Village village = villageRepository.findByName(address);
+                            if (village != null) {
+                                user.setVillage(village);
+                            }
+                        }
+                    } else if (cell.getColumnIndex() == 4) {
+                        if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexPhone, cell.getStringCellValue())) {
+                            user.setPhone(cell.getStringCellValue());
+                        }
+                    } else if (cell.getColumnIndex() == 3) {
+                        if (!cell.getStringCellValue().isEmpty()) {
+                            user.setEmail(cell.getStringCellValue());
+                        }
+                    } else if (cell.getColumnIndex() == 6) {
+                        if (!cell.getStringCellValue().isEmpty()) {
+                            user.setAddress(cell.getStringCellValue());
+                        }
+                    } else if (cell.getColumnIndex() == 2) {
+                        if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexDate, cell.getStringCellValue())) {
+                            try {
+                                Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
+                                user.setBirthOfdate(date);
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    } else if (cell.getColumnIndex() == 7) {
+                        if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexDate, cell.getStringCellValue()) && type.equals("patient")) {
+                            try {
+                                Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
+                                user.setDateStart(date);
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    }
+                }
+                if (type.equals("patient")) {
+                    Role role = roleRepository.findByName("patient");
+                    user.setRole(role);
+                    user.setResult("F0");
+                } else if (type.equals("staff")) {
+                    Role role = roleRepository.findByName("staff");
+                    user.setRole(role);
+                } else if (type.equals("doctor")) {
+                    Role role = roleRepository.findByName("doctor");
+                    user.setRole(role);
+                }
+                user.setIs_active("1");
+                user.setTypeTakeCare("-1");
+                user.setPassword(passwordEncoder.encode("123"));
+                userList.add(user);
+                excelDuplicatePhone.add(user.getPhone());
+            }
+            workbook.close();
+            inputStream.close();
+        }
+        // check duplicate in file excel
+        for (User user : userList) {
+            if (!excelDuplicatePhoneCheck.contains(user.getPhone())) {
+                excelDuplicatePhoneCheck.add(user.getPhone());
+            }
+        }
+        //check Data null in file excel
+        for (User user : userList) {
+            if (type.equals("patient")) {
+                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null || user.getEmail() == null || user.getVillage() == null || user.getDateStart() == null) {
+                    checkDataExcel = false;
+                }
+            } else {
+                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null || user.getEmail() == null || user.getVillage() == null ) {
+                    checkDataExcel = false;
+                }
+            }
+        }
+
+        // check duplicate in db
+        if (excelDuplicatePhoneCheck.size() == excelDuplicatePhone.size() && checkDataExcel) {
+            for (User user : userList) {
+                User checkPhone = userRepository.findByPhone(user.getPhone());
+                if (checkPhone != null) {
+                    userListDuplicatePhone.add(user);
+                }
+            }
+            if (userListDuplicatePhone.size() == 0) {
+                for (User user : userList) {
+                    user.setCreatedDate(new Date());
+                    userRepository.save(user);
+                    //smsService.sendGetJSON(user.getPhone(), "Hello");
+                }
+                return null;
+            }
+            for (User user : userListDuplicatePhone) {
+                userRequets.add(userConvert.convertToUserRequest(user));
+            }
+        }
+        return userRequets;
     }
 
     @Override
@@ -1076,7 +1228,7 @@ public class UserServiceImpl implements UserService {
         DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
-            if (sdf.format(user.getCreatedDate()).equals(time) && user.getRole().getId() == 4L && user.getResult().equals("F0") ) {
+            if (sdf.format(user.getCreatedDate()).equals(time) && user.getRole().getId() == 4L ) {
                 if (Integer.parseInt(user.getIs_active()) == 1) {
                     userRequets.add(userConvert.convertToUserRequest(user));
                 }

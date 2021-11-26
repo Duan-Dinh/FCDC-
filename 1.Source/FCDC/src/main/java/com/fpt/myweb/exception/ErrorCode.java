@@ -7,6 +7,7 @@ public enum ErrorCode {
 
     PROCESS_SUCCESS("00000", "All thing done"),
     AUTHENTICATION_FAILED("00002", "Authentication failed"),
+    EXCEL_DUPLICATE("00003", "Duplicate phone in excel OR format phone OR no data in cell, column"),
 
     NOT_FOUND_ID("U001", "Not found ID = "),
     NOT_FOUND_ROLE_ID("R001", "Not found role ID = "),

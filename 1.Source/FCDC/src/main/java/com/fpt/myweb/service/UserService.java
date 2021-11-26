@@ -66,6 +66,8 @@ public interface UserService {
 
     public boolean importUserPatient(MultipartFile file) throws IOException, ParseException;
 
+    public List<UserRequet> importUserPatient1(MultipartFile file, String type) throws IOException, ParseException;
+
     public void importUserStaff(MultipartFile file) throws IOException, ParseException;
     public void importUserDoctor(MultipartFile file) throws IOException, ParseException;
 //    public void CreateCell(Row row, int columnCount, Object value, CellStyle style) ;
