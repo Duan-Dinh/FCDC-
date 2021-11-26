@@ -26,15 +26,15 @@ public class StaffController {
     @Autowired
     private UserService userService;
     @GetMapping("/allPatientForStaff")// fomat sang DTO trả về dữ liệu
-        public ResponseEntity<CommonRes> getAll(@PathParam("villageId") Long villageId,@PathParam("search") String search,@PathParam("key") String key,@PathParam("page") Integer page) {
+        public ResponseEntity<CommonRes> getAll(@PathParam("villageId") Long villageId,@PathParam("search") String key,@PathParam("key") String text,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.getAllPatientForStaff(villageId,search,key,page);
+            List<ListUserRequest> listUserRequests = userService.getAllPatientForStaff(villageId,key,text,page);
             ListUserRes listUserRes = new ListUserRes();
             listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(userService.countByPatientsForStaff(villageId,search,key));
+            listUserRes.setTotal(userService.countByPatientsForStaff(villageId,key,text));
             commonRes.setData(listUserRes);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

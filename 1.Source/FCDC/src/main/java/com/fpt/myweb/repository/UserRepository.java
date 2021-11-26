@@ -19,9 +19,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     //findAllPatientForStaff
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = 'F0' and fullname like %?2% ORDER BY id")
-    List<User> findAllPatientForStaff(Long village,String search,String key ,Pageable pageable);
+    List<User> findAllPatientForStaff(Long village,String key,String search ,Pageable pageable);
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = 'F0' and fullname like %?2% ORDER BY id")
-    List<User> findAllPatientForStaff(Long village,String search,String key );
+    List<User> findAllPatientForStaff(Long village,String key,String search );
 
     //searchTextForStaff
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = 'F0' and fullname like %?2% ORDER BY id")
@@ -41,10 +41,10 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     //getAllPatientsCuredForStaff
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' and fullname like %?2% ORDER BY id")
-    List<User> findAllPatientsCuredForStaff(Long village,String search,String key ,Pageable pageable);
+    List<User> findAllPatientsCuredForStaff(Long village,String key,String search ,Pageable pageable);
 
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' and fullname like %?2% ORDER BY id")
-    List<User> findAllPatientsCuredForStaff(Long village,String search,String key );
+    List<User> findAllPatientsCuredForStaff(Long village,String key,String search );
     //searchAllPatientsCuredForStaff
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' and fullname like %?2% ORDER BY id")
     List<User> searchAllPatientsCuredForStaff(Long village ,String text,Pageable pageable);

@@ -85,9 +85,9 @@ public interface UserService {
     public int countAllPatientForDoctor(String doctorId);
     public List<UserRequet> getAllPatientForStaff(Long VillageId);
 
-    public List<ListUserRequest> getAllPatientForStaff(Long villageId,String search,String key,Integer page);
+    public List<ListUserRequest> getAllPatientForStaff(Long villageId,String search ,String key ,Integer page);
 
-    public int countByPatientsForStaff(Long villageId,String search,String key);
+    public int countByPatientsForStaff(Long villageId,String search ,String key);
 
 //    public List<UserRequet> getNewPatientOneDay1(String time,Long villageId,Integer page) throws ParseException;
 

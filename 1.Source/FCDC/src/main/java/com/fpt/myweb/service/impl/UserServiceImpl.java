@@ -838,7 +838,7 @@ public class UserServiceImpl implements UserService {
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         List<User> searchList = null;
         Pageable pageable = null;
-        if(key.equals("")) {
+        if(key.equals("-")) {
             if (page == null) {
                 page = 0;
             } else {
@@ -868,7 +868,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public int countNotSentAndSentReport(String time, Long villageId,String text,String key) {
         List<User> searchList = new ArrayList<>();
-        if(key.equals("")) {
+        if(key.equals("-")) {
              searchList   =userRepository.UserNotSentReport(time, villageId, text,key);
             if (searchList == null) {
                 return 0;
@@ -974,7 +974,7 @@ public class UserServiceImpl implements UserService {
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         List<User> searchList = null;
         Pageable pageable = null;
-        if(key.equals("")) {
+        if(key.equals("-")) {
             if (page == null) {
                 page = 0;
             } else {
@@ -1004,7 +1004,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public int countByPatientsForStaff(Long villageId,String search,String key) {
         List<User> searchList = new ArrayList<>();
-        if(key.equals("")) {
+        if(key.equals("-")) {
             searchList   =userRepository.findAllPatientsCuredForStaff( villageId,search,key);
             if (searchList == null) {
                 return 0;
