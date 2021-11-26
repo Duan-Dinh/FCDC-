@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/report")
 public class ReportController {
     @Autowired
-    private UserService userService;
-    @Autowired
     private DailyReportService dailyReportService;
 
     @PostMapping(value = "/addReport", consumes = {MediaType.ALL_VALUE})
@@ -112,23 +110,7 @@ public class ReportController {
         }
         return ResponseEntity.ok(commonRes);
     }
-    @GetMapping("/notSentAndSentReport")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> notSentAndSentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("status") String status,@PathParam("page") Integer page) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.notSentAndSentReport(time,villageId,key,status,page);
-            ListUserRes listUserRes = new ListUserRes();
-            listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(userService.countNotSentAndSentReport(time,villageId,key,status));
-            commonRes.setData(listUserRes);
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
+
     // getUserIdReport
     @GetMapping(value = "/getByUserId")
     public ResponseEntity<CommonRes> getUserIdReport(@PathParam("userId") Long userId,@PathParam("page") Integer page) {
