@@ -201,7 +201,7 @@ public class UserController {
 
     // getOne
     @GetMapping(value = "/get/{id}")
-    public ResponseEntity<CommonRes> getUser1(@PathVariable("id") long id) {
+    public ResponseEntity<CommonRes> getUser(@PathVariable("id") long id) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
@@ -279,7 +279,7 @@ public class UserController {
     }
 
     @GetMapping("/notSentAndSentReport")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> notSentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("text") String text,@PathParam("page") Integer page) {
+    public ResponseEntity<CommonRes> notSentAndSentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("text") String text,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
