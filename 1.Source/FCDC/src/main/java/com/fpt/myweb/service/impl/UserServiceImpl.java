@@ -986,7 +986,7 @@ public class UserServiceImpl implements UserService {
                 listUserRequests.add(userConvert.convertToListUserRequest(user));
             }
         }
-        if (key.equals("FO")) {
+        if (key.equals("F0")) {
             if (page == null) {
                 page = 0;
             } else {
@@ -1010,7 +1010,7 @@ public class UserServiceImpl implements UserService {
                 return 0;
             }
         }
-        if (key.equals("FO")){
+        if (key.equals("F0")){
             searchList   =userRepository.findAllPatientForStaff(villageId,search,key);
             if (searchList == null) {
                 return 0;

@@ -257,10 +257,6 @@ public class UserController {
         }
         return ResponseEntity.ok(commonRes);
     }
-    //export
-
-
-
     @PutMapping(value = "changePass")
     public ResponseEntity<CommonRes> changePass(@PathParam("id") long id,@PathParam("newPass") String newPass) {
         CommonRes commonRes = new CommonRes();
@@ -278,23 +274,6 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
 
-    @GetMapping("/notSentAndSentReport")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> notSentAndSentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("status") String status,@PathParam("page") Integer page) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.notSentAndSentReport(time,villageId,key,status,page);
-            ListUserRes listUserRes = new ListUserRes();
-            listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(userService.countNotSentAndSentReport(time,villageId,key,status));
-            commonRes.setData(listUserRes);
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
 //    @GetMapping("/sentReport")// fomat sang DTO trả về dữ liệu
 //    public ResponseEntity<CommonRes> sentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
 //        CommonRes commonRes = new CommonRes();
@@ -363,7 +342,7 @@ public class UserController {
         }
         return ResponseEntity.ok(commonRes);
     }
-
+    //export
     @GetMapping("/exportUer")
     public void exportUer(HttpServletResponse response, @PathParam("time") String time) throws IOException, ParseException {
         response.setContentType("application/octet-stream");
