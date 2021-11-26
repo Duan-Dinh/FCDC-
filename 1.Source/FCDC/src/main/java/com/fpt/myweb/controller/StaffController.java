@@ -26,7 +26,7 @@ public class StaffController {
     @Autowired
     private UserService userService;
     @GetMapping("/allPatientForStaff")// fomat sang DTO trả về dữ liệu
-        public ResponseEntity<CommonRes> getAll(@PathParam("villageId") Long villageId,@PathParam("search") String key,@PathParam("key") String text,@PathParam("page") Integer page) {
+        public ResponseEntity<CommonRes> getAll(@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("text") String text,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
