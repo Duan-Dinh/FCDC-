@@ -141,8 +141,17 @@ public class DailyReportServiceImpl implements DailyReportService {
             page--;
         }
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<Daily_Report> daily_report = daily_reportRepository.findByDateTime(time,villaId,key,pageable);
+        List<Daily_Report> daily_report = daily_reportRepository.findBySentReport(time,villaId,key,pageable);
         return daily_report;
+    }
+
+    @Override
+    public int countSentReport(String time, Long villaId, String key) {
+        List<Daily_Report> searchList = daily_reportRepository.findBySentReport(time,villaId,key);
+        if(searchList == null){
+            return 0;
+        }
+        return searchList.size();
     }
 
 

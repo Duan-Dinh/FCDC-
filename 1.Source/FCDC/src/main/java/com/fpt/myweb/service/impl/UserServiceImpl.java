@@ -1035,32 +1035,32 @@ public class UserServiceImpl implements UserService {
         return searchList.size();
     }
 
-//    @Override
-//    public List<ListUserRequest> sentReport(String time,Long villageId,String text,Integer page) {
-//        if(page == null){
-//            page = 0;
-//        }else{
-//            page--;
-//        }
-//        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-//        List<User> searchList = userRepository.userSentReport(time,villageId,text,pageable);
-//        List<ListUserRequest> listUserRequests = new ArrayList<>();
-//        for (User user : searchList) {
-//           // if (Integer.parseInt(user.getIs_active()) == 1) {
-//                listUserRequests.add(userConvert.convertToListUserRequest(user));
-//          //  }
-//        }
-//        return listUserRequests;
-//    }
+    @Override
+    public List<ListUserRequest> notSentReport(String time,Long villageId,String key,Integer page) {
+        if(page == null){
+            page = 0;
+        }else{
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<User> searchList = userRepository.UserNotSentReports(time,villageId,key,pageable);
+        List<ListUserRequest> listUserRequests = new ArrayList<>();
+        for (User user : searchList) {
+           // if (Integer.parseInt(user.getIs_active()) == 1) {
+                listUserRequests.add(userConvert.convertToListUserRequest(user));
+          //  }
+        }
+        return listUserRequests;
+    }
 //
-//    @Override
-//    public int countSentReport(String time, Long villageId,String text) {
-//        List<User> searchList = userRepository.userSentReport(time,villageId,text);
-//        if(searchList == null){
-//            return 0;
-//        }
-//        return searchList.size();
-//    }
+    @Override
+    public int countNotSentReport(String time, Long villageId,String key) {
+        List<User> searchList = userRepository.UserNotSentReports(time,villageId,key);
+        if(searchList == null){
+            return 0;
+        }
+        return searchList.size();
+    }
 
     @Override
     public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException {

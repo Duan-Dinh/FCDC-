@@ -178,7 +178,7 @@ public class ReportController {
                 }
             }
             ReportRes reportRes = new ReportRes();
-            reportRes.setTotal(reports.size());
+            reportRes.setTotal(dailyReportService.countSentReport(time,villageId,key));
             reportRes.setReportDetails(reports);
 
             commonRes.setData(reportRes);

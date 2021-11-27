@@ -23,6 +23,7 @@ public interface Daily_ReportRepository extends JpaRepository<Daily_Report,Long>
     List<Daily_Report> findSentReportOnedate(String time,Pageable pageable);
 
  @Query( value = "SELECT d.* FROM fcdc.daily_report d,user u where u.id = d.user_id and d.date_time like ?1 and u.is_active = 1 and u.village_id = ?2 and u.fullname like %?3%", nativeQuery = true)
-    List<Daily_Report> findByDateTime(String time,Long villaId,String key,Pageable pageable);
-
+    List<Daily_Report> findBySentReport(String time,Long villaId,String key,Pageable pageable);
+    @Query( value = "SELECT d.* FROM fcdc.daily_report d,user u where u.id = d.user_id and d.date_time like ?1 and u.is_active = 1 and u.village_id = ?2 and u.fullname like %?3%", nativeQuery = true)
+    List<Daily_Report> findBySentReport(String time,Long villaId,String key);
 }

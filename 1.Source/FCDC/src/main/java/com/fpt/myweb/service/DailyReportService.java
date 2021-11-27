@@ -18,7 +18,7 @@ public interface DailyReportService {
     public int countAllUserID(Long id);
 
     List<Daily_Report> getByReport(String time,Long villaId,String key,Integer page);
-
+    public int countSentReport(String time,Long villaId,String key);
     void editFeeback(FeebackReqest feebackReqest);
 
 

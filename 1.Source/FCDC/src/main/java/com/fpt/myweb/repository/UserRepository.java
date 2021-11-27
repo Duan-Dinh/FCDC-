@@ -60,6 +60,14 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> UserNotSentReport(String time,Long village,String text,String key);
 
 
+   //notsentreport
+    @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0' and fullname like %?3% ORDER BY id", nativeQuery = true)
+    List<User> UserNotSentReports(String time,Long village,String key,Pageable pageable);
+
+    @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0' and fullname like %?3% ORDER BY id", nativeQuery = true)
+    List<User> UserNotSentReports(String time,Long village,String key);
+
+
     //sentreport
     @Query( value = "SELECT * FROM user as u WHERE u.id    IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0'and fullname like %?3% ORDER BY id", nativeQuery = true)
     List<User> userSentReport(String time,Long village,String text,String key,Pageable pageable);

@@ -79,8 +79,8 @@ public interface UserService {
 
     public int countNotSentAndSentReport(String time,Long villageId,String text,String key);
 
-//    public List<ListUserRequest> sentReport(String time,Long villageId,String text,Integer page);
-//    public int countSentReport(String time,Long villageId,String text);
+    public List<ListUserRequest> notSentReport(String time,Long villageId,String key,Integer page);
+    public int countNotSentReport(String time,Long villageId,String key);
 
     public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException;
     public List<ListUserRequest> getAllPatientForDoctor(String doctorId,Integer page);
