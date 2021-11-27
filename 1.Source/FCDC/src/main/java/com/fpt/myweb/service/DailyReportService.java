@@ -16,7 +16,8 @@ public interface DailyReportService {
     Daily_Report getOneReport(Long id);
     List<Daily_Report> getOneByUserID(Long id,Integer page);
     public int countAllUserID(Long id);
-    List<Daily_Report> getByDate(String time);
+
+    List<Daily_Report> getByReport(String time,Long villaId,String key,Integer page);
 
     void editFeeback(FeebackReqest feebackReqest);
 

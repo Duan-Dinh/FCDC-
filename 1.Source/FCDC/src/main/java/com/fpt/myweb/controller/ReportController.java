@@ -152,12 +152,12 @@ public class ReportController {
     // truyền vào 1 ngày và trả về nhưng thằng đã gửi report và tình trạng report đó
 
     @GetMapping(value = "/getAllSentReportOnedate")
-    public ResponseEntity<CommonRes> getAllSentReportOnedate(@RequestParam("time") String time , @PathParam("villageId") Long villageId) {
+    public ResponseEntity<CommonRes> getAllSentReportOnedate(@RequestParam("time") String time , @PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<Daily_Report> daily_reports = dailyReportService.getByDate(time);
+            List<Daily_Report> daily_reports = dailyReportService.getByReport(time,villageId,key,page);
             List<ReportDetail> reports = new ArrayList<>();
             if (!daily_reports.isEmpty()) {
                 for (Daily_Report report : daily_reports) {

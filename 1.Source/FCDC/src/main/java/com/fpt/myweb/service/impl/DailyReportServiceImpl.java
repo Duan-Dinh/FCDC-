@@ -134,9 +134,14 @@ public class DailyReportServiceImpl implements DailyReportService {
     }
 
     @Override
-    public List<Daily_Report> getByDate(String time) {
-
-        List<Daily_Report> daily_report = daily_reportRepository.findByDateTime(time);
+    public List<Daily_Report> getByReport(String time,Long villaId,String key,Integer page) {
+        if (page == null) {
+            page = 0;
+        } else {
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        List<Daily_Report> daily_report = daily_reportRepository.findByDateTime(time,villaId,key,pageable);
         return daily_report;
     }
 

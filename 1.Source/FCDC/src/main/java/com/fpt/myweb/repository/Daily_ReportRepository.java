@@ -22,7 +22,7 @@ public interface Daily_ReportRepository extends JpaRepository<Daily_Report,Long>
     @Query(value = "SELECT d FROM Daily_Report d where dateTime like %?1% ORDER BY id")
     List<Daily_Report> findSentReportOnedate(String time,Pageable pageable);
 
-// @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4", nativeQuery = true)
-    List<Daily_Report> findByDateTime(String time);
+ @Query( value = "SELECT d.* FROM fcdc.daily_report d,user u where u.id = d.user_id and d.date_time like ?1 and u.is_active = 1 and u.village_id = ?2 and u.fullname like %?3%", nativeQuery = true)
+    List<Daily_Report> findByDateTime(String time,Long villaId,String key,Pageable pageable);
 
 }
