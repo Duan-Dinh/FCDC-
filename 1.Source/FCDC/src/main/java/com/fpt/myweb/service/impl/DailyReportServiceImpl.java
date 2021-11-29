@@ -2,8 +2,10 @@ package com.fpt.myweb.service.impl;
 
 
 import com.fpt.myweb.common.Contants;
+import com.fpt.myweb.convert.DailyConvert;
 import com.fpt.myweb.dto.request.FeebackReqest;
 import com.fpt.myweb.dto.request.Report;
+import com.fpt.myweb.dto.response.ReportDetail;
 import com.fpt.myweb.entity.*;
 import com.fpt.myweb.repository.*;
 import com.fpt.myweb.service.DailyReportService;
@@ -39,7 +41,8 @@ public class DailyReportServiceImpl implements DailyReportService {
     @Autowired
     private ExerciseRepository exerciseRepository;
 
-
+    @Autowired
+    private DailyConvert  dailyConvert;
     @Override
     public Page<Daily_Report> getReport(Integer page) {
         if (page == null) {
@@ -47,7 +50,7 @@ public class DailyReportServiceImpl implements DailyReportService {
         } else {
             page--;
         }
-        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page,Contants.PAGE_SIZE);
         Page<Daily_Report> searchList = daily_reportRepository.findAll(pageable);
         return searchList;
     }
@@ -104,6 +107,7 @@ public class DailyReportServiceImpl implements DailyReportService {
 
     @Override
     public Daily_Report getOneReport(Long id) {
+
         return daily_reportRepository.findById(id).orElse(null);
     }
 
@@ -134,15 +138,20 @@ public class DailyReportServiceImpl implements DailyReportService {
     }
 
     @Override
-    public List<Daily_Report> getByReport(String time,Long villaId,String key,Integer page) {
+    public List<ReportDetail> getByReport(String time, Long villaId, String key, Integer page) {
         if (page == null) {
             page = 0;
         } else {
             page--;
         }
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<Daily_Report> daily_report = daily_reportRepository.findBySentReport(time,villaId,key,pageable);
-        return daily_report;
+        List<Daily_Report> daily_reports = daily_reportRepository.findBySentReport(time,villaId,key,pageable);
+        List<ReportDetail> reports = new ArrayList<>();
+            for (Daily_Report report : daily_reports) {
+                reports.add(dailyConvert.convertToReportDetail(report));
+            }
+
+        return reports;
     }
 
     @Override

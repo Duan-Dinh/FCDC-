@@ -295,23 +295,7 @@ public class UserController {
 //        }
 //        return ResponseEntity.ok(commonRes);
 //    }
-    @GetMapping("/notSentReport")// fomat sang DTO trả về dữ liệu
-    public ResponseEntity<CommonRes> sentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<ListUserRequest> listUserRequests = userService.notSentReport(time,villageId,key,page);
-            ListUserRes listUserRes = new ListUserRes();
-            listUserRes.setListUserRequests(listUserRequests);
-            listUserRes.setTotal(userService.countNotSentReport(time,villageId,key));
-            commonRes.setData(listUserRes);
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
+
     @GetMapping("/toTestCovid")// fomat sang DTO trả về dữ liệu
     public ResponseEntity<CommonRes> toTestCovid(@PathParam("time") String time,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();

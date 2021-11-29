@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +25,6 @@ import java.util.stream.Collectors;
 public class ReportController {
     @Autowired
     private DailyReportService dailyReportService;
-
     @PostMapping(value = "/addReport", consumes = {MediaType.ALL_VALUE})
     public ResponseEntity<CommonRes> addReport(Report report) {
         CommonRes commonRes = new CommonRes();
@@ -148,47 +145,6 @@ public class ReportController {
         }
         return ResponseEntity.ok(commonRes);
     }
-
-    // truyền vào 1 ngày và trả về nhưng thằng đã gửi report và tình trạng report đó
-
-    @GetMapping(value = "/getAllSentReportOnedate")
-    public ResponseEntity<CommonRes> getAllSentReportOnedate(@RequestParam("time") String time , @PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
-        CommonRes commonRes = new CommonRes();
-        try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<Daily_Report> daily_reports = dailyReportService.getByReport(time,villageId,key,page);
-            List<ReportDetail> reports = new ArrayList<>();
-            if (!daily_reports.isEmpty()) {
-                for (Daily_Report report : daily_reports) {
-                    if (report.getUser().getIs_active().equals("1") && report.getUser().getVillage().getId() == villageId.longValue()) {
-                        ReportDetail item = new ReportDetail();
-                        item.setReportId(report.getId());
-                        item.setUserId(report.getUser().getId());
-                        item.setFullname(report.getUser().getFullname());
-                        item.setGender(report.getUser().getGender());
-                        item.setPhone(report.getUser().getPhone());
-                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                        item.setDateOfBirth(dateFormat.format(report.getUser().getBirthOfdate()));
-                        item.setAddress(report.getUser().getAddress() + " - " + report.getUser().getVillage().getName() + " - " + report.getUser().getVillage().getDistrict().getName() + " - " + report.getUser().getVillage().getDistrict().getProvince().getName());
-                        item.setStatusReport(report.getStatus());
-                        item.setFeedback(report.getFeedback());
-                        reports.add(item);
-                    }
-                }
-            }
-            ReportRes reportRes = new ReportRes();
-            reportRes.setTotal(dailyReportService.countSentReport(time,villageId,key));
-            reportRes.setReportDetails(reports);
-
-            commonRes.setData(reportRes);
-        } catch (Exception e) {
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
-
 
     // dành cho thằng staff feedback report
     @PutMapping(value = "/editFeeback", consumes = {MediaType.ALL_VALUE})

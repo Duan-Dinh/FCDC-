@@ -30,8 +30,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = 'F0' and fullname like %?2% ORDER BY id")
     List<User> findAllTextForStaff(Long village ,String text);
 
-
-
     //searchTextWithRol
     @Query(value = "SELECT u FROM User u where role_id = ?1 and is_active = 1 and fullname like %?2% ORDER BY id")
     List<User> findAllTextWithRole(Long role_id ,String text,Pageable pageable);

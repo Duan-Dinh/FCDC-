@@ -5,6 +5,7 @@ import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.*;
 import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
+import com.fpt.myweb.service.DailyReportService;
 import com.fpt.myweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/staff")
 public class StaffController {
+    @Autowired
+    private DailyReportService dailyReportService;
     @Autowired
     private UserService userService;
     @GetMapping("/allPatientForStaff")// fomat sang DTO trả về dữ liệu
@@ -116,23 +119,44 @@ public class StaffController {
 //        }
 //        return ResponseEntity.ok(commonRes);
 //    }
-@GetMapping("/notSentAndSentReport")// fomat sang DTO trả về dữ liệu
-public ResponseEntity<CommonRes> notSentAndSentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("status") String status,@PathParam("page") Integer page) {
-    CommonRes commonRes = new CommonRes();
-    try {
-        commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-        commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-        List<ListUserRequest> listUserRequests = userService.notSentAndSentReport(time,villageId,key,status,page);
-        ListUserRes listUserRes = new ListUserRes();
-        listUserRes.setListUserRequests(listUserRequests);
-        listUserRes.setTotal(userService.countNotSentAndSentReport(time,villageId,key,status));
-        commonRes.setData(listUserRes);
-    } catch (Exception e){
-        commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-        commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+    // truyền vào 1 ngày và trả về nhưng thằng đã gửi report và tình trạng report đó
+
+    @GetMapping(value = "/sentReport")
+    public ResponseEntity<CommonRes> getAllSentReportOnedate(@RequestParam("time") String time , @PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            List<ReportDetail> daily_reports = dailyReportService.getByReport(time,villageId,key,page);
+            ReportRes reportRes = new ReportRes();
+            reportRes.setReportDetails(daily_reports);
+            reportRes.setTotal(dailyReportService.countSentReport(time,villageId,key));
+            reportRes.setReportDetails(daily_reports);
+            commonRes.setData(reportRes);
+        } catch (Exception e) {
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
     }
-    return ResponseEntity.ok(commonRes);
-}
+    @GetMapping("/notSentReport")// fomat sang DTO trả về dữ liệu
+    public ResponseEntity<CommonRes> sentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            List<ListUserRequest> listUserRequests = userService.notSentReport(time,villageId,key,page);
+            ListUserRes listUserRes = new ListUserRes();
+            listUserRes.setListUserRequests(listUserRequests);
+            listUserRes.setTotal(userService.countNotSentReport(time,villageId,key));
+            commonRes.setData(listUserRes);
+        } catch (Exception e){
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
+
     @GetMapping("/searchPatientCuredForStaffByText")// fomat sang DTO trả về dữ liệu
     public ResponseEntity<CommonRes> searchAllByText(@PathParam("page") Integer page,@PathParam("key") String key, @PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
