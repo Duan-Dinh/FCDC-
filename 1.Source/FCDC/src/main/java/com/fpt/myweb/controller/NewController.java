@@ -1,18 +1,23 @@
 package com.fpt.myweb.controller;
 
+import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.dto.request.NewRequet;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.CommonRes;
 import com.fpt.myweb.dto.response.NewRes;
 import com.fpt.myweb.dto.response.UserRes;
+import com.fpt.myweb.entity.Role;
+import com.fpt.myweb.entity.User;
 import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
 import com.fpt.myweb.service.NewService;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 import java.util.List;
 @CrossOrigin("*")
@@ -22,18 +27,31 @@ public class NewController {
 
     @Autowired
     private NewService newService;
-
+    @Autowired
+    ObjectFactory<HttpSession> httpSessionFactory;
     @GetMapping("/get")
     public ResponseEntity<CommonRes> getNew(@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<NewRequet> newList = newService.getAllNew(page);
-            NewRes newRes = new NewRes();
-            newRes.setNewRequets(newList);
-            newRes.setTotal(newService.countByTesxt());
-            commonRes.setData(newRes);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                List<NewRequet> newList = newService.getAllNew(page);
+                NewRes newRes = new NewRes();
+                newRes.setNewRequets(newList);
+                newRes.setTotal(newService.countByTesxt());
+                commonRes.setData(newRes);
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -45,10 +63,22 @@ public class NewController {
     public ResponseEntity<CommonRes> getTopNew(@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<NewRequet> newList = newService.getTopNew(page);
-            commonRes.setData(newList);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                List<NewRequet> newList = newService.getTopNew(page);
+                commonRes.setData(newList);
+
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -61,10 +91,22 @@ public class NewController {
     public ResponseEntity<CommonRes> getUser1(@PathVariable("id") long id) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            NewRequet newRequet = newService.getNew(id);
-            commonRes.setData(newRequet);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                NewRequet newRequet = newService.getNew(id);
+                commonRes.setData(newRequet);
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -79,10 +121,22 @@ public class NewController {
     public ResponseEntity<CommonRes> addNew(NewRequet newRequet,@RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-             newService.addNew(newRequet,file);
-            commonRes.setData(newService);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                newService.addNew(newRequet,file);
+                commonRes.setData(newService);
+
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -97,10 +151,22 @@ public class NewController {
     public ResponseEntity<CommonRes> editNew(NewRequet newRequet, @RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-             newService.editNew(newRequet,file);
-            commonRes.setData(newService);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                newService.editNew(newRequet,file);
+                commonRes.setData(newService);
+
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -115,9 +181,21 @@ public class NewController {
     public ResponseEntity<CommonRes> deleteNew(@PathParam("id") Integer id) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            newService.deleteNew(id);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                newService.deleteNew(id);
+
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -133,13 +211,25 @@ public class NewController {
     public ResponseEntity<CommonRes> getAllByText(@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<NewRequet> newRequets = newService.searchByTitle(key,page);
-            NewRes newRes = new NewRes();
-            newRes.setNewRequets(newRequets);
-            newRes.setTotal(newService.countsearchByTitle(key));
-            commonRes.setData(newRes);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                List<NewRequet> newRequets = newService.searchByTitle(key,page);
+                NewRes newRes = new NewRes();
+                newRes.setNewRequets(newRequets);
+                newRes.setTotal(newService.countsearchByTitle(key));
+                commonRes.setData(newRes);
+
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());

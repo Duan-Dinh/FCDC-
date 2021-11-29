@@ -1,5 +1,6 @@
 package com.fpt.myweb.controller;
 
+import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.CommonRes;
 import com.fpt.myweb.dto.response.UserRes;
@@ -7,10 +8,12 @@ import com.fpt.myweb.entity.*;
 import com.fpt.myweb.exception.ErrorCode;
 import com.fpt.myweb.service.FileService;
 import com.fpt.myweb.service.MasterDataService;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 import java.util.List;
 @CrossOrigin("*")
@@ -20,15 +23,28 @@ public class MasterDataController {
 
     @Autowired
     private MasterDataService masterDataService;
-
+    @Autowired
+    ObjectFactory<HttpSession> httpSessionFactory;
     @GetMapping("/province")
     public ResponseEntity<CommonRes> pickerProvince(@PathParam("key") String key) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<Province> provinceList = masterDataService.pickerProvince(key);
-            commonRes.setData(provinceList);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                List<Province> provinceList = masterDataService.pickerProvince(key);
+                commonRes.setData(provinceList);
+
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -40,10 +56,22 @@ public class MasterDataController {
     public ResponseEntity<CommonRes> pickerDistrict(@PathParam("key") String key, @PathParam("provinceId") Integer provinceId) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<District> provinceList = masterDataService.pickerDistrict(key, provinceId);
-            commonRes.setData(provinceList);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                List<District> provinceList = masterDataService.pickerDistrict(key, provinceId);
+                commonRes.setData(provinceList);
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -55,10 +83,22 @@ public class MasterDataController {
     public ResponseEntity<CommonRes> pickerVillage(@PathParam("key") String key, @PathParam("districtId") Integer districtId) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<Village> villageList = masterDataService.pickerVillage(key, districtId);
-            commonRes.setData(villageList);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                List<Village> villageList = masterDataService.pickerVillage(key, districtId);
+                commonRes.setData(villageList);
+
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -85,10 +125,22 @@ public class MasterDataController {
     public ResponseEntity<CommonRes> pickerMedicalClinic(@PathParam("key") String key) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            List<Medicine> medicines = masterDataService.pickerMedicine(key);
-            commonRes.setData(medicines);
+            HttpSession session = httpSessionFactory.getObject();
+            User user = (User) session.getAttribute(Contants.USER_SESSION);
+            Role role = user.getRole();
+            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                List<Medicine> medicines = masterDataService.pickerMedicine(key);
+                commonRes.setData(medicines);
+
+            }
+            else{
+                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
+                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
+            }
+
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());

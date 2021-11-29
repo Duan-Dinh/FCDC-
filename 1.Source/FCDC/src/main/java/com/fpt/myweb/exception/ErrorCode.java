@@ -13,8 +13,8 @@ public enum ErrorCode {
     NOT_FOUND_ROLE_ID("R001", "Not found role ID = "),
     NOT_FOUND_VILLAGE_ID("V001", "Not village ID = "),
 
-    INTERNAL_SERVER_ERROR("00001", "Internal server error");
-
+    INTERNAL_SERVER_ERROR("00001", "Internal server error"),
+    AUTHEN("00004", "Authen fails");
     private String key;
     private String value;
 

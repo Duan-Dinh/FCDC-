@@ -32,7 +32,7 @@ public class ListUserRequest {
 
     private String birthOfdate;
 
-   // private long role_id;
+    private long role_id;
 
     private long village_id;
     private long district_id;
