@@ -35,7 +35,7 @@ public class UserConvert {
         user.setFullname(userRequet.getFullname());
         user.setPassword(userRequet.getPassword());
         user.setGender(userRequet.getGender());
-        user.setEmail(userRequet.getEmail());
+       // user.setEmail(userRequet.getEmail());
         user.setPhone(userRequet.getPhone());
         user.setAddress(userRequet.getAddress());
         Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getBirthOfdate());
@@ -50,7 +50,7 @@ public class UserConvert {
         userRequet.setFullname(user.getFullname());
         userRequet.setPassword(user.getPassword());
         userRequet.setGender(user.getGender());
-        userRequet.setEmail(user.getEmail());
+       // userRequet.setEmail(user.getEmail());
         userRequet.setPhone(user.getPhone());
         if (user.getAddress() != null) {
             userRequet.setAddress(user.getAddress() + " - " + user.getVillage().getName() + " - " + user.getVillage().getDistrict().getName() + " - " + user.getVillage().getDistrict().getProvince().getName());

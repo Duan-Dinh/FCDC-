@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
         user.setFullname(userRequet.getFullname());
         user.setPassword(passwordEncoder.encode(userRequet.getPassword()));
         user.setAddress(userRequet.getAddress());
-        user.setEmail(userRequet.getEmail());
+        //user.setEmail(userRequet.getEmail());
         Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getBirthOfdate());
         user.setBirthOfdate(date);
         user.setGender(userRequet.getGender());
@@ -211,7 +211,8 @@ public class UserServiceImpl implements UserService {
         user.setFullname(userRequet.getFullname());
         user.setPassword(passwordEncoder.encode(userRequet.getPassword()));
         user.setAddress(userRequet.getAddress());
-        user.setEmail(userRequet.getEmail());
+
+       // user.setEmail(userRequet.getEmail());
         Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getBirthOfdate());
         user.setBirthOfdate(date);
         user.setGender(userRequet.getGender());
@@ -451,6 +452,15 @@ public class UserServiceImpl implements UserService {
             return 0;
         }
         return searchList.size();
+    }
+
+    @Override
+    public User logout(String phone) {
+        User user = userRepository.findByPhone(phone);
+        if (user.getPhone() == null && Integer.parseInt(user.getIs_active()) == 1) {
+            return user;
+        }
+        return null;
     }
 
     @Override
@@ -809,7 +819,7 @@ public class UserServiceImpl implements UserService {
                     userCheck.setFullname(user.getFullname());
                     userCheck.setGender(user.getGender());
                     userCheck.setVillage(user.getVillage());
-                    userCheck.setEmail(user.getEmail());
+                   // userCheck.setEmail(user.getEmail());
                     userCheck.setAddress(user.getAddress());
                     userCheck.setBirthOfdate(user.getBirthOfdate());
                     userCheck.setModifiedDate(new Date());
@@ -973,7 +983,7 @@ public class UserServiceImpl implements UserService {
             CreateCell(sheet, row, columCount++, user.getFullname(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getGender(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getBirthOfdate(), styleOfRow);
-            CreateCell(sheet, row, columCount++, user.getEmail(), styleOfRow);
+           // CreateCell(sheet, row, columCount++, user.getEmail(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getPhone(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getStartOfDate(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getAddress(), styleOfRow);

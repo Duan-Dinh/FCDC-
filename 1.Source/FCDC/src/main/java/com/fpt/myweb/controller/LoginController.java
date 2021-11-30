@@ -36,13 +36,11 @@ public class LoginController {
     public ResponseEntity<CommonRes> checkLogin(LoginRequest loginRequest) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                 user = userService.login(loginRequest.getPhone(),loginRequest.getPassword());
+                User user = userService.login(loginRequest.getPhone(),loginRequest.getPassword());
                 if(user==null){
                     commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
                     commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
@@ -61,16 +59,9 @@ public class LoginController {
                         loginResponse.setImage(type);
                     }
                     commonRes.setData(loginResponse);
-                     session = httpSessionFactory.getObject();
+                   HttpSession  session = httpSessionFactory.getObject();
                     session.setAttribute(Contants.USER_SESSION, user);
                 }
-
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
 
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -80,22 +71,16 @@ public class LoginController {
     }
 
     @PostMapping(value = "/logout", consumes = {MediaType.ALL_VALUE})
-    public ResponseEntity<CommonRes> checkLogout() {
+    public ResponseEntity<CommonRes> checkLogout(LoginRequest loginRequest) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                session = httpSessionFactory.getObject();
-                session.setAttribute(Contants.USER_SESSION, null);
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+                User user = userService.logout(loginRequest.getPhone());
+              HttpSession  session = httpSessionFactory.getObject();
+                session.setAttribute(Contants.USER_SESSION, user);
+
 
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -107,10 +92,7 @@ public class LoginController {
     public ResponseEntity<CommonRes> resetPass(@PathParam("phone") String phone) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
                 ResetPassRes resetPassRes = userService.resetPass(phone);
                 if(resetPassRes!=null) {
                     commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
@@ -120,11 +102,6 @@ public class LoginController {
                     commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
                     commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
                 }
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
 
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

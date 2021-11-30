@@ -58,7 +58,7 @@ public interface UserService {
     public int countByTesxtForStaff(String text, Long villageId);
 
     public int countByTesxt(String text);
-
+    public User logout(String phone);
 
     public Page<User> getAllUserByPage(Integer page);
 
