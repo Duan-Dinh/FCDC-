@@ -39,10 +39,7 @@ public class StaffController {
         public ResponseEntity<CommonRes> getAll(@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("result") String result,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
+
 
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
@@ -52,11 +49,6 @@ public class StaffController {
                 listUserRes.setTotal(userService.countByPatientsForStaff(villageId,key,result));
                 commonRes.setData(listUserRes);
 
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
 
 
         } catch (Exception e){
@@ -70,10 +62,7 @@ public class StaffController {
     public ResponseEntity<CommonRes> getAllByText(@PathParam("page") Integer page,@PathParam("key") String key, @PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<ListUserRequest> listUserRequests = userService.searchByTextForStaff(key, villageId,page);
@@ -83,11 +72,6 @@ public class StaffController {
                 commonRes.setData(listUserRes);
 
 
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
 
 
         } catch (Exception e){
@@ -101,10 +85,7 @@ public class StaffController {
     public ResponseEntity<CommonRes> getNewPatientOneDay(@PathParam("time") String time,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
+
 
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
@@ -114,11 +95,7 @@ public class StaffController {
                 userRes.setTotal(userRequets.size());
                 commonRes.setData(userRes);
 
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
 
 
         } catch (Exception e){
@@ -131,10 +108,7 @@ public class StaffController {
     public ResponseEntity<CommonRes> getDetaiOneDay(@PathParam("time") String time,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
+
 
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
@@ -147,11 +121,7 @@ public class StaffController {
                 detailOneDayRes.setTotalCurrentF0(current.size());
                 commonRes.setData(detailOneDayRes);
 
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
 
 
         } catch (Exception e){
@@ -185,11 +155,7 @@ public class StaffController {
     public ResponseEntity<CommonRes> getAllSentReportOnedate(@RequestParam("time") String time , @PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-//            Role role = user.getRole();
-            long roleId = user.getRole().getId();
-            if(roleId == 2L){
+
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             List<ReportDetail> daily_reports = dailyReportService.getByReport(time,villageId,key,page);
@@ -198,11 +164,7 @@ public class StaffController {
             reportRes.setTotal(dailyReportService.countSentReport(time,villageId,key));
             reportRes.setReportDetails(daily_reports);
             commonRes.setData(reportRes);
-            }
-            else {
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -214,10 +176,7 @@ public class StaffController {
         CommonRes commonRes = new CommonRes();
         try {
 
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<ListUserRequest> listUserRequests = userService.notSentReport(time,villageId,key,page);
@@ -225,11 +184,7 @@ public class StaffController {
                 listUserRes.setListUserRequests(listUserRequests);
                 listUserRes.setTotal(userService.countNotSentReport(time,villageId,key));
                 commonRes.setData(listUserRes);
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
 
 
         } catch (Exception e){
@@ -243,10 +198,7 @@ public class StaffController {
     public ResponseEntity<CommonRes> searchAllByText(@PathParam("page") Integer page,@PathParam("key") String key, @PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
+
 
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
@@ -256,11 +208,7 @@ public class StaffController {
                 listUserRes.setTotal(userService.countByTesxtPatientsCuredForStaff(key,villageId));
                 commonRes.setData(listUserRes);
 
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
 
 
         } catch (Exception e){
@@ -275,21 +223,11 @@ public class StaffController {
     public ResponseEntity<CommonRes> chartForStaff(@PathParam("startDate")String startDate, @PathParam("endDate") String endDate,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
 
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<ChartStaffRes> chartStaffRes = userService.getChartForStaff(startDate,endDate,villageId);
                 commonRes.setData(chartStaffRes);
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
 
 
         } catch (Exception e){
@@ -303,20 +241,11 @@ public class StaffController {
     public ResponseEntity<CommonRes> totalCurrentF0(@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 commonRes.setData(userService.totalCurrentF0(villageId));
 
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
 
 
         } catch (Exception e){

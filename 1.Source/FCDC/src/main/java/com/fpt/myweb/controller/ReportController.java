@@ -34,18 +34,11 @@ public class ReportController {
     public ResponseEntity<CommonRes> addReport(Report report) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L ||  role.getId() == 4L){
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 dailyReportService.addReport(report);
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
 
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -97,10 +90,7 @@ public class ReportController {
     public ResponseEntity<CommonRes> getOneReport(@PathParam("id") Long id) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
 
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
@@ -122,11 +112,7 @@ public class ReportController {
                 }
                 commonRes.setData(item);
 
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
 
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -140,10 +126,7 @@ public class ReportController {
     public ResponseEntity<CommonRes> getUserIdReport(@PathParam("userId") Long userId,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<Daily_Report> daily_reports = dailyReportService.getOneByUserID(userId,page);
@@ -172,11 +155,7 @@ public class ReportController {
                 commonRes.setData(reportRes);
 
 
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
 
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -190,18 +169,11 @@ public class ReportController {
     public ResponseEntity<CommonRes> editFeeback(FeebackReqest feebackReqest) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 dailyReportService.editFeeback(feebackReqest);
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
 
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

@@ -29,17 +29,8 @@ public class ProvinveController {
     @GetMapping(value ="/getAllProvince" )
     public ResponseEntity<List<AddressRes>> getAllProvince(){
         CommonRes commonRes = new CommonRes();
-        List<AddressRes> provinceRes = null;
-        HttpSession session = httpSessionFactory.getObject();
-        User user = (User) session.getAttribute(Contants.USER_SESSION);
-        Role role = user.getRole();
-        if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
-            provinceRes = provinceService.getAllProvince();
-        }
-        else{
-            commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-            commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-        }
+
+            List<AddressRes> provinceRes = provinceService.getAllProvince();
         return  new ResponseEntity<List<AddressRes>>(provinceRes, HttpStatus.OK);
 
     }

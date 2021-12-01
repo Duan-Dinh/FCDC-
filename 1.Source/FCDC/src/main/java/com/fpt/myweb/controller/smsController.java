@@ -27,19 +27,10 @@ public class smsController {
     public ResponseEntity<CommonRes> sentSms(@RequestParam("phone") String phone, @RequestParam("message") String message){
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 smsService.sendGetJSON(phone, message);
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
 
         }
         catch (Exception e){
@@ -52,10 +43,7 @@ public class smsController {
     public ResponseEntity<CommonRes> ListsentSms(@RequestParam("phoneList") String phoneList, @RequestParam("message") String message){
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
+
 
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
@@ -64,11 +52,7 @@ public class smsController {
                     smsService.sendGetJSON(phone, message);
                 }
 
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
+
 
         }
         catch (Exception e){
