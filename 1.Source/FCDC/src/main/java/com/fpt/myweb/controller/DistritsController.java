@@ -26,22 +26,12 @@ import java.util.List;
 public class DistritsController {
     @Autowired
     private DistrictsService districtsService;
-    @Autowired
-    ObjectFactory<HttpSession> httpSessionFactory;
     @GetMapping(value ="/getAllDistrictByProvinceId" )
     public ResponseEntity<List<AddressRes>> getAllDistrictByProvinceId(@PathParam("id") Long id){
         CommonRes commonRes = new CommonRes();
-        List<AddressRes> addressRes = null;
-        HttpSession session = httpSessionFactory.getObject();
-        User user = (User) session.getAttribute(Contants.USER_SESSION);
-        Role role = user.getRole();
-        if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
-         addressRes= districtsService.getAllDistrictByProvinceId(id);
-        }
-        else{
-            commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-            commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-        }
+
+            List<AddressRes> addressRes = districtsService.getAllDistrictByProvinceId(id);
+
         return  new ResponseEntity<List<AddressRes>>(addressRes, HttpStatus.OK);
     }
 }

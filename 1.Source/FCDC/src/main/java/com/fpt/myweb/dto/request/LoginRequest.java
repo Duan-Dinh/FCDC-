@@ -6,6 +6,7 @@ import lombok.*;
 @Getter
 @ToString
 public class LoginRequest {
+    private Long id;
     private String phone;
     private String password;
 }

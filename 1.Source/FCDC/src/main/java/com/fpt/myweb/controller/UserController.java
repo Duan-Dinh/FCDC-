@@ -17,6 +17,7 @@ import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,8 +41,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    ObjectFactory<HttpSession> httpSessionFactory;
 
     // get all
     @GetMapping("/all")// fomat sang DTO trả về dữ liệu
@@ -67,11 +66,6 @@ public class UserController {
     public ResponseEntity<CommonRes> getAllByRole(@PathParam("roleId") Long roleId,@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L){
-
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<ListUserRequest> listUserRequests = userService.searchByRole(roleId,key,page);
@@ -79,13 +73,6 @@ public class UserController {
                 listUserRes.setListUserRequests(listUserRequests);
                 listUserRes.setTotal(userService.countSearchByRole(roleId,key));
                 commonRes.setData(listUserRes);
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -113,26 +100,14 @@ public class UserController {
 //        return ResponseEntity.ok(commonRes);
 //    }
 
-
-
     //Add new user
     @PostMapping("/add")
     public ResponseEntity<CommonRes> addUsers(UserRequet userRequet, @RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.addUser(userRequet, file);
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -147,10 +122,6 @@ public class UserController {
     public ResponseEntity<CommonRes> checkPhone( @PathParam("phone") String phone) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
                 boolean aBoolean = userService.checkPhone(phone);
                 if(!aBoolean){
                     commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
@@ -160,13 +131,6 @@ public class UserController {
                     commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
                     commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
                 }
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
             } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -177,28 +141,14 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
 
-
-
     // Update
     @PutMapping(value = "/edit")
     public ResponseEntity<CommonRes> edit(UserRequet userRequet, @RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.edit(userRequet,file);
-
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -208,27 +158,33 @@ public class UserController {
         }
         return ResponseEntity.ok(commonRes);
     }
-
+   // sửa được ảnh,phone,dateStart
      //edit user by id
-    @PutMapping(value = "/editById")
-    public ResponseEntity<CommonRes> editById(UserRequet userRequet, @RequestParam("file") MultipartFile file) {
+     @PutMapping(value = "/editByStaff")
+     public ResponseEntity<CommonRes> editByStaff(UserRequet userRequet, @RequestParam("file") MultipartFile file) {
+         CommonRes commonRes = new CommonRes();
+         try {
+             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+             userService.editUserById(userRequet,file);
+         } catch (AppException a){
+             commonRes.setResponseCode(a.getErrorCode());
+             commonRes.setMessage(a.getErrorMessage());
+         } catch (Exception e){
+             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+         }
+         return ResponseEntity.ok(commonRes);
+     }
+
+//sửa được ảnh
+    @PutMapping(value = "/editByUser")
+    public ResponseEntity<CommonRes> editByUser(UserRequet userRequet, @RequestParam("file") MultipartFile file) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.editUserById(userRequet,file);
-
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            userService.editByUser(userRequet,file);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -245,18 +201,9 @@ public class UserController {
     public ResponseEntity<CommonRes> remove(@PathParam("id") long id) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.deleteUser(id);
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
 
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
@@ -273,20 +220,10 @@ public class UserController {
     public ResponseEntity<CommonRes> getUser(@PathVariable("id") long id) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 UserRequet userRequet = userService.getUser(id);
                 commonRes.setData(userRequet);
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -304,11 +241,6 @@ public class UserController {
     public ResponseEntity<CommonRes> getAllUserForDoctor(@PathParam("doctorId") String doctorId,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 3L){
-
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<ListUserRequest> listUserRequests = userService.getAllPatientForDoctor(doctorId,page);
@@ -316,13 +248,6 @@ public class UserController {
                 listUserRes.setListUserRequests(listUserRequests);
                 listUserRes.setTotal(userService.countAllPatientForDoctor(doctorId));
                 commonRes.setData(listUserRes);
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -330,15 +255,10 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
 
-
     @GetMapping("/getDoctorByVillageId")// fomat sang DTO trả về dữ liệu
     public ResponseEntity<CommonRes> getDoctorByVillageId(@PathParam("villageId") Long villageId,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<ListUserRequest> listUserRequests = userService.getAllDoctorByVila(villageId,page);
@@ -346,15 +266,6 @@ public class UserController {
                 listUserRes.setListUserRequests(listUserRequests);
                 listUserRes.setTotal(userService.countAllDoctorByVila(villageId));
                 commonRes.setData(listUserRes);
-
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -369,20 +280,9 @@ public class UserController {
     public ResponseEntity<CommonRes> changePass(@PathParam("id") long id,@PathParam("newPass") String newPass) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.changePass(id,newPass);
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -415,10 +315,6 @@ public class UserController {
     public ResponseEntity<CommonRes> toTestCovid(@PathParam("time") String time,@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<UserRequet> userRequets = userService.toTestCovid(time,villageId);
@@ -426,15 +322,6 @@ public class UserController {
                 userRes.setUserRequets(userRequets);
                 userRes.setTotal(userRequets.size()); //                                                         dk
                 commonRes.setData(userRes);
-
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -446,22 +333,14 @@ public class UserController {
     public ResponseEntity<CommonRes> editResult(@PathParam("id") long id) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
-
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.editResult(id);
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
-
+                UserRequet userRequet = userService.editResult(id);
+                if(userRequet==null) {
+                    commonRes.setResponseCode(ErrorCode.CHANGERESULT_FAIL.getKey());
+                    commonRes.setMessage(ErrorCode.CHANGERESULT_FAIL.getValue());
+                }else{
+                    commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                    commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                }
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -476,22 +355,9 @@ public class UserController {
     public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id,@PathParam("doctorId") long doctorId) {
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.changeTypeTakeCare(id,doctorId);
-
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
-
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -517,11 +383,7 @@ public class UserController {
 
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L){
-                List<UserRequet> userRequets = userService.importUserPatient1(file,type);
+                List<UserRequet> userRequets = userService.importUser(file,type);
                 if(userRequets==null){
                     commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                     commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());}
@@ -533,13 +395,6 @@ public class UserController {
                     commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
                     commonRes.setData(userRequets);
                 }
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
-
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -549,62 +404,5 @@ public class UserController {
         }
         return ResponseEntity.ok(commonRes);
     }
-    @PostMapping("/importStaff")
-    public ResponseEntity<CommonRes> importStaff(@RequestParam("file") MultipartFile file) {
 
-        CommonRes commonRes = new CommonRes();
-        try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L){
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.importUserStaff(file);
-
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
-        } catch (AppException a){
-            commonRes.setResponseCode(a.getErrorCode());
-            commonRes.setMessage(a.getErrorMessage());
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
-    @PostMapping("/importDoctor")
-    public ResponseEntity<CommonRes> importDoctor(@RequestParam("file") MultipartFile file) {
-
-        CommonRes commonRes = new CommonRes();
-        try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L){
-
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.importUserDoctor(file);
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
-        } catch (AppException a){
-            commonRes.setResponseCode(a.getErrorCode());
-            commonRes.setMessage(a.getErrorMessage());
-        } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
-        }
-        return ResponseEntity.ok(commonRes);
-    }
 }

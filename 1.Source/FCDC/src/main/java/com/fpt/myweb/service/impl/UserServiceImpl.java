@@ -140,16 +140,13 @@ public class UserServiceImpl implements UserService {
         // luu file
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
-
         FileDB fileDB = fileDBRepository.save(FileDB);
         user.setFiles(fileDB);
-
 
         User user1 = userRepository.save(user);
         smsService.sendGetJSON(user.getPhone(), "Tài khoản của bạn đã được khởi tạo");
         return user1;
     }
-
     @Override
     public boolean checkPhone(String phone) {
         User user = userRepository.findUsersByPhone(phone);
@@ -236,19 +233,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRequet editUserById(UserRequet userRequet, MultipartFile file) throws ParseException, IOException {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
         User user = userRepository.findById(userRequet.getId()).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + userRequet.getId()));
-
+        user.setPhone(userRequet.getPhone());
+        Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
+        user.setDateStart(date1);
         // luu file
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
         FileDB.setId(user.getFiles().getId());
         FileDB fileDB = fileDBRepository.save(FileDB);
-
         user.setFiles(fileDB);
+        UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));
+        return userRequet1;
+    }
 
+    @Override
+    public UserRequet editByUser(UserRequet userRequet, MultipartFile file) throws ParseException, IOException {
+        User user = userRepository.findById(userRequet.getId()).orElseThrow(()
+                -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + userRequet.getId()));
+        // luu file
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+        FileDB.setId(user.getFiles().getId());
+        FileDB fileDB = fileDBRepository.save(FileDB);
+        user.setFiles(fileDB);
         UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));
         return userRequet1;
     }
@@ -258,12 +270,17 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
 
+        Date currentDate = new Date();
         if(user.getResult().equals("-")){
-            user.setCreatedDate(new Date());
+            user.setModifiedDate(null);
             user.setResult("F0");
-        }else{
-            user.setResult("-");
-            user.setModifiedDate(new Date());
+        }else {
+            if(TimeUnit.MILLISECONDS.toDays(currentDate.getTime() - user.getCreatedDate().getTime()) >= 14){
+                user.setResult("-");
+                user.setModifiedDate(currentDate);
+            }else{
+                return null;
+            }
         }
         UserRequet userRequet = userConvert.convertToUserRequest(user);
         userRepository.save(user);
@@ -292,8 +309,8 @@ public class UserServiceImpl implements UserService {
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : searchList) {
 //            if (Integer.parseInt(user.getIs_active()) == 1 && (user.getRole().getId()) == 3) {
-                listUserRequests.add(userConvert.convertToListUserRequest(user));
-           //}
+            listUserRequests.add(userConvert.convertToListUserRequest(user));
+            //}
         }
         return listUserRequests;
     }
@@ -320,7 +337,7 @@ public class UserServiceImpl implements UserService {
         List<ListUserRequest> userRequets = new ArrayList<>();
         for (User user : searchList) {
 
-                userRequets.add(userConvert.convertToListUserRequest(user));
+            userRequets.add(userConvert.convertToListUserRequest(user));
 
         }
         return userRequets;
@@ -376,8 +393,8 @@ public class UserServiceImpl implements UserService {
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : searchList) {
 //            if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == roleId) {
-                listUserRequests.add(userConvert.convertToListUserRequest(user));
-          //  }
+            listUserRequests.add(userConvert.convertToListUserRequest(user));
+            //  }
         }
         return listUserRequests;
     }
@@ -403,7 +420,7 @@ public class UserServiceImpl implements UserService {
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : userList) {
 //            if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == 4L && user.getFullname().contains(text)) {
-                listUserRequests.add(userConvert.convertToListUserRequest(user));
+            listUserRequests.add(userConvert.convertToListUserRequest(user));
 //            }
         }
         return listUserRequests;
@@ -457,11 +474,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User logout(String phone) {
         User user = userRepository.findByPhone(phone);
-        if (user.getPhone() == null && Integer.parseInt(user.getIs_active()) == 1) {
+        if (Integer.parseInt(user.getIs_active()) == 1) {
             return user;
         }
         return null;
     }
+
+
 
     @Override
     public Page<User> getAllUserByPage(Integer page) {
@@ -487,111 +506,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean importUserPatient(MultipartFile file) throws IOException, ParseException {
-        String path = env.getProperty("folder.user.imports");
-        File fileUpload = new File(path);
-        if (!fileUpload.exists()) {
-            fileUpload.mkdir();
-        }
-        if (fileUpload != null) {
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            // save file
-            InputStream inputStream = null;
-            File fileUrl = null;
-            inputStream = file.getInputStream();
-            String name = file.getResource().getFilename();
-            path += System.currentTimeMillis() + "_" + name;
-            fileUrl = new File(path);
-            OutputStream outStream = new FileOutputStream(fileUrl);
-            FileCopyUtils.copy(inputStream, outStream);
-            // import user
-            FileInputStream inputStreamImport = new FileInputStream(fileUrl);
-            Workbook workbook = new XSSFWorkbook(inputStreamImport);
-            Sheet firstSheet = workbook.getSheetAt(0);
-            Iterator<Row> iterator = firstSheet.iterator();
-            iterator.next();
-            while (iterator.hasNext()) {
-                Row nextRow = iterator.next();
-                Iterator<Cell> cellIterator = nextRow.cellIterator();
-                User user = new User();
-                cellIterator.next();
-                while (cellIterator.hasNext()) {
-                    Cell cell = cellIterator.next();
-                    if (cell.getColumnIndex() == 1) {
-                        user.setFullname(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 2) {
-                        user.setGender(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 6) {
-                        String address = cell.getStringCellValue();
-                        Village village = villageRepository.findByName(address);
-                        if (village != null) {
-                            user.setVillage(village);
-                        }
-                    } else if (cell.getColumnIndex() == 5) {
-                        user.setPhone(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 4) {
-                        user.setEmail(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 7) {
-                        user.setAddress(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 3) {
-                        try {
-                            Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
-                            user.setBirthOfdate(date);
-                        } catch (Exception e) {
-
-                        }
-                    } else if (cell.getColumnIndex() == 8) {
-                        try {
-                            Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
-                            user.setDateStart(date);
-                        } catch (Exception e) {
-
-                        }
-                    }
-
-                }
-                Role role = roleRepository.findByName("patient");
-                user.setRole(role);
-                user.setResult("F0");
-                user.setIs_active("1");
-                user.setTypeTakeCare("-1");
-                // check User by phone
-                User userCheck = userRepository.findByPhone(user.getPhone());
-
-                user.setPassword(passwordEncoder.encode("123"));
-
-                if (userCheck == null) {
-                    user.setCreatedDate(new Date());
-                    userRepository.save(user);
-                } else {
-                    userCheck.setFullname(user.getFullname());
-                    userCheck.setGender(user.getGender());
-                    userCheck.setVillage(user.getVillage());
-                    userCheck.setEmail(user.getEmail());
-                    userCheck.setAddress(user.getAddress());
-                    userCheck.setBirthOfdate(user.getBirthOfdate());
-                    userCheck.setModifiedDate(new Date());
-                    userCheck.setRole(user.getRole());
-                    userCheck.setDateStart(user.getDateStart());
-                    userCheck.setResult("F0");
-                    user.setTypeTakeCare("-1");
-                    userRepository.save(userCheck);
-                }
-                // send pass to user with phone
-                // test
-//                smsService.sendGetJSON("0385422617", "Hello Quảng!");
-
-            }
-
-            workbook.close();
-            inputStream.close();
-
-        }
-        return false;
-    }
-
-    @Override
-    public List<UserRequet> importUserPatient1(MultipartFile file, String type) throws IOException, ParseException {
+    public List<UserRequet> importUser(MultipartFile file, String type) throws IOException, ParseException {
         String regexPhone = "^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$";
         String regexDate = "^(0[1-9]|[12][0-9]|[3][01])/(0[1-9]|1[012])/(19[0-9]{2}|20[0-9]{2})$";
         String regexName = "^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]*( [aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]+)*$";
@@ -638,7 +553,7 @@ public class UserServiceImpl implements UserService {
                         if (!cell.getStringCellValue().isEmpty() && (cell.getStringCellValue().equals("Nam") || cell.getStringCellValue().equals("Nữ"))) {
                             user.setGender(cell.getStringCellValue());
                         }
-                    } else if (cell.getColumnIndex() == 5) {
+                    } else if (cell.getColumnIndex() == 4) {
                         if (!cell.getStringCellValue().isEmpty()) {
                             String address = cell.getStringCellValue();
                             Village village = villageRepository.findByName(address);
@@ -646,15 +561,11 @@ public class UserServiceImpl implements UserService {
                                 user.setVillage(village);
                             }
                         }
-                    } else if (cell.getColumnIndex() == 4) {
+                    } else if (cell.getColumnIndex() == 3) {
                         if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexPhone, cell.getStringCellValue())) {
                             user.setPhone(cell.getStringCellValue());
                         }
-                    } else if (cell.getColumnIndex() == 3) {
-                        if (!cell.getStringCellValue().isEmpty()) {
-                            user.setEmail(cell.getStringCellValue());
-                        }
-                    } else if (cell.getColumnIndex() == 6) {
+                    } else if (cell.getColumnIndex() == 5) {
                         if (!cell.getStringCellValue().isEmpty()) {
                             user.setAddress(cell.getStringCellValue());
                         }
@@ -667,7 +578,7 @@ public class UserServiceImpl implements UserService {
 
                             }
                         }
-                    } else if (cell.getColumnIndex() == 7) {
+                    } else if (cell.getColumnIndex() == 6) {
                         if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexDate, cell.getStringCellValue()) && type.equals("patient")) {
                             try {
                                 Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
@@ -707,11 +618,11 @@ public class UserServiceImpl implements UserService {
         //check Data null in file excel
         for (User user : userList) {
             if (type.equals("patient")) {
-                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null || user.getEmail() == null || user.getVillage() == null || user.getDateStart() == null) {
+                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null || user.getVillage() == null || user.getDateStart() == null) {
                     checkDataExcel = false;
                 }
             } else {
-                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null || user.getEmail() == null || user.getVillage() == null ) {
+                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null ||  user.getVillage() == null ) {
                     checkDataExcel = false;
                 }
             }
@@ -740,201 +651,7 @@ public class UserServiceImpl implements UserService {
         return userRequets;
     }
 
-    @Override
-    public void importUserStaff(MultipartFile file) throws IOException, ParseException {
-        String path = env.getProperty("folder.user.imports");
-        File fileUpload = new File(path);
-        if (!fileUpload.exists()) {
-            fileUpload.mkdir();
-        }
-        if (fileUpload != null) {
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            // save file
-            InputStream inputStream = null;
-            File fileUrl = null;
-            inputStream = file.getInputStream();
-            String name = file.getResource().getFilename();
-            path += System.currentTimeMillis() + "_" + name;
-            fileUrl = new File(path);
-            OutputStream outStream = new FileOutputStream(fileUrl);
-            FileCopyUtils.copy(inputStream, outStream);
-            // import user
-            FileInputStream inputStreamImport = new FileInputStream(fileUrl);
 
-            Workbook workbook = new XSSFWorkbook(inputStreamImport);
-            Sheet firstSheet = workbook.getSheetAt(0);
-            Iterator<Row> iterator = firstSheet.iterator();
-            iterator.next();
-            while (iterator.hasNext()) {
-                Row nextRow = iterator.next();
-                Iterator<Cell> cellIterator = nextRow.cellIterator();
-                User user = new User();
-                cellIterator.next();
-                while (cellIterator.hasNext()) {
-                    Cell cell = cellIterator.next();
-                    if (cell.getColumnIndex() == 1) {
-                        user.setFullname(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 2) {
-                        user.setGender(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 6) {
-                        String address = cell.getStringCellValue();
-                        Village village = villageRepository.findByName(address);
-                        if (village != null) {
-                            user.setVillage(village);
-                        }
-                    } else if (cell.getColumnIndex() == 5) {
-                        user.setPhone(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 4) {
-                        user.setEmail(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 7) {
-                        user.setAddress(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 3) {
-                        try {
-                            Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
-                            user.setBirthOfdate(date);
-                        } catch (Exception e) {
-
-                        }
-                    } else if (cell.getColumnIndex() == 8) {
-                        try {
-                            Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
-                            user.setDateStart(date);
-                        } catch (Exception e) {
-
-                        }
-                    }
-
-                }
-                Role role = roleRepository.findByName("staff");
-                user.setRole(role);
-                user.setIs_active("1");
-                user.setTypeTakeCare("-1");
-                // check User by phone
-                User userCheck = userRepository.findByPhone(user.getPhone());
-                user.setPassword(passwordEncoder.encode("123"));
-                if (userCheck == null) {
-                    user.setCreatedDate(new Date());
-                    userRepository.save(user);
-                } else {
-                    userCheck.setFullname(user.getFullname());
-                    userCheck.setGender(user.getGender());
-                    userCheck.setVillage(user.getVillage());
-                   // userCheck.setEmail(user.getEmail());
-                    userCheck.setAddress(user.getAddress());
-                    userCheck.setBirthOfdate(user.getBirthOfdate());
-                    userCheck.setModifiedDate(new Date());
-                    userCheck.setRole(user.getRole());
-                    userCheck.setDateStart(user.getDateStart());
-                    userCheck.setIs_active("1");
-                    user.setTypeTakeCare("-1");
-                    userRepository.save(userCheck);
-                }
-                // send pass to user with phone
-                // test
-//               smsService.sendGetJSON("0385422617", "Hello Quảng!");
-
-            }
-
-            workbook.close();
-            inputStream.close();
-
-        }
-    }
-
-    @Override
-    public void importUserDoctor(MultipartFile file) throws IOException, ParseException {
-        String path = env.getProperty("folder.user.imports");
-        File fileUpload = new File(path);
-        if (!fileUpload.exists()) {
-            fileUpload.mkdir();
-        }
-        if (fileUpload != null) {
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            // save file
-            InputStream inputStream = null;
-            File fileUrl = null;
-            inputStream = file.getInputStream();
-            String name = file.getResource().getFilename();
-            path += System.currentTimeMillis() + "_" + name;
-            fileUrl = new File(path);
-            OutputStream outStream = new FileOutputStream(fileUrl);
-            FileCopyUtils.copy(inputStream, outStream);
-            // import user
-            FileInputStream inputStreamImport = new FileInputStream(fileUrl);
-
-            Workbook workbook = new XSSFWorkbook(inputStreamImport);
-            Sheet firstSheet = workbook.getSheetAt(0);
-            Iterator<Row> iterator = firstSheet.iterator();
-            iterator.next();
-            while (iterator.hasNext()) {
-                Row nextRow = iterator.next();
-                Iterator<Cell> cellIterator = nextRow.cellIterator();
-                User user = new User();
-                cellIterator.next();
-                while (cellIterator.hasNext()) {
-                    Cell cell = cellIterator.next();
-                    if (cell.getColumnIndex() == 1) {
-                        user.setFullname(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 2) {
-                        user.setGender(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 6) {
-                        String address = cell.getStringCellValue();
-                        Village village = villageRepository.findByName(address);
-                        if (village != null) {
-                            user.setVillage(village);
-                        }
-                    } else if (cell.getColumnIndex() == 5) {
-                        user.setPhone(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 4) {
-                        user.setEmail(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 7) {
-                        user.setAddress(cell.getStringCellValue());
-                    } else if (cell.getColumnIndex() == 3) {
-                        try {
-                            Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
-                            user.setBirthOfdate(date);
-                        } catch (Exception e) {
-
-                        }
-                    }
-
-                }
-                Role role = roleRepository.findByName("doctor");
-                user.setRole(role);
-                user.setIs_active("1");
-                user.setTypeTakeCare("-1");
-                // check User by phone
-                User userCheck = userRepository.findByPhone(user.getPhone());
-
-                user.setPassword(passwordEncoder.encode("123"));
-
-                if (userCheck == null) {
-                    user.setCreatedDate(new Date());
-                    userRepository.save(user);
-                } else {
-                    userCheck.setFullname(user.getFullname());
-                    userCheck.setGender(user.getGender());
-                    userCheck.setVillage(user.getVillage());
-                    userCheck.setEmail(user.getEmail());
-                    userCheck.setAddress(user.getAddress());
-                    userCheck.setBirthOfdate(user.getBirthOfdate());
-                    userCheck.setModifiedDate(new Date());
-                    userCheck.setRole(user.getRole());
-                    user.setTypeTakeCare("-1");
-                    userCheck.setIs_active("1");
-                    userRepository.save(userCheck);
-                }
-                // send pass to user with phone
-                // test
-//                smsService.sendGetJSON("0385422617", "Hello Quảng!");
-
-            }
-
-            workbook.close();
-            inputStream.close();
-
-        }
-    }
 
     private void CreateCell(XSSFSheet sheet, Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
@@ -1006,7 +723,7 @@ public class UserServiceImpl implements UserService {
             } else {
                 page--;
             }
-          pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+            pageable = PageRequest.of(page, Contants.PAGE_SIZE);
             searchList = userRepository.UserNotSentReport(time, villageId, text, key,pageable);
             for (User user : searchList) {
                 listUserRequests.add(userConvert.convertToListUserRequest(user));
@@ -1031,7 +748,7 @@ public class UserServiceImpl implements UserService {
     public int countNotSentAndSentReport(String time, Long villageId,String text,String key) {
         List<User> searchList = new ArrayList<>();
         if(key.equals("-")) {
-             searchList   =userRepository.UserNotSentReport(time, villageId, text,key);
+            searchList   =userRepository.UserNotSentReport(time, villageId, text,key);
             if (searchList == null) {
                 return 0;
             }
@@ -1052,8 +769,9 @@ public class UserServiceImpl implements UserService {
         }else{
             page--;
         }
+        String time1 = time+" extra characters";
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> searchList = userRepository.UserNotSentReports(time,villageId,key,pageable);
+        List<User> searchList = userRepository.UserNotSentReports(time,villageId,key,time1,pageable);
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : searchList) {
            // if (Integer.parseInt(user.getIs_active()) == 1) {
@@ -1065,7 +783,8 @@ public class UserServiceImpl implements UserService {
 //
     @Override
     public int countNotSentReport(String time, Long villageId,String key) {
-        List<User> searchList = userRepository.UserNotSentReports(time,villageId,key);
+        String time1 = time+" extra characters";
+        List<User> searchList = userRepository.UserNotSentReports(time,villageId,key,time1);
         if(searchList == null){
             return 0;
         }
@@ -1102,8 +821,8 @@ public class UserServiceImpl implements UserService {
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : userList) {
 //            if (Integer.parseInt(user.getIs_active()) == 1 && user.getTypeTakeCare().equals(doctorId)) {
-                listUserRequests.add(userConvert.convertToListUserRequest(user));
-          //  }
+            listUserRequests.add(userConvert.convertToListUserRequest(user));
+            //  }
         }
         return listUserRequests;
     }
@@ -1256,11 +975,11 @@ public class UserServiceImpl implements UserService {
         List<UserRequet> userRequets = new ArrayList<>();
         for (User user : searchList) {
             if(user.getModifiedDate()!=null){
-            if (sdf.format(user.getModifiedDate()).equals(time) && user.getRole().getId() == 4L && user.getResult().equals("-") ) {
-                if (Integer.parseInt(user.getIs_active()) == 1) {
-                    userRequets.add(userConvert.convertToUserRequest(user));
-                }
-            }}
+                if (sdf.format(user.getModifiedDate()).equals(time) && user.getRole().getId() == 4L && user.getResult().equals("-") ) {
+                    if (Integer.parseInt(user.getIs_active()) == 1) {
+                        userRequets.add(userConvert.convertToUserRequest(user));
+                    }
+                }}
         }
         return userRequets;
     }
@@ -1302,7 +1021,7 @@ public class UserServiceImpl implements UserService {
             chartStaffRes1.setDate(ds);
             chartStaffRes1.setTotalNewF0(getNewPatientOneDay(ds,villageId).size());
             chartStaffRes1.setTotalCured(getCuredPatientOneDay(ds,villageId).size());
-           // chartStaffRes1.setTotalCurrentF0(getAllPatientForStaff(villageId).size());
+            // chartStaffRes1.setTotalCurrentF0(getAllPatientForStaff(villageId).size());
             chartStaffResList.add(chartStaffRes1);
         }
         return chartStaffResList;

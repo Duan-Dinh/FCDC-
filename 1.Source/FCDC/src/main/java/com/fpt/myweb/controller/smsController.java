@@ -19,28 +19,16 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/sent")
 public class smsController {
-    @Autowired
-    ObjectFactory<HttpSession> httpSessionFactory;
+
     @Autowired
     private SmsService smsService;
     @PostMapping(value = "/Sms")
     public ResponseEntity<CommonRes> sentSms(@RequestParam("phone") String phone, @RequestParam("message") String message){
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 smsService.sendGetJSON(phone, message);
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
         }
         catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -52,24 +40,12 @@ public class smsController {
     public ResponseEntity<CommonRes> ListsentSms(@RequestParam("phoneList") String phoneList, @RequestParam("message") String message){
         CommonRes commonRes = new CommonRes();
         try {
-            HttpSession session = httpSessionFactory.getObject();
-            User user = (User) session.getAttribute(Contants.USER_SESSION);
-            Role role = user.getRole();
-            if(role.getId() == 2L){
-
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<String> phoneL = GetUtils.splipStringTophone(phoneList);
                 for (String phone : phoneL) {
                     smsService.sendGetJSON(phone, message);
                 }
-
-            }
-            else{
-                commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-                commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-            }
-
         }
         catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

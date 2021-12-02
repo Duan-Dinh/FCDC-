@@ -47,9 +47,9 @@ public class User extends BaseEntity {
 //    @Column(name = "lastname")
 //    private String lastname;
 
-    @JsonProperty
-    @Column(name = "email")
-    private String email;
+//    @JsonProperty
+//    @Column(name = "email")
+//    private String email;
 
     @JsonProperty
     @Column(name = "phone")

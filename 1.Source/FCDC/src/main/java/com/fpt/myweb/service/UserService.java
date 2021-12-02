@@ -35,6 +35,7 @@ public interface UserService {
 //edit user by id
     public UserRequet editUserById(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
 
+    public UserRequet editByUser(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
     public UserRequet editResult(long id);
     public UserRequet changeTypeTakeCare(long id , Long doctorId);
     public List<ListUserRequest> getAllDoctorByVila(Long vilageId, Integer page);
@@ -58,18 +59,14 @@ public interface UserService {
     public int countByTesxtForStaff(String text, Long villageId);
 
     public int countByTesxt(String text);
-    public User logout(String phone);
 
+    public User logout(String phone);
     public Page<User> getAllUserByPage(Integer page);
 
     public User login(String phone, String password);
 
-    public boolean importUserPatient(MultipartFile file) throws IOException, ParseException;
+    public List<UserRequet> importUser(MultipartFile file, String type) throws IOException, ParseException;
 
-    public List<UserRequet> importUserPatient1(MultipartFile file, String type) throws IOException, ParseException;
-
-    public void importUserStaff(MultipartFile file) throws IOException, ParseException;
-    public void importUserDoctor(MultipartFile file) throws IOException, ParseException;
 //    public void CreateCell(Row row, int columnCount, Object value, CellStyle style) ;
     //export
     public void exportUserPatient(HttpServletResponse file,String time) throws IOException, ParseException;

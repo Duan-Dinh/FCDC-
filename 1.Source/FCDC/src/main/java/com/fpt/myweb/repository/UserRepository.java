@@ -59,11 +59,13 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
 
    //notsentreport
-    @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0' and fullname like %?3% ORDER BY id", nativeQuery = true)
-    List<User> UserNotSentReports(String time,Long village,String key,Pageable pageable);
+    @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and " +
+            "result = 'F0'  and result = 'F0' and datediff((SELECT STR_TO_DATE(?4,'%d/%m/%Y')),u.created_date)>=0 and fullname like %?3% ORDER BY id", nativeQuery = true)
+    List<User> UserNotSentReports(String time,Long village,String key,String time1,Pageable pageable);
 
-    @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0' and fullname like %?3% ORDER BY id", nativeQuery = true)
-    List<User> UserNotSentReports(String time,Long village,String key);
+    @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0'" +
+            " and result = 'F0' and datediff((SELECT STR_TO_DATE(?4,'%d/%m/%Y')),u.created_date)>=0 and fullname like %?3% ORDER BY id", nativeQuery = true)
+    List<User> UserNotSentReports(String time,Long village,String key,String time1);
 
 
     //sentreport
@@ -105,6 +107,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findAllUserWithPagination(Pageable pageable);
 
     User findByPhone(String username);
+
+    @Query(value = "SELECT u FROM User u where id like ?1 and phone like ?2  ORDER BY id")
+    User findByPhoneLogout(Long id,String username);
 
     List<User> findByFullnameContaining(String text, Pageable pageable);
 

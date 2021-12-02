@@ -36,32 +36,30 @@ public class LoginController {
     public ResponseEntity<CommonRes> checkLogin(LoginRequest loginRequest) {
         CommonRes commonRes = new CommonRes();
         try {
-
-
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                User user = userService.login(loginRequest.getPhone(),loginRequest.getPassword());
-                if(user==null){
-                    commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
-                    commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
-                }else{
-                    LoginResponse loginResponse = new LoginResponse();
-                    if(user.getUsername()!=null) {
-                        loginResponse.setUsername(user.getUsername());
-                    }
-                    loginResponse.setRole(user.getRole().getName());
-                    loginResponse.setFullname(user.getFullname()); //
-                    loginResponse.setId(user.getId());
-                    loginResponse.setVilaId(user.getVillage().getId());
-                    loginResponse.setAddress(user.getAddress());
-                    if(user.getFiles() != null){
-                        String type ="data:"+ DatatypeConverter.parseAnySimpleType(user.getFiles().getType()) +";base64,"+ DatatypeConverter.printBase64Binary(user.getFiles().getData());
-                        loginResponse.setImage(type);
-                    }
-                    commonRes.setData(loginResponse);
-                   HttpSession  session = httpSessionFactory.getObject();
-                    session.setAttribute(Contants.USER_SESSION, user);
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            User user = userService.login(loginRequest.getPhone(),loginRequest.getPassword());
+            if(user==null){
+                commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
+                commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
+            }else{
+                LoginResponse loginResponse = new LoginResponse();
+                if(user.getUsername()!=null) {
+                    loginResponse.setUsername(user.getUsername());
                 }
+                loginResponse.setRole(user.getRole().getName());
+                loginResponse.setFullname(user.getFullname()); //
+                loginResponse.setId(user.getId());
+                loginResponse.setVilaId(user.getVillage().getId());
+                loginResponse.setAddress(user.getAddress());
+                if(user.getFiles() != null){
+                    String type ="data:"+ DatatypeConverter.parseAnySimpleType(user.getFiles().getType()) +";base64,"+ DatatypeConverter.printBase64Binary(user.getFiles().getData());
+                    loginResponse.setImage(type);
+                }
+                commonRes.setData(loginResponse);
+                HttpSession  session = httpSessionFactory.getObject();
+                session.setAttribute(Contants.USER_SESSION, user);
+            }
 
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
@@ -75,11 +73,11 @@ public class LoginController {
         CommonRes commonRes = new CommonRes();
         try {
 
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                User user = userService.logout(loginRequest.getPhone());
-              HttpSession  session = httpSessionFactory.getObject();
-                session.setAttribute(Contants.USER_SESSION, user);
+            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+            User user = userService.logout(loginRequest.getPhone());
+            HttpSession  session = httpSessionFactory.getObject();
+            session.setAttribute(Contants.USER_SESSION, user);
 
 
         } catch (Exception e){
@@ -93,15 +91,15 @@ public class LoginController {
         CommonRes commonRes = new CommonRes();
         try {
 
-                ResetPassRes resetPassRes = userService.resetPass(phone);
-                if(resetPassRes!=null) {
-                    commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                    commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                    commonRes.setData(resetPassRes);
-                }else {
-                    commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
-                    commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
-                }
+            ResetPassRes resetPassRes = userService.resetPass(phone);
+            if(resetPassRes!=null) {
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                commonRes.setData(resetPassRes);
+            }else {
+                commonRes.setResponseCode(ErrorCode.AUTHENTICATION_FAILED.getKey());
+                commonRes.setMessage(ErrorCode.AUTHENTICATION_FAILED.getValue());
+            }
 
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());

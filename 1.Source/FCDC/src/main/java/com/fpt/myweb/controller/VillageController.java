@@ -30,17 +30,9 @@ public class VillageController {
     @GetMapping(value ="/getAllVillageByDistrictId" )
     public ResponseEntity<List<AddressRes>> getAllDistrictByDistrictId(@PathParam("id") Long id){
         CommonRes commonRes = new CommonRes();
-        List<AddressRes> addressRes = null;
-        HttpSession session = httpSessionFactory.getObject();
-        User user = (User) session.getAttribute(Contants.USER_SESSION);
-        Role role = user.getRole();
-        if(role.getId() == 1L || role.getId() == 2L || role.getId() == 3L || role.getId() == 4L){
-            addressRes = villageService.getAllVillageBydistrictId(id);
-        }
-        else{
-            commonRes.setResponseCode(ErrorCode.AUTHEN.getKey());
-            commonRes.setMessage(ErrorCode.AUTHEN.getValue());
-        }
+
+            List<AddressRes> addressRes   = villageService.getAllVillageBydistrictId(id);
+
         return  new ResponseEntity<List<AddressRes>>(addressRes, HttpStatus.OK);
     }
 
