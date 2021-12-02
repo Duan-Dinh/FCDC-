@@ -72,14 +72,11 @@ public class LoginController {
     public ResponseEntity<CommonRes> checkLogout(LoginRequest loginRequest) {
         CommonRes commonRes = new CommonRes();
         try {
-
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            User user = userService.logout(loginRequest.getPhone());
+         //   User user = userService.logout(loginRequest.getPhone());
             HttpSession  session = httpSessionFactory.getObject();
-            session.setAttribute(Contants.USER_SESSION, user);
-
-
+            session.setAttribute(Contants.USER_SESSION, null);
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -90,7 +87,6 @@ public class LoginController {
     public ResponseEntity<CommonRes> resetPass(@PathParam("phone") String phone) {
         CommonRes commonRes = new CommonRes();
         try {
-
             ResetPassRes resetPassRes = userService.resetPass(phone);
             if(resetPassRes!=null) {
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
