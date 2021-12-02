@@ -108,6 +108,11 @@ public class UserController {
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.addUser(userRequet, file);
+
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                userService.addUser(userRequet, file);
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -149,6 +154,11 @@ public class UserController {
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.edit(userRequet,file);
+
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                userService.edit(userRequet,file);
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -185,6 +195,11 @@ public class UserController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             userService.editByUser(userRequet,file);
+
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                userService.editUserById(userRequet,file);
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -205,6 +220,12 @@ public class UserController {
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.deleteUser(id);
 
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                userService.deleteUser(id);
+
+
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -220,10 +241,12 @@ public class UserController {
     public ResponseEntity<CommonRes> getUser(@PathVariable("id") long id) {
         CommonRes commonRes = new CommonRes();
         try {
+
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 UserRequet userRequet = userService.getUser(id);
                 commonRes.setData(userRequet);
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -280,6 +303,9 @@ public class UserController {
     public ResponseEntity<CommonRes> changePass(@PathParam("id") long id,@PathParam("newPass") String newPass) {
         CommonRes commonRes = new CommonRes();
         try {
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                userService.changePass(id,newPass);
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.changePass(id,newPass);
@@ -341,6 +367,9 @@ public class UserController {
                     commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                     commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 }
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                userService.editResult(id);
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -355,6 +384,9 @@ public class UserController {
     public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id,@PathParam("doctorId") long doctorId) {
         CommonRes commonRes = new CommonRes();
         try {
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                userService.changeTypeTakeCare(id,doctorId);
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.changeTypeTakeCare(id,doctorId);
@@ -404,5 +436,43 @@ public class UserController {
         }
         return ResponseEntity.ok(commonRes);
     }
+//    @PostMapping("/importStaff")
+//    public ResponseEntity<CommonRes> importStaff(@RequestParam("file") MultipartFile file) {
+//
+//        CommonRes commonRes = new CommonRes();
+//        try {
+//
+//                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+//                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+//                userService.importUserStaff(file);
+//        } catch (AppException a){
+//            commonRes.setResponseCode(a.getErrorCode());
+//            commonRes.setMessage(a.getErrorMessage());
+//        } catch (Exception e){
+//            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+//            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+//        }
+//        return ResponseEntity.ok(commonRes);
+//    }
+//    @PostMapping("/importDoctor")
+//    public ResponseEntity<CommonRes> importDoctor(@RequestParam("file") MultipartFile file) {
+//
+//        CommonRes commonRes = new CommonRes();
+//        try {
+//
+//
+//                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+//                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+//                userService.importUserDoctor(file);
+//
+//        } catch (AppException a){
+//            commonRes.setResponseCode(a.getErrorCode());
+//            commonRes.setMessage(a.getErrorMessage());
+//        } catch (Exception e){
+//            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+//            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+//        }
+//        return ResponseEntity.ok(commonRes);
+//    }
 
 }

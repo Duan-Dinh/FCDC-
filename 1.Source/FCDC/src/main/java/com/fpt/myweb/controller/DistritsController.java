@@ -28,10 +28,7 @@ public class DistritsController {
     private DistrictsService districtsService;
     @GetMapping(value ="/getAllDistrictByProvinceId" )
     public ResponseEntity<List<AddressRes>> getAllDistrictByProvinceId(@PathParam("id") Long id){
-        CommonRes commonRes = new CommonRes();
-
             List<AddressRes> addressRes = districtsService.getAllDistrictByProvinceId(id);
-
         return  new ResponseEntity<List<AddressRes>>(addressRes, HttpStatus.OK);
     }
 }

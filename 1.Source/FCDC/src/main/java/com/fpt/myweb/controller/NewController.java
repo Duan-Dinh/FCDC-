@@ -110,8 +110,6 @@ public class NewController {
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 newService.editNew(newRequet,file);
                 commonRes.setData(newService);
-
-
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -151,7 +149,6 @@ public class NewController {
                 newRes.setNewRequets(newRequets);
                 newRes.setTotal(newService.countsearchByTitle(key));
                 commonRes.setData(newRes);
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());

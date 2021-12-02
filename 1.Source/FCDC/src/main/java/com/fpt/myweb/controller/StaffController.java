@@ -37,7 +37,6 @@ public class StaffController {
         public ResponseEntity<CommonRes> getAll(@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("result") String result,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<ListUserRequest> listUserRequests = userService.getAllPatientForStaff(villageId,key,result,page);
@@ -45,7 +44,6 @@ public class StaffController {
                 listUserRes.setListUserRequests(listUserRequests);
                 listUserRes.setTotal(userService.countByPatientsForStaff(villageId,key,result));
                 commonRes.setData(listUserRes);
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -64,7 +62,6 @@ public class StaffController {
                 listUserRes.setListUserRequests(listUserRequests);
                 listUserRes.setTotal(userService.countByTesxtForStaff(key,villageId));
                 commonRes.setData(listUserRes);
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -83,7 +80,6 @@ public class StaffController {
                 userRes.setUserRequets(userRequets);
                 userRes.setTotal(userRequets.size());
                 commonRes.setData(userRes);
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -104,7 +100,6 @@ public class StaffController {
                 detailOneDayRes.setTotalCured(curedOneday.size());
                 detailOneDayRes.setTotalCurrentF0(current.size());
                 commonRes.setData(detailOneDayRes);
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -154,7 +149,6 @@ public class StaffController {
     public ResponseEntity<CommonRes> sentReport(@PathParam("time") String time,@PathParam("villageId") Long villageId,@PathParam("key") String key,@PathParam("page") Integer page) {
         CommonRes commonRes = new CommonRes();
         try {
-
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 List<ListUserRequest> listUserRequests = userService.notSentReport(time,villageId,key,page);
@@ -162,7 +156,6 @@ public class StaffController {
                 listUserRes.setListUserRequests(listUserRequests);
                 listUserRes.setTotal(userService.countNotSentReport(time,villageId,key));
                 commonRes.setData(listUserRes);
-
         } catch (Exception e){
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -208,6 +201,9 @@ public class StaffController {
     public ResponseEntity<CommonRes> totalCurrentF0(@PathParam("villageId") Long villageId) {
         CommonRes commonRes = new CommonRes();
         try {
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                commonRes.setData(userService.totalCurrentF0(villageId));
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 commonRes.setData(userService.totalCurrentF0(villageId));

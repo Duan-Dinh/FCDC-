@@ -35,6 +35,9 @@ public class ReportController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             dailyReportService.addReport(report);
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                dailyReportService.addReport(report);
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -110,7 +113,6 @@ public class ReportController {
         }
         return ResponseEntity.ok(commonRes);
     }
-
     // getUserIdReport
     @GetMapping(value = "/getByUserId")
     public ResponseEntity<CommonRes> getUserIdReport(@PathParam("userId") Long userId,@PathParam("page") Integer page) {
@@ -148,7 +150,6 @@ public class ReportController {
         }
         return ResponseEntity.ok(commonRes);
     }
-
     // truyền vào 1 ngày và trả về nhưng thằng đã gửi report và tình trạng report đó
 
 //    @GetMapping(value = "/getAllSentReportOnedate")
@@ -188,7 +189,7 @@ public class ReportController {
 //        }
 //        return ResponseEntity.ok(commonRes);
 //    }
-
+    // getUserIdReport
 
     // dành cho thằng staff feedback report
     @PutMapping(value = "/editFeeback", consumes = {MediaType.ALL_VALUE})
@@ -198,6 +199,9 @@ public class ReportController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             dailyReportService.editFeeback(feebackReqest);
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+                dailyReportService.editFeeback(feebackReqest);
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());

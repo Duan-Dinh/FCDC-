@@ -25,14 +25,10 @@ import java.util.List;
 public class VillageController {
     @Autowired
     private VillageService villageService;
-    @Autowired
-    ObjectFactory<HttpSession> httpSessionFactory;
     @GetMapping(value ="/getAllVillageByDistrictId" )
     public ResponseEntity<List<AddressRes>> getAllDistrictByDistrictId(@PathParam("id") Long id){
         CommonRes commonRes = new CommonRes();
-
             List<AddressRes> addressRes   = villageService.getAllVillageBydistrictId(id);
-
         return  new ResponseEntity<List<AddressRes>>(addressRes, HttpStatus.OK);
     }
 

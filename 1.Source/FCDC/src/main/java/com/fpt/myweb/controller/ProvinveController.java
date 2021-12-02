@@ -27,9 +27,7 @@ public class ProvinveController {
     @GetMapping(value ="/getAllProvince" )
     public ResponseEntity<List<AddressRes>> getAllProvince(){
         CommonRes commonRes = new CommonRes();
-
             List<AddressRes> provinceRes = provinceService.getAllProvince();
-
         return  new ResponseEntity<List<AddressRes>>(provinceRes, HttpStatus.OK);
 
     }
