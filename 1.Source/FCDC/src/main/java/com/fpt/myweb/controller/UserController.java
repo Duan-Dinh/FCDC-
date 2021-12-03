@@ -109,9 +109,7 @@ public class UserController {
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.addUser(userRequet, file);
 
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.addUser(userRequet, file);
+
 
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
@@ -155,10 +153,6 @@ public class UserController {
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.edit(userRequet,file);
 
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.edit(userRequet,file);
-
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -196,9 +190,7 @@ public class UserController {
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             userService.editByUser(userRequet,file);
 
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.editUserById(userRequet,file);
+
 
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
@@ -220,9 +212,7 @@ public class UserController {
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.deleteUser(id);
 
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.deleteUser(id);
+
 
 
 
@@ -306,9 +296,7 @@ public class UserController {
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 userService.changePass(id,newPass);
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.changePass(id,newPass);
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -367,9 +355,7 @@ public class UserController {
                     commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                     commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
                 }
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                userService.editResult(id);
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());

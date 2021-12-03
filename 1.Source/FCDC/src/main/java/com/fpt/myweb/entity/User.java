@@ -59,9 +59,9 @@ public class User extends BaseEntity {
     @Column(name = "address")
     private String address;
 
-    @JsonProperty
-    @Column(name = "imageUrl")
-    private String imageUrl;
+   // @JsonProperty
+   // @Column(name = "imageUrl")
+   // private String imageUrl;
 
     @JsonProperty
     @Column(name = "is_active")

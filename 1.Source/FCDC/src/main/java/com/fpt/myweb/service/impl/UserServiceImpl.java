@@ -111,22 +111,15 @@ public class UserServiceImpl implements UserService {
         Village village = villageRepository.findById(userRequet.getVillage_id()).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_VILLAGE_ID.getKey(), ErrorCode.NOT_FOUND_VILLAGE_ID.getValue() + userRequet.getVillage_id()));
         User user = userConvert.convertToUser(userRequet);
-
         user.setRole(role);
         user.setVillage(village);
         user.setFullname(userRequet.getFullname());
         user.setPassword(passwordEncoder.encode(userRequet.getPassword()));
         user.setAddress(userRequet.getAddress());
-        //user.setEmail(userRequet.getEmail());
         Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getBirthOfdate());
         user.setBirthOfdate(date);
         user.setGender(userRequet.getGender());
         user.setPhone(userRequet.getPhone());
-        user.setImageUrl(userRequet.getImageUrl()
-
-        );
-
-
         user.setCreatedDate(new Date());
         user.setIs_active("1");
         if (userRequet.getStartOfDate() != null) {
@@ -138,11 +131,14 @@ public class UserServiceImpl implements UserService {
         }
         user.setTypeTakeCare("1");
         // luu file
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
-        FileDB fileDB = fileDBRepository.save(FileDB);
-        user.setFiles(fileDB);
-
+        if( !file.isEmpty() ) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+            FileDB fileDB = fileDBRepository.save(FileDB);
+            user.setFiles(fileDB);
+        }else{
+            user.setFiles(null);
+        }
         User user1 = userRepository.save(user);
         smsService.sendGetJSON(user.getPhone(), "Tài khoản của bạn đã được khởi tạo");
         return user1;
@@ -190,7 +186,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(newPass));
         userRepository.save(user);
         UserRequet userRequet = userConvert.convertToUserRequest(user);
-
         return userRequet;
     }
 
@@ -199,32 +194,46 @@ public class UserServiceImpl implements UserService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = userRepository.findById(userRequet.getId()).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + userRequet.getId()));
-        Role role = roleRepository.findById(userRequet.getRole_id()).orElseThrow(()
-                -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + userRequet.getRole_id()));
-        Village village = villageRepository.findById(userRequet.getVillage_id()).orElseThrow(()
-                -> new AppException(ErrorCode.NOT_FOUND_VILLAGE_ID.getKey(), ErrorCode.NOT_FOUND_VILLAGE_ID.getValue() + userRequet.getVillage_id()));
-        user.setRole(role);
-        user.setVillage(village);
+        if(String.valueOf(userRequet.getRole_id())!=null) {
+            Role role = roleRepository.findById(userRequet.getRole_id()).orElseThrow(()
+                    -> new AppException(ErrorCode.NOT_FOUND_ROLE_ID.getKey(), ErrorCode.NOT_FOUND_ROLE_ID.getValue() + userRequet.getRole_id()));
+            user.setRole(role);
+        }
+        if(String.valueOf(userRequet.getVillage_id())!=null) {
+            Village village = villageRepository.findById(userRequet.getVillage_id()).orElseThrow(()
+                    -> new AppException(ErrorCode.NOT_FOUND_VILLAGE_ID.getKey(), ErrorCode.NOT_FOUND_VILLAGE_ID.getValue() + userRequet.getVillage_id()));
+            user.setVillage(village);
+        }
+        if(userRequet.getFullname()!=null){
         user.setFullname(userRequet.getFullname());
-        user.setPassword(passwordEncoder.encode(userRequet.getPassword()));
-        user.setAddress(userRequet.getAddress());
-
-       // user.setEmail(userRequet.getEmail());
+        }
+        if(userRequet.getPassword()!=null){
+            user.setPassword(passwordEncoder.encode(userRequet.getPassword()));
+        }
+       if(userRequet.getAddress()!=null) {
+           user.setAddress(userRequet.getAddress());
+       }
+       if(userRequet.getBirthOfdate()!=null){
         Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getBirthOfdate());
-        user.setBirthOfdate(date);
-        user.setGender(userRequet.getGender());
-        user.setPhone(userRequet.getPhone());
-        user.setImageUrl(userRequet.getImageUrl());
+        user.setBirthOfdate(date);}
+       if(userRequet.getGender()!=null){
+        user.setGender(userRequet.getGender());}
+       if(userRequet.getPhone()!=null){
+           user.setPhone(userRequet.getPhone());
+       }
+      if(userRequet.getStartOfDate()!=null){
         Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
-        user.setDateStart(date1);
+        user.setDateStart(date1);}
         // luu file
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
-        FileDB.setId(user.getFiles().getId());
-        FileDB fileDB = fileDBRepository.save(FileDB);
-
-        user.setFiles(fileDB);
+        if(!file.isEmpty()) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+            if(user.getFiles()!=null){
+            FileDB.setId(user.getFiles().getId());
+            }
+            FileDB fileDB = fileDBRepository.save(FileDB);
+            user.setFiles(fileDB);
+        }
 
         UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));
         return userRequet1;
@@ -239,12 +248,15 @@ public class UserServiceImpl implements UserService {
         Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
         user.setDateStart(date1);
         // luu file
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
-        FileDB.setId(user.getFiles().getId());
-        FileDB fileDB = fileDBRepository.save(FileDB);
-        user.setFiles(fileDB);
+        if(!file.isEmpty()) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+            if(user.getFiles()!=null){
+                FileDB.setId(user.getFiles().getId());
+            }
+            FileDB fileDB = fileDBRepository.save(FileDB);
+            user.setFiles(fileDB);
+        }
         UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));
         return userRequet1;
     }
@@ -254,12 +266,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userRequet.getId()).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + userRequet.getId()));
         // luu file
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
-        FileDB.setId(user.getFiles().getId());
-        FileDB fileDB = fileDBRepository.save(FileDB);
-        user.setFiles(fileDB);
+        if(!file.isEmpty()) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+            if(user.getFiles()!=null){
+                FileDB.setId(user.getFiles().getId());
+            }
+            FileDB fileDB = fileDBRepository.save(FileDB);
+            user.setFiles(fileDB);
+        }
         UserRequet userRequet1 = userConvert.convertToUserRequest(userRepository.save(user));
         return userRequet1;
     }
@@ -274,7 +289,7 @@ public class UserServiceImpl implements UserService {
             user.setModifiedDate(null);
             user.setResult("F0");
         }else {
-            if(TimeUnit.MILLISECONDS.toDays(currentDate.getTime() - user.getCreatedDate().getTime()) >= 14){
+            if(TimeUnit.MILLISECONDS.toDays(currentDate.getTime() - user.getDateStart().getTime()) >= 14){
                 user.setResult("-");
                 user.setModifiedDate(currentDate);
             }else{
