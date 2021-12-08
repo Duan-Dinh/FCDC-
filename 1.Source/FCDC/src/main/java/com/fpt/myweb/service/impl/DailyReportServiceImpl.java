@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -169,6 +170,17 @@ public class DailyReportServiceImpl implements DailyReportService {
         Daily_Report daily_report = daily_reportRepository.findById(feebackReqest.getDaily_reportId()).orElse(null);
         daily_report.setFeedback(feebackReqest.getTextFeeback());
         daily_reportRepository.save(daily_report);
+    }
+
+    @Override
+    public boolean checkSentOrNotSentOneDay(Long userId) {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String date = dateFormat.format(new Date());
+        Daily_Report daily_report = daily_reportRepository.findDaily_ReportByDateTimeAndUserId(date,userId);
+        if(daily_report!=null){
+            return true;
+        }
+        return false;
     }
 
 

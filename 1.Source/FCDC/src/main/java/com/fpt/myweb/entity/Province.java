@@ -23,4 +23,6 @@ public class Province extends BaseEntity{
     @OneToMany(mappedBy = "province")
     private List<District> districts = new ArrayList<>();
 
+    public Province(String name) {
+    }
 }

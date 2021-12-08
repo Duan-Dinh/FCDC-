@@ -50,7 +50,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 4 and result = '-' and fullname like %?2% ORDER BY id")
     List<User> searchAllPatientsCuredForStaff(Long village ,String text);
 
-//notsentreport
+    //notsentreport
     @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and result = 'F0' and fullname like %?3% ORDER BY id", nativeQuery = true)
     List<User> UserNotSentReport(String time,Long village,String text,String key,Pageable pageable);
 
@@ -58,7 +58,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> UserNotSentReport(String time,Long village,String text,String key);
 
 
-   //notsentreport
+    //notsentreport
     @Query( value = "SELECT * FROM user as u WHERE u.id   NOT IN (SELECT user_id FROM daily_report as d  WHERE date_time LIKE ?1) and u.role_id =4 and is_active = 1 and village_id = ?2 and " +
             "result = 'F0'  and result = 'F0' and datediff((SELECT STR_TO_DATE(?4,'%d/%m/%Y')),u.created_date)>=0 and fullname like %?3% ORDER BY id", nativeQuery = true)
     List<User> UserNotSentReports(String time,Long village,String key,String time1,Pageable pageable);
@@ -76,10 +76,10 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> userSentReport(String time,Long village,String text,String key);
 
     //getAllPatientForDoctor
-    @Query(value = "SELECT u FROM User u where typeTakeCare = ?1 and is_active = 1 and role_id = 4 and result = 'F0' ORDER BY id")
-    List<User> findAllPatientForDoctor(String doctor_id,Pageable pageable);
-    @Query(value = "SELECT u FROM User u where typeTakeCare = ?1 and is_active = 1 and role_id = 4 and result = 'F0' ORDER BY id")
-    List<User> findAllPatientForDoctor(String doctor_id);
+    @Query(value = "SELECT u FROM User u where typeTakeCare = ?1 and fullname like %?2% and is_active = 1 and role_id = 4 and result = 'F0' ORDER BY id")
+    List<User> findAllPatientForDoctor(String doctor_id,String key,Pageable pageable);
+    @Query(value = "SELECT u FROM User u where typeTakeCare = ?1 and fullname like %?2% and is_active = 1 and role_id = 4 and result = 'F0' ORDER BY id")
+    List<User> findAllPatientForDoctor(String doctor_id,String key);
 
     //getdoctorbyvillaId
     @Query(value = "SELECT u FROM User u where village_id = ?1 and is_active = 1 and role_id = 3 ORDER BY id")
@@ -123,4 +123,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Query(value = "SELECT count(*) FROM fcdc.user where village_id = ?1 and is_active = 1 and result like 'F0' and role_id =4",nativeQuery = true)
     int totalCurrentF0(Long villageId);
+
+
+    @Query(value = "SELECT count(*) FROM fcdc.user where is_active = 1 and result like 'F0' and role_id = 4 and type_take_care like ?1",nativeQuery = true)
+    int totalPatientForOneDoctor(String doctorId);
 }

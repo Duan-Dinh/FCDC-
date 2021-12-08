@@ -35,9 +35,6 @@ public class ReportController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             dailyReportService.addReport(report);
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                dailyReportService.addReport(report);
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -199,9 +196,6 @@ public class ReportController {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
             dailyReportService.editFeeback(feebackReqest);
-                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-                dailyReportService.editFeeback(feebackReqest);
         } catch (Exception e) {
             commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
             commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
@@ -209,4 +203,22 @@ public class ReportController {
         return ResponseEntity.ok(commonRes);
     }
 
+    @GetMapping(value = "/checkSentOrNotSentOneDay")
+    public ResponseEntity<CommonRes> checkSentOrNotSentOneDay(@PathParam("userId") Long userId) {
+        CommonRes commonRes = new CommonRes();
+        try {
+            boolean check = dailyReportService.checkSentOrNotSentOneDay(userId);
+            if(check){
+                commonRes.setResponseCode(ErrorCode.SENT.getKey());
+                commonRes.setMessage(ErrorCode.SENT.getValue());
+            }else{
+                commonRes.setResponseCode(ErrorCode.NOT_SENT.getKey());
+                commonRes.setMessage(ErrorCode.NOT_SENT.getValue());
+            }
+        } catch (Exception e) {
+            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
+            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+        }
+        return ResponseEntity.ok(commonRes);
+    }
 }

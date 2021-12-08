@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
         if (userRequet.getRole_id() == 4L) {
             user.setResult("F0");
         }
-        user.setTypeTakeCare("1");
+        user.setTypeTakeCare("-1");
         // luu file
         if( !file.isEmpty() ) {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -205,31 +205,31 @@ public class UserServiceImpl implements UserService {
             user.setVillage(village);
         }
         if(userRequet.getFullname()!=null){
-        user.setFullname(userRequet.getFullname());
+            user.setFullname(userRequet.getFullname());
         }
         if(userRequet.getPassword()!=null){
             user.setPassword(passwordEncoder.encode(userRequet.getPassword()));
         }
-       if(userRequet.getAddress()!=null) {
-           user.setAddress(userRequet.getAddress());
-       }
-       if(userRequet.getBirthOfdate()!=null){
-        Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getBirthOfdate());
-        user.setBirthOfdate(date);}
-       if(userRequet.getGender()!=null){
-        user.setGender(userRequet.getGender());}
-       if(userRequet.getPhone()!=null){
-           user.setPhone(userRequet.getPhone());
-       }
-      if(userRequet.getStartOfDate()!=null){
-        Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
-        user.setDateStart(date1);}
+        if(userRequet.getAddress()!=null) {
+            user.setAddress(userRequet.getAddress());
+        }
+        if(userRequet.getBirthOfdate()!=null){
+            Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getBirthOfdate());
+            user.setBirthOfdate(date);}
+        if(userRequet.getGender()!=null){
+            user.setGender(userRequet.getGender());}
+        if(userRequet.getPhone()!=null){
+            user.setPhone(userRequet.getPhone());
+        }
+        if(userRequet.getStartOfDate()!=null){
+            Date date1 = new SimpleDateFormat(Contants.DATE_FORMAT).parse(userRequet.getStartOfDate());
+            user.setDateStart(date1);}
         // luu file
         if(!file.isEmpty()) {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
             if(user.getFiles()!=null){
-            FileDB.setId(user.getFiles().getId());
+                FileDB.setId(user.getFiles().getId());
             }
             FileDB fileDB = fileDBRepository.save(FileDB);
             user.setFiles(fileDB);
@@ -305,10 +305,14 @@ public class UserServiceImpl implements UserService {
     public UserRequet changeTypeTakeCare(long id,Long doctorId) {
         User user = userRepository.findById(id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
-        user.setTypeTakeCare(String.valueOf(doctorId));
-        UserRequet userRequet = userConvert.convertToUserRequest(user);
-        userRepository.save(user);
-        return userRequet;
+        int check = userRepository.totalPatientForOneDoctor(String.valueOf(doctorId));
+        if(check<12) {
+            user.setTypeTakeCare(String.valueOf(doctorId));
+            UserRequet userRequet = userConvert.convertToUserRequest(user);
+            userRepository.save(user);
+            return userRequet;
+        }
+        return null;
     }
 
     @Override
@@ -681,9 +685,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void exportUserPatient(HttpServletResponse response, String time) throws IOException, ParseException {
+    public void exportUserPatient(HttpServletResponse response) throws IOException, ParseException {
 
-        Object value = null;
+        //Object value = null;
         //List<UserRequet> listUser = toTestCovid(time);
         List<UserRequet> listUser = new ArrayList<>();
 
@@ -699,10 +703,9 @@ public class UserServiceImpl implements UserService {
         CreateCell(sheet, row, 0, "Họ và Tên", style);
         CreateCell(sheet, row, 1, "Giới Tính", style);
         CreateCell(sheet, row, 2, "Ngày Sinh", style);
-        CreateCell(sheet, row, 3, "Email", style);
-        CreateCell(sheet, row, 4, "Số điện thoại", style);
-        CreateCell(sheet, row, 5, "Ngày phát hiện", style);
-        CreateCell(sheet, row, 6, "Phường,Xã", style);
+        CreateCell(sheet, row, 3, "Số điện thoại", style);
+        CreateCell(sheet, row, 4, "Ngày phát hiện", style);
+        CreateCell(sheet, row, 5, "Phường,Xã", style);
         int rowCount = 1;
         for (UserRequet user : listUser) {
             CellStyle styleOfRow = workbook.createCellStyle();
@@ -714,12 +717,10 @@ public class UserServiceImpl implements UserService {
             CreateCell(sheet, row, columCount++, user.getFullname(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getGender(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getBirthOfdate(), styleOfRow);
-           // CreateCell(sheet, row, columCount++, user.getEmail(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getPhone(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getStartOfDate(), styleOfRow);
             CreateCell(sheet, row, columCount++, user.getAddress(), styleOfRow);
         }
-
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
         workbook.close();
@@ -788,13 +789,13 @@ public class UserServiceImpl implements UserService {
         List<User> searchList = userRepository.UserNotSentReports(time,villageId,key,time1,pageable);
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : searchList) {
-           // if (Integer.parseInt(user.getIs_active()) == 1) {
-                listUserRequests.add(userConvert.convertToListUserRequest(user));
-          //  }
+            // if (Integer.parseInt(user.getIs_active()) == 1) {
+            listUserRequests.add(userConvert.convertToListUserRequest(user));
+            //  }
         }
         return listUserRequests;
     }
-//
+    //
     @Override
     public int countNotSentReport(String time, Long villageId,String key) {
         String time1 = time+" extra characters";
@@ -824,14 +825,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ListUserRequest> getAllPatientForDoctor(String doctorId,Integer page) {
+    public List<ListUserRequest> getAllPatientForDoctor(String doctorId,String key,Integer page) {
         if(page == null){
             page = 0;
         }else{
             page--;
         }
         Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-        List<User> userList = userRepository.findAllPatientForDoctor(doctorId,pageable);
+        List<User> userList = userRepository.findAllPatientForDoctor(doctorId,key,pageable);
         List<ListUserRequest> listUserRequests = new ArrayList<>();
         for (User user : userList) {
 //            if (Integer.parseInt(user.getIs_active()) == 1 && user.getTypeTakeCare().equals(doctorId)) {
@@ -842,8 +843,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int countAllPatientForDoctor(String doctorId) {
-        List<User> searchList = userRepository.findAllPatientForDoctor(doctorId);
+    public int countAllPatientForDoctor(String doctorId,String key) {
+        List<User> searchList = userRepository.findAllPatientForDoctor(doctorId,key);
         if(searchList == null){
             return 0;
         }
@@ -897,6 +898,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<ListUserRequest> getAllPatientForStaffAll(Long villageId, String search, String key) {
+        List<ListUserRequest> listUserRequests = new ArrayList<>();
+        List<User> searchList = null;
+        Pageable pageable = null;
+        if(key.equals("-")) {
+
+            searchList = userRepository.findAllPatientsCuredForStaff(villageId, search,key);
+            for (User user : searchList) {
+                listUserRequests.add(userConvert.convertToListUserRequest(user));
+            }
+        }
+        if (key.equals("F0")) {
+            searchList = userRepository.findAllPatientForStaff( villageId, search,key);
+            for (User user : searchList) {
+                listUserRequests.add(userConvert.convertToListUserRequest(user));
+            }
+        }
+        return listUserRequests;
+    }
+
+    @Override
     public int countByPatientsForStaff(Long villageId,String search,String key) {
         List<User> searchList = new ArrayList<>();
         if(key.equals("-")) {
@@ -914,54 +936,6 @@ public class UserServiceImpl implements UserService {
         return searchList.size();
 
     }
-
-//    @Override
-//    public List<UserRequet> getNewPatientOneDay1(String time, Long villageId, Integer page) throws ParseException {
-//        if(page == null){
-//            page = 0;
-//        }else{
-//            page--;
-//        }
-//        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-//        List<User> searchList = userRepository.findAllPatientForStaff(villageId,pageable);
-//        DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-//        List<UserRequet> userRequets = new ArrayList<>();
-//        for (User user : searchList) {
-//            if (sdf.format(user.getCreatedDate()).equals(time) && user.getRole().getId() == 4L && user.getResult().equals("F0") ) {
-//                if (Integer.parseInt(user.getIs_active()) == 1) {
-//                    userRequets.add(userConvert.convertToUserRequest(user));
-//                }
-//            }
-//        }
-//        return userRequets;
-//    }
-
-//    @Override
-//    public List<ListUserRequest> getAllPatientsCuredForStaff(Long VillageId, Integer page) {
-//        if(page == null){
-//            page = 0;
-//        }else{
-//            page--;
-//        }
-//        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
-//        List<User> userList = userRepository.findAllPatientsCuredForStaff(VillageId,pageable);
-//        List<ListUserRequest> listUserRequests = new ArrayList<>();
-//        for (User user : userList) {
-////            if (Integer.parseInt(user.getIs_active()) == 1 && user.getRole().getId() == 4L && user.getResult().equals("-")) {
-//                listUserRequests.add(userConvert.convertToListUserRequest(user));
-//          //  }
-//        }
-//        return listUserRequests;
-//    }
-
-//    @Override
-//    public int countAllPatientCuredForStaff(Long villageId) {
-//        List<User> searchList = userRepository.findAllPatientsCuredForStaff(villageId);
-//        if(searchList == null){
-//            return 0;
-//        }
-//        return searchList.size();
-//    }
 
     @Override
     public List<UserRequet> getNewPatientOneDay(String time,Long villageId) throws ParseException {
@@ -1027,7 +1001,6 @@ public class UserServiceImpl implements UserService {
             curTime += interval;
         }
         List<ChartStaffRes> chartStaffResList = new ArrayList<>();
-
         for(int i=0;i<dates.size();i++){
             Date lDate =(Date)dates.get(i);
             String ds = formatter.format(lDate);
@@ -1045,5 +1018,4 @@ public class UserServiceImpl implements UserService {
     public int totalCurrentF0(Long villageId) {
         return userRepository.totalCurrentF0(villageId);
     }
-
 }

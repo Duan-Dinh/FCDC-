@@ -107,9 +107,7 @@ public class UserConvert {
         ListUserRequest listUserRequest = new ListUserRequest();
         listUserRequest.setId(user.getId());
         listUserRequest.setFullname(user.getFullname());
-       // listUserRequest.setPassword(user.getPassword());
         listUserRequest.setGender(user.getGender());
-        //listUserRequest.setEmail(user.getEmail());
         listUserRequest.setPhone(user.getPhone());
         if (user.getAddress() != null) {
             listUserRequest.setAddress(user.getAddress() + " - " + user.getVillage().getName() + " - " + user.getVillage().getDistrict().getName() + " - " + user.getVillage().getDistrict().getProvince().getName());
@@ -119,7 +117,7 @@ public class UserConvert {
         }
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         listUserRequest.setBirthOfdate(dateFormat.format(user.getBirthOfdate()));
-       // listUserRequest.setRole_id(user.getRole().getId());
+        listUserRequest.setRole_id(user.getRole().getId());
         listUserRequest.setVillage_id(user.getVillage().getId());
         listUserRequest.setDistrict_id(user.getVillage().getDistrict().getId());
         listUserRequest.setProvince_id(user.getVillage().getDistrict().getProvince().getId());

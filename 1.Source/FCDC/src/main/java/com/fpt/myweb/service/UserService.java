@@ -32,7 +32,7 @@ public interface UserService {
     public UserRequet changePass(long id , String newPass);
 
     public UserRequet edit(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
-//edit user by id
+    //edit user by id
     public UserRequet editUserById(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
 
     public UserRequet editByUser(UserRequet userRequet, MultipartFile file) throws ParseException, IOException;
@@ -67,9 +67,9 @@ public interface UserService {
 
     public List<UserRequet> importUser(MultipartFile file, String type) throws IOException, ParseException;
 
-//    public void CreateCell(Row row, int columnCount, Object value, CellStyle style) ;
+    //    public void CreateCell(Row row, int columnCount, Object value, CellStyle style) ;
     //export
-    public void exportUserPatient(HttpServletResponse file,String time) throws IOException, ParseException;
+    public void exportUserPatient(HttpServletResponse file) throws IOException, ParseException;
 
     // oke
     public List<ListUserRequest> notSentAndSentReport(String time,Long villageId,String text,String key,Integer page);
@@ -80,11 +80,12 @@ public interface UserService {
     public int countNotSentReport(String time,Long villageId,String key);
 
     public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException;
-    public List<ListUserRequest> getAllPatientForDoctor(String doctorId,Integer page);
-    public int countAllPatientForDoctor(String doctorId);
+    public List<ListUserRequest> getAllPatientForDoctor(String doctorId,String key,Integer page);
+    public int countAllPatientForDoctor(String doctorId,String key);
     public List<UserRequet> getAllPatientForStaff(Long VillageId);
 
     public List<ListUserRequest> getAllPatientForStaff(Long villageId,String search ,String key ,Integer page);
+    public List<ListUserRequest> getAllPatientForStaffAll(Long villageId,String search ,String key );
 
     public int countByPatientsForStaff(Long villageId,String search ,String key);
 
@@ -102,4 +103,6 @@ public interface UserService {
     public List<ChartStaffRes> getChartForStaff(String startDate, String endDate,Long villageId) throws ParseException;
 
     public int totalCurrentF0(Long villageId);
+
+
 }

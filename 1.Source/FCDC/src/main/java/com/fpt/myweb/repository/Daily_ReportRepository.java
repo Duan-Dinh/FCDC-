@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface Daily_ReportRepository extends JpaRepository<Daily_Report,Long> {
     List<Daily_Report> findByUserId(Long id);
-
+    Daily_Report findDaily_ReportByDateTimeAndUserId(String date,Long userId);
     //get village
     @Query(value = "SELECT d FROM Daily_Report d where user_id = ?1 ORDER BY id")
     List<Daily_Report> findAllByUserId(Long id,Pageable pageable);

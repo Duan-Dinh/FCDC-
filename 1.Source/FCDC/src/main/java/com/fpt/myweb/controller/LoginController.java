@@ -52,6 +52,7 @@ public class LoginController {
                 loginResponse.setId(user.getId());
                 loginResponse.setVilaId(user.getVillage().getId());
                 loginResponse.setAddress(user.getAddress());
+                loginResponse.setResult(user.getResult());
                 if(user.getFiles() != null){
                     String type ="data:"+ DatatypeConverter.parseAnySimpleType(user.getFiles().getType()) +";base64,"+ DatatypeConverter.printBase64Binary(user.getFiles().getData());
                     loginResponse.setImage(type);
@@ -74,7 +75,7 @@ public class LoginController {
         try {
             commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
             commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-         //   User user = userService.logout(loginRequest.getPhone());
+            //   User user = userService.logout(loginRequest.getPhone());
             HttpSession  session = httpSessionFactory.getObject();
             session.setAttribute(Contants.USER_SESSION, null);
         } catch (Exception e){
