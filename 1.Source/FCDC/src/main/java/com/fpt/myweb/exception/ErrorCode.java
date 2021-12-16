@@ -6,8 +6,9 @@ import lombok.Getter;
 public enum ErrorCode {
 
     PROCESS_SUCCESS("00000", "All thing done"),
-    CHANGERESULT_FAIL("00005", "phởi lớn hơn hoạc bằng 14 ngày"),
+    CHANGERESULT_FAIL("00005", "Phải lớn hơn hoặc bằng 14 ngày"),
     AUTHENTICATION_FAILED("00002", "Authentication failed"),
+    AUTHENTICATION_FAILED_1("00010", "Số điện thoại thêm vào đã tồn tại trong hệ thống"),
     EXCEL_DUPLICATE("00003", "Sai hoặc trùng lặp số điện thoại, hoặc dữ liệu trong ô excel bị trống !"),
 
     NOT_FOUND_ID("U001", "Not found ID = "),

@@ -140,7 +140,15 @@ public class UserServiceImpl implements UserService {
             user.setFiles(null);
         }
         User user1 = userRepository.save(user);
-        smsService.sendGetJSON(user.getPhone(), "Tài khoản của bạn đã được khởi tạo");
+        if(userRequet.getRole_id() == 2L) {
+            smsService.sendGetJSON(user.getPhone(), "Tài khoản nhân viên của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+        }
+        if(userRequet.getRole_id() == 3L) {
+            smsService.sendGetJSON(user.getPhone(), "Tài khoản bác sỹ của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+        }
+        if(userRequet.getRole_id() == 4L) {
+            smsService.sendGetJSON(user.getPhone(), "Tài khoản F0 của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+        }
         return user1;
     }
     @Override
@@ -163,16 +171,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResetPassRes resetPass(String phone) {
+    public ResetPassRes resetPass(String phone) throws IOException {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = userRepository.findUsersByPhone(phone);
         if(user!=null){
-            String pas = GetUtils.generateRandomPassword(6);
+            String pas = GetUtils.generateRandomPassword(8);
             user.setPassword(passwordEncoder.encode(pas));
             ResetPassRes resetPassRes = new ResetPassRes();
             resetPassRes.setPhone(user.getPhone());
             resetPassRes.setPass(pas);
             userRepository.save(user);
+            smsService.sendGetJSON(user.getPhone(), "Đặt lại mật khẩu thành công. Mật khẩu của bạn là:"+pas+". Vui lòng truy cập trang web www.fcdc.asia để đổi mật khẩu. Xin cảm ơn");
             return resetPassRes;
         }
         return null;
@@ -620,7 +629,7 @@ public class UserServiceImpl implements UserService {
                 }
                 user.setIs_active("1");
                 user.setTypeTakeCare("-1");
-                user.setPassword(passwordEncoder.encode("123"));
+                user.setPassword(passwordEncoder.encode("12345678"));
                 userList.add(user);
                 excelDuplicatePhone.add(user.getPhone());
             }
@@ -658,7 +667,15 @@ public class UserServiceImpl implements UserService {
                 for (User user : userList) {
                     user.setCreatedDate(new Date());
                     userRepository.save(user);
-                    //smsService.sendGetJSON(user.getPhone(), "Hello");
+                    if(type.equals("staff")) {
+                        smsService.sendGetJSON(user.getPhone(), "Tài khoản nhân viên của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+                    }
+                    if(type.equals("doctor")) {
+                        smsService.sendGetJSON(user.getPhone(), "Tài khoản bác sỹ của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+                    }
+                    if(type.equals("patient")) {
+                        smsService.sendGetJSON(user.getPhone(), "Tài khoản F0 của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+                    }
                 }
                 return null;
             }
@@ -668,6 +685,7 @@ public class UserServiceImpl implements UserService {
         }
         return userRequets;
     }
+
 
 
 
@@ -685,11 +703,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void exportUserPatient(HttpServletResponse response) throws IOException, ParseException {
+    public void exportUserPatient(HttpServletResponse response,String time,Long villaId) throws IOException, ParseException {
 
-        //Object value = null;
-        //List<UserRequet> listUser = toTestCovid(time);
-        List<UserRequet> listUser = new ArrayList<>();
+        Object value = null;
+        List<UserRequet> listUser = toTestCovid(time,villaId);
+        //  List<UserRequet> listUser = new ArrayList<>();
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("User");
@@ -708,6 +726,48 @@ public class UserServiceImpl implements UserService {
         CreateCell(sheet, row, 5, "Phường,Xã", style);
         int rowCount = 1;
         for (UserRequet user : listUser) {
+            CellStyle styleOfRow = workbook.createCellStyle();
+            XSSFFont fontt = workbook.createFont();
+            fontt.setFontHeight(14);
+            style.setFont(fontt);
+            row = sheet.createRow(rowCount++);
+            int columCount = 0;
+            CreateCell(sheet, row, columCount++, user.getFullname(), styleOfRow);
+            CreateCell(sheet, row, columCount++, user.getGender(), styleOfRow);
+            CreateCell(sheet, row, columCount++, user.getBirthOfdate(), styleOfRow);
+            CreateCell(sheet, row, columCount++, user.getPhone(), styleOfRow);
+            CreateCell(sheet, row, columCount++, user.getStartOfDate(), styleOfRow);
+            CreateCell(sheet, row, columCount++, user.getAddress(), styleOfRow);
+        }
+        ServletOutputStream outputStream = response.getOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+        outputStream.close();
+    }
+
+    @Override
+    public void exportUserPatientF0AndCured(HttpServletResponse response, Long villageId, String search, String key) throws IOException, ParseException {
+        Object value = null;
+        List<ListUserRequest> listUser = getAllPatientForStaffAll(villageId, search, key);
+        //  List<UserRequet> listUser = new ArrayList<>();
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("User");
+        Row row = sheet.createRow(0);
+        CellStyle style = workbook.createCellStyle();
+        XSSFFont font = workbook.createFont();
+        font.setBold(true);
+        font.setFontHeight(17);
+        font.setBoldweight((short) 18);
+        style.setFont(font);
+        CreateCell(sheet, row, 0, "Họ và Tên", style);
+        CreateCell(sheet, row, 1, "Giới Tính", style);
+        CreateCell(sheet, row, 2, "Ngày Sinh", style);
+        CreateCell(sheet, row, 3, "Số điện thoại", style);
+        CreateCell(sheet, row, 4, "Ngày phát hiện", style);
+        CreateCell(sheet, row, 5, "Phường,Xã", style);
+        int rowCount = 1;
+        for (ListUserRequest user : listUser) {
             CellStyle styleOfRow = workbook.createCellStyle();
             XSSFFont fontt = workbook.createFont();
             fontt.setFontHeight(14);
@@ -820,6 +880,25 @@ public class UserServiceImpl implements UserService {
                     userRequets.add(userConvert.convertToUserRequest(user));
                 }
             }
+        }
+        return userRequets;
+    }
+
+    @Override
+    public List<UserRequet> toTestCovidForPaitent(String time, Long villageId,Integer page) throws ParseException {
+        if (page == null) {
+            page = 0;
+        } else {
+            page--;
+        }
+        Pageable pageable = PageRequest.of(page, Contants.PAGE_SIZE);
+        String timeTwo = time + " extra characters";
+        List<User> searchList = userRepository.toTestCovidForPatient(time,villageId,timeTwo,pageable);
+        List<UserRequet> userRequets = new ArrayList<>();
+        for (User user : searchList) {
+
+            userRequets.add(userConvert.convertToUserRequest(user));
+
         }
         return userRequets;
     }

@@ -59,7 +59,7 @@ public class DailyReportServiceImpl implements DailyReportService {
     @Override
     public void addReport(Report report) {
         Daily_Report daily_report = new Daily_Report();
-        User user = userRepository.findById(report.getUserId()).orElse(null);
+        User  user = userRepository.findById(report.getUserId()).orElse(null);
         daily_report.setUser(user);
         daily_report.setCreatedDate(new Date());
         daily_report.setComment(report.getComment());
@@ -102,6 +102,9 @@ public class DailyReportServiceImpl implements DailyReportService {
                 Exercise exercise = exerciseRepository.findById(lListExerciseId.get(i)).orElse(null);
                 daily_report.getExercises().add(exercise);
             }
+        }
+        if(user.getDaily_reports().isEmpty()){
+
         }
         daily_reportRepository.save(daily_report);
     }

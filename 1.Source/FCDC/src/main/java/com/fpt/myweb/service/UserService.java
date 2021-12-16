@@ -27,7 +27,7 @@ public interface UserService {
     //Delete User
     public UserRequet deleteUser(long id);
 
-    public ResetPassRes resetPass(String phone);
+    public ResetPassRes resetPass(String phone) throws IOException;
 
     public UserRequet changePass(long id , String newPass);
 
@@ -67,10 +67,13 @@ public interface UserService {
 
     public List<UserRequet> importUser(MultipartFile file, String type) throws IOException, ParseException;
 
+
     //    public void CreateCell(Row row, int columnCount, Object value, CellStyle style) ;
     //export
-    public void exportUserPatient(HttpServletResponse file) throws IOException, ParseException;
+    public void exportUserPatient(HttpServletResponse file,String time,Long villaId) throws IOException, ParseException;
 
+
+    public void exportUserPatientF0AndCured(HttpServletResponse file,Long villageId,String search ,String key ) throws IOException, ParseException;
     // oke
     public List<ListUserRequest> notSentAndSentReport(String time,Long villageId,String text,String key,Integer page);
 
@@ -80,6 +83,9 @@ public interface UserService {
     public int countNotSentReport(String time,Long villageId,String key);
 
     public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException;
+
+    public List<UserRequet> toTestCovidForPaitent(String time,Long villageId,Integer page) throws ParseException;
+
     public List<ListUserRequest> getAllPatientForDoctor(String doctorId,String key,Integer page);
     public int countAllPatientForDoctor(String doctorId,String key);
     public List<UserRequet> getAllPatientForStaff(Long VillageId);
