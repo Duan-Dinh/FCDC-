@@ -6,6 +6,7 @@ import com.fpt.myweb.convert.UserConvert;
 import com.fpt.myweb.dto.request.ListUserRequest;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.ChartStaffRes;
+import com.fpt.myweb.dto.response.PhoneRes;
 import com.fpt.myweb.dto.response.ResetPassRes;
 import com.fpt.myweb.entity.FileDB;
 import com.fpt.myweb.entity.Role;
@@ -141,13 +142,13 @@ public class UserServiceImpl implements UserService {
         }
         User user1 = userRepository.save(user);
         if(userRequet.getRole_id() == 2L) {
-            smsService.sendGetJSON(user.getPhone(), "Tài khoản nhân viên của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+            smsService.sendGetJSON(user.getPhone(), "Tài khoản nhân viên của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mậ.t khẩu: "+userRequet.getPassword()+"Vui lòng truy cập www.fcdc.asia để đổi mậ.t khẩu");
         }
         if(userRequet.getRole_id() == 3L) {
-            smsService.sendGetJSON(user.getPhone(), "Tài khoản bác sỹ của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+            smsService.sendGetJSON(user.getPhone(), "Tài khoản bác sỹ của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() +  ",mậ.t khẩu: "+userRequet.getPassword()+"Vui lòng truy cập www.fcdc.asia để đổi mậ.t khẩu");
         }
         if(userRequet.getRole_id() == 4L) {
-            smsService.sendGetJSON(user.getPhone(), "Tài khoản F0 của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+            smsService.sendGetJSON(user.getPhone(), "Tài khoản F0 của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() +  ",mậ.t khẩu: "+userRequet.getPassword()+"Vui lòng truy cập www.fcdc.asia để đổi mậ.t khẩu");
         }
         return user1;
     }
@@ -181,7 +182,7 @@ public class UserServiceImpl implements UserService {
             resetPassRes.setPhone(user.getPhone());
             resetPassRes.setPass(pas);
             userRepository.save(user);
-            smsService.sendGetJSON(user.getPhone(), "Đặt lại mật khẩu thành công. Mật khẩu của bạn là:"+pas+". Vui lòng truy cập trang web www.fcdc.asia để đổi mật khẩu. Xin cảm ơn");
+            smsService.sendGetJSON(user.getPhone(), "Đặ.t lại mậ.t khẩu thành công. Mậ.t khẩu của bạn là:"+pas+". Vui lòng truy cập trang web www.fcdc.asia để đổi mậ.t khẩu. Xin cảm ơn");
             return resetPassRes;
         }
         return null;
@@ -314,13 +315,23 @@ public class UserServiceImpl implements UserService {
     public UserRequet changeTypeTakeCare(long id,Long doctorId) {
         User user = userRepository.findById(id).orElseThrow(()
                 -> new AppException(ErrorCode.NOT_FOUND_ID.getKey(), ErrorCode.NOT_FOUND_ID.getValue() + id));
-        int check = userRepository.totalPatientForOneDoctor(String.valueOf(doctorId));
-        if(check<12) {
+        if(doctorId.longValue() < 0){
             user.setTypeTakeCare(String.valueOf(doctorId));
             UserRequet userRequet = userConvert.convertToUserRequest(user);
             userRepository.save(user);
             return userRequet;
         }
+        else {
+            int check = userRepository.totalPatientForOneDoctor(String.valueOf(doctorId));
+            if(check<12) {
+                user.setTypeTakeCare(String.valueOf(doctorId));
+                UserRequet userRequet = userConvert.convertToUserRequest(user);
+                userRepository.save(user);
+                return userRequet;
+            }
+        }
+
+
         return null;
     }
 
@@ -536,7 +547,9 @@ public class UserServiceImpl implements UserService {
     public List<UserRequet> importUser(MultipartFile file, String type) throws IOException, ParseException {
         String regexPhone = "^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$";
         String regexDate = "^(0[1-9]|[12][0-9]|[3][01])/(0[1-9]|1[012])/(19[0-9]{2}|20[0-9]{2})$";
-        String regexName = "^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]*( [aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]+)*$";
+        String regexName = "^([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]*( [ aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]+)*){2,50}$";
+        String regexAddress = "^([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0123456789]*( [ aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0123456789]+)*){2,100}$";
+
         boolean checkDataExcel = true;
         List<User> userList = new ArrayList<>();
         List<User> userListDuplicatePhone = new ArrayList<>();
@@ -574,7 +587,7 @@ public class UserServiceImpl implements UserService {
                     Cell cell = cellIterator.next();
                     if (cell.getColumnIndex() == 0) {
                         if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexName, cell.getStringCellValue())) {
-                            user.setFullname(cell.getStringCellValue());
+                            user.setFullname(cell.getStringCellValue().replaceAll("\\s\\s+"," ").trim());
                         }
                     } else if (cell.getColumnIndex() == 1) {
                         if (!cell.getStringCellValue().isEmpty() && (cell.getStringCellValue().equals("Nam") || cell.getStringCellValue().equals("Nữ"))) {
@@ -582,7 +595,7 @@ public class UserServiceImpl implements UserService {
                         }
                     } else if (cell.getColumnIndex() == 4) {
                         if (!cell.getStringCellValue().isEmpty()) {
-                            String address = cell.getStringCellValue();
+                            String address = cell.getStringCellValue().replaceAll("\\s\\s+"," ").trim();
                             Village village = villageRepository.findByName(address);
                             if (village != null) {
                                 user.setVillage(village);
@@ -593,14 +606,18 @@ public class UserServiceImpl implements UserService {
                             user.setPhone(cell.getStringCellValue());
                         }
                     } else if (cell.getColumnIndex() == 5) {
-                        if (!cell.getStringCellValue().isEmpty()) {
-                            user.setAddress(cell.getStringCellValue());
+                        if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexAddress, cell.getStringCellValue())) {
+                            user.setAddress(cell.getStringCellValue().replaceAll("\\s\\s+"," ").trim());
                         }
                     } else if (cell.getColumnIndex() == 2) {
                         if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexDate, cell.getStringCellValue())) {
                             try {
                                 Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
-                                user.setBirthOfdate(date);
+                                Date currentDate = new Date();
+                                if(date.compareTo(currentDate)<0){
+                                    user.setBirthOfdate(date);
+                                }
+
                             } catch (Exception e) {
 
                             }
@@ -609,7 +626,11 @@ public class UserServiceImpl implements UserService {
                         if (!cell.getStringCellValue().isEmpty() && Pattern.matches(regexDate, cell.getStringCellValue()) && type.equals("patient")) {
                             try {
                                 Date date = new SimpleDateFormat(Contants.DATE_FORMAT).parse(cell.getStringCellValue());
-                                user.setDateStart(date);
+                                Date currentDate = new Date();
+                                if(date.compareTo(currentDate)<0){
+                                    user.setDateStart(date);
+                                }
+
                             } catch (Exception e) {
 
                             }
@@ -645,11 +666,11 @@ public class UserServiceImpl implements UserService {
         //check Data null in file excel
         for (User user : userList) {
             if (type.equals("patient")) {
-                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null || user.getVillage() == null || user.getDateStart() == null) {
+                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null || user.getVillage() == null || user.getDateStart() == null ||user.getAddress()==null) {
                     checkDataExcel = false;
                 }
             } else {
-                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null ||  user.getVillage() == null ) {
+                if (user.getFullname() == null || user.getGender() == null || user.getPhone() == null || user.getBirthOfdate() == null || user.getVillage() == null||user.getAddress()==null) {
                     checkDataExcel = false;
                 }
             }
@@ -667,14 +688,15 @@ public class UserServiceImpl implements UserService {
                 for (User user : userList) {
                     user.setCreatedDate(new Date());
                     userRepository.save(user);
+                    //smsService.sendGetJSON(user.getPhone(), "Hello");
                     if(type.equals("staff")) {
-                        smsService.sendGetJSON(user.getPhone(), "Tài khoản nhân viên của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+                        smsService.sendGetJSON(user.getPhone(), "Tài khoản nhân viên của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mậ.t khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mậ.t khẩu");
                     }
                     if(type.equals("doctor")) {
-                        smsService.sendGetJSON(user.getPhone(), "Tài khoản bác sỹ của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+                        smsService.sendGetJSON(user.getPhone(), "Tài khoản bác sỹ của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mậ.t khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mậ.t khẩu");
                     }
                     if(type.equals("patient")) {
-                        smsService.sendGetJSON(user.getPhone(), "Tài khoản F0 của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mật khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mật khẩu");
+                        smsService.sendGetJSON(user.getPhone(), "Tài khoản F0 của bạn được khởi tạo. Tên đăng nhập:" + user.getPhone() + ",mậ.t khẩu: 12345678.Vui lòng truy cập www.fcdc.asia để đổi mậ.t khẩu");
                     }
                 }
                 return null;
@@ -855,6 +877,20 @@ public class UserServiceImpl implements UserService {
         }
         return listUserRequests;
     }
+
+    @Override
+    public List<PhoneRes> notSentReportAll(String time, Long villageId, String key) {
+        String time1 = time+" extra characters";
+        List<User> searchList = userRepository.UserNotSentReports(time,villageId,key,time1);
+        List<PhoneRes> phoneRes = new ArrayList<>();
+        for (User user : searchList) {
+            PhoneRes phoneResOne = new PhoneRes();
+            phoneResOne.setPhone(user.getPhone());
+            phoneRes.add(phoneResOne);
+        }
+        return phoneRes;
+    }
+
     //
     @Override
     public int countNotSentReport(String time, Long villageId,String key) {

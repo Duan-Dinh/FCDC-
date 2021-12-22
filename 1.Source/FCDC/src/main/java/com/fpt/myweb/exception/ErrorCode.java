@@ -9,7 +9,7 @@ public enum ErrorCode {
     CHANGERESULT_FAIL("00005", "Phải lớn hơn hoặc bằng 14 ngày"),
     AUTHENTICATION_FAILED("00002", "Authentication failed"),
     AUTHENTICATION_FAILED_1("00010", "Số điện thoại thêm vào đã tồn tại trong hệ thống"),
-    EXCEL_DUPLICATE("00003", "Sai hoặc trùng lặp số điện thoại, hoặc dữ liệu trong ô excel bị trống !"),
+    EXCEL_DUPLICATE("00003", "Định dạng dữ liệu không hợp lệ !"),
 
     NOT_FOUND_ID("U001", "Not found ID = "),
     NOT_FOUND_ROLE_ID("R001", "Not found role ID = "),

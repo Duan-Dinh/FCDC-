@@ -4,6 +4,7 @@ import com.fpt.myweb.common.Contants;
 import com.fpt.myweb.dto.request.ListUserRequest;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.DoctorRes;
+import com.fpt.myweb.dto.response.PhoneRes;
 import com.fpt.myweb.entity.FileDB;
 import com.fpt.myweb.entity.User;
 import com.fpt.myweb.entity.Village;
@@ -138,10 +139,10 @@ public class UserConvert {
             listUserRequest.setTypeTakeCare(user.getTypeTakeCare());
         }
 
-        List<User> searchList = userRepository.findAllByVillage(user.getVillage());
+        List<User> searchList = userRepository.findByRoleId(3L);
         List<DoctorRes> doctorRes = new ArrayList<>();
         for (User user1 : searchList) {
-            if (Integer.parseInt(user1.getIs_active()) == 1 && (user1.getRole().getId()) == 3) {
+            if (Integer.parseInt(user1.getIs_active()) == 1 && (user1.getVillage().getDistrict().getId()) == user.getVillage().getDistrict().getId()) {
                 DoctorRes doctorRes1 = new DoctorRes();
                 doctorRes1.setId(user1.getId());
                 doctorRes1.setName(user1.getFullname());
@@ -153,5 +154,7 @@ public class UserConvert {
 
         return listUserRequest;
     }
+
+
 
 }

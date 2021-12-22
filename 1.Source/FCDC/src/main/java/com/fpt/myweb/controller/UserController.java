@@ -364,13 +364,22 @@ public class UserController {
         return ResponseEntity.ok(commonRes);
     }
 
+
     @PutMapping(value = "changeTypeTakeCare")
-    public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id,@PathParam("doctorId") long doctorId) {
+    public ResponseEntity<CommonRes> changeTypeTakeCare(@PathParam("id") long id,@PathParam("doctorId") Long doctorId) {
         CommonRes commonRes = new CommonRes();
         try {
-            commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
-            commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
-            userService.changeTypeTakeCare(id,doctorId);
+            UserRequet userRequet = userService.changeTypeTakeCare(id,doctorId);
+            if(userRequet != null){
+                commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
+                commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());
+
+            }else {
+                commonRes.setResponseCode(ErrorCode.BIGGER_100.getKey());
+                commonRes.setMessage(ErrorCode.BIGGER_100.getValue());
+            }
+
+
         } catch (AppException a){
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
@@ -410,7 +419,6 @@ public class UserController {
         CommonRes commonRes = new CommonRes();
         try {
             List<UserRequet> userRequets = userService.importUser(file,type);
-
             if(userRequets==null){
                 commonRes.setResponseCode(ErrorCode.PROCESS_SUCCESS.getKey());
                 commonRes.setMessage(ErrorCode.PROCESS_SUCCESS.getValue());}
@@ -427,8 +435,8 @@ public class UserController {
             commonRes.setResponseCode(a.getErrorCode());
             commonRes.setMessage(a.getErrorMessage());
         } catch (Exception e){
-            commonRes.setResponseCode(ErrorCode.INTERNAL_SERVER_ERROR.getKey());
-            commonRes.setMessage(ErrorCode.INTERNAL_SERVER_ERROR.getValue());
+            commonRes.setResponseCode(ErrorCode.EXCEL_DUPLICATE.getKey());
+            commonRes.setMessage(ErrorCode.EXCEL_DUPLICATE.getValue());
 
         }
         return ResponseEntity.ok(commonRes);

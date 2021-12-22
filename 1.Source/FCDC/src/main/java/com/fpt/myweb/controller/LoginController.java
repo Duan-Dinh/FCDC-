@@ -11,6 +11,7 @@ import com.fpt.myweb.exception.AppException;
 import com.fpt.myweb.exception.ErrorCode;
 import com.fpt.myweb.repository.UserRepository;
 import com.fpt.myweb.service.UserService;
+import lombok.Data;
 import org.hibernate.annotations.MetaValue;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,8 @@ public class LoginController {
                 loginResponse.setFullname(user.getFullname()); //
                 loginResponse.setId(user.getId());
                 loginResponse.setVilaId(user.getVillage().getId());
-                loginResponse.setAddress(user.getAddress());
+               String address = DatatypeConverter.parseAnySimpleType(String.valueOf(user.getVillage().getName()+"-"+user.getVillage().getDistrict().getName())) ;
+                loginResponse.setAddress(address);
                 loginResponse.setResult(user.getResult());
                 if(user.getFiles() != null){
                     String type ="data:"+ DatatypeConverter.parseAnySimpleType(user.getFiles().getType()) +";base64,"+ DatatypeConverter.printBase64Binary(user.getFiles().getData());

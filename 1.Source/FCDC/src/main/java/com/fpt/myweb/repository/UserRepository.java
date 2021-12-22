@@ -99,7 +99,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query( value = "SELECT * FROM user as u WHERE (datediff((SELECT STR_TO_DATE(?1 ,'%d/%m/%Y')),u.date_start) = 14 or datediff((SELECT STR_TO_DATE(?3 ,'%d/%m/%Y')),u.date_start) = 21) and  is_active = 1 and role_id = 4 and village_id = ?2 and result = 'F0' ORDER BY id DESC ", nativeQuery = true)
     List<User> toTestCovidForPatient(String time,Long village,String timeTwo,Pageable pageable);
 
-
+    List<User> findByRoleId(Long id);
 
     List<User> findByRole(Role role);
 

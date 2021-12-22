@@ -3,6 +3,7 @@ package com.fpt.myweb.service;
 import com.fpt.myweb.dto.request.ListUserRequest;
 import com.fpt.myweb.dto.request.UserRequet;
 import com.fpt.myweb.dto.response.ChartStaffRes;
+import com.fpt.myweb.dto.response.PhoneRes;
 import com.fpt.myweb.dto.response.ResetPassRes;
 import com.fpt.myweb.entity.User;
 import org.springframework.data.domain.Page;
@@ -80,6 +81,8 @@ public interface UserService {
     public int countNotSentAndSentReport(String time,Long villageId,String text,String key);
 
     public List<ListUserRequest> notSentReport(String time,Long villageId,String key,Integer page);
+    public List<PhoneRes> notSentReportAll(String time, Long villageId, String key);
+
     public int countNotSentReport(String time,Long villageId,String key);
 
     public List<UserRequet> toTestCovid(String time,Long villageId) throws ParseException;
